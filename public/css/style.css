@@ -1,0 +1,470 @@
+html,body{
+	overflow-x:hidden;
+}
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body{
+
+	background-color: rgb(239, 241, 236);
+}
+/* Header transparent - Version améliorée */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  background: rgba(2, 58, 3, 0.85); /* semi-transparent pour voir l'image derrière */
+  transition: background 0.4s ease, height 0.3s ease, box-shadow 0.4s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Header après défilement */
+header.defile {
+  background: rgba(10, 35, 29, 0.95); /* Plus opaque après défilement */
+  box-shadow: 0 4px 20px rgba(10, 35, 29, 0.3);
+}
+
+/* Conteneur - Version améliorée */
+.conteneur {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  position: relative;
+  z-index: 3; /* logo et bouton au-dessus du menu */
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/*logo*/
+
+
+.logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 2px solid #00bfa5;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo:hover{
+  transform: scale(1.08);
+  box-shadow: 0 14px 35px rgba(0, 191, 165, 0.35);
+}
+
+.logo img{
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  filter: none;
+}
+
+
+.logo:hover img {
+  filter: drop-shadow(0 4px 12px rgba(0, 234, 255, 0.6));
+}
+
+/* Responsive pour le header */
+@media (max-width: 768px) {
+  .conteneur {
+    padding: 12px 20px;
+  }
+
+  .logo img {
+    height: 50px;
+    width: 50px;
+  }
+
+  .bouton-menu p {
+    font-size: 0.65rem;
+  }
+
+  #menu-navigation ul li a {
+    font-size: 1.1em;
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .conteneur {
+    padding: 10px 15px;
+  }
+
+  .logo img {
+    height: 45px;
+    width: 45px;
+  }
+}
+
+/* Bouton menu - Version améliorée */
+.bouton-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  z-index: 110;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  position: relative;
+}
+
+.bouton-menu:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.bouton-menu p {
+  margin: 5px 0 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.bouton-menu:hover p {
+  color: #00eaff;
+}
+
+.bouton-menu span {
+  width: 28px;
+  height: 3px;
+  background: white;
+  margin: 4px 0;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bouton-menu:hover span {
+  background: #00eaff;
+  box-shadow: 0 2px 8px rgba(0, 234, 255, 0.4);
+}
+
+.bouton-menu.actif span:nth-child(1) {
+  transform: rotate(45deg) translate(7px, 7px);
+  background: #00eaff;
+}
+.bouton-menu.actif span:nth-child(2) {
+  opacity: 0;
+  transform: scale(0);
+}
+.bouton-menu.actif span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+  background: #00eaff;
+}
+
+/* Menu déroulant - Version moderne améliorée */
+#menu-navigation {
+  display: none; /* caché par défaut */
+  position: absolute;
+  top: 70px; /* sous le header */
+  left: 0;
+  width: 100%;
+  background: rgba(10, 10, 35, 0.95); /* Fond plus opaque pour meilleure lisibilité */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 2; /* derrière le logo et bouton */
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+  transform: translateY(-20px);
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-top: 2px solid rgba(0, 191, 165, 0.3);
+}
+
+#menu-navigation.actif {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+/* Liens menu - Style amélioré */
+
+/* =========================
+   MENU NAV – GRILLE MODERNE
+   ========================= */
+#menu-navigation ul{
+  list-style: none;
+  margin: 0 auto;
+  padding: 30px 20px;
+  max-width: 1200px;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 14px;
+  text-align: center;
+}
+
+#menu-navigation ul li{
+  margin: 0;
+}
+
+#menu-navigation ul li a{
+  display: block;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(0,191,165,0.25);
+  color: #ffffff;
+  font-size: 1.1em;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+#menu-navigation ul li a:hover{
+  background: rgba(0,191,165,0.22);
+  color: #00ffcc;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,191,165,0.35);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px){
+  #menu-navigation ul{
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px){
+  #menu-navigation ul{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px){
+  #menu-navigation ul{
+    grid-template-columns: 1fr;
+  }
+}
+
+
+#menu-navigation ul li {
+  margin: 12px 0;
+  position: relative;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.3s ease;
+}
+
+#menu-navigation.actif ul li {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+#menu-navigation.actif ul li:nth-child(1) { transition-delay: 0.1s; }
+#menu-navigation.actif ul li:nth-child(2) { transition-delay: 0.15s; }
+#menu-navigation.actif ul li:nth-child(3) { transition-delay: 0.2s; }
+#menu-navigation.actif ul li:nth-child(4) { transition-delay: 0.25s; }
+#menu-navigation.actif ul li:nth-child(5) { transition-delay: 0.3s; }
+#menu-navigation.actif ul li:nth-child(6) { transition-delay: 0.35s; }
+
+#menu-navigation ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: 500;
+  padding: 12px 30px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* Effet de survol amélioré */
+#menu-navigation ul li a::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #00bfa5, #0055cc);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+#menu-navigation ul li a:hover::before {
+  width: 80%;
+}
+
+#menu-navigation ul li a:hover {
+  color: #00eaff;
+  background: rgba(0, 191, 165, 0.1);
+  transform: translateX(5px);
+  text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+}
+
+
+/* main des pages*/
+main{
+	margin-top: 90px;
+	
+}
+
+/*Pieds des pages*/
+
+footer{
+	
+	background: linear-gradient(135deg, #0d6603, #1a1a40);
+	color: #FFF;
+	width: 100%;
+	height: 100%;
+	margin:0;
+	padding:0;
+
+}
+
+footer img{
+	width: 20px;
+	height: auto;
+}
+.ConteneurPied{
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	gap:30px;
+	padding:0 20px;
+}
+
+.drapeau ul{
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap:10px;
+}
+
+.drapeau li{
+	text-decoration: none;
+	display: flex;
+	align-items:center;
+	gap: 50px;
+	font-size: 14px;
+	background: rgba(189, 192, 189, 0.388);
+	padding: 6px 10px;
+	border-radius: 12px;
+	transition-background:0.4s;	
+
+}
+
+.drapeau li:hover{
+	background: rgba(97, 99, 98, 0.395);
+
+}
+
+.drapeau img{
+	width: 25px;
+	height: auto;
+	border-radius: 3px;
+	object-fit:cover;
+}
+
+.Resaux-sociaux{
+	display: flex;
+	gap:15px;
+	justify-content: center;
+
+}
+
+.Resaux-sociaux a{
+	ruby-position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	text-decoration: none;
+	background:rgba(255,255,255,0.1);
+	color:rgba(255,255,255,0.7);
+	font-size:1.4em;
+	transition:all 0.4s ease;
+	overflow: hidden;
+
+}
+
+
+
+/*Couleurs personnalisées au survol*/
+.Resaux-sociaux a:nth-child(1):hover { color: #1877f2; } /* Facebook */
+.Resaux-sociaux a:nth-child(2):hover { color: #25d366; } /* WhatsApp */
+.Resaux-sociaux a:nth-child(3):hover { color: #000000; } /* TikTok */
+.Resaux-sociaux a:nth-child(4):hover { color: #e4405f; } /* Instagram */
+.Resaux-sociaux a:nth-child(5):hover { color: #ff4d4d; } /* Email */
+
+/* Annimation des iconnes*/
+.Resaux-sociaux a {
+  animation: popIn 0.6s ease forwards;
+  opacity: 0;
+}
+.Resaux-sociaux  a:nth-child(1) { animation-delay: 0.1s; }
+.Resaux-sociaux  a:nth-child(2) { animation-delay: 0.2s; }
+.Resaux-sociaux  a:nth-child(3) { animation-delay: 0.3s; }
+.Resaux-sociaux  a:nth-child(4) { animation-delay: 0.4s; }
+.Resaux-sociaux  a:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+.droit-reserver{
+  text-align: center;
+  margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 10px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+
+/* =========================
+   COULEUR VERTE AEEJ PRIORITAIRE
+   ========================= */
+:root{
+  --aeej-green: #00bfa5;
+  --aeej-green-dark: #057136;
+}
+
+/* Bouton menu */
+.bouton-menu:hover span,
+.bouton-menu.actif span{
+  background: var(--aeej-green) !important;
+}
+
+.bouton-menu:hover p{
+  color: var(--aeej-green) !important;
+}
+
+/* Liens menu */
+#menu-navigation ul li a::before{
+  background: linear-gradient(
+    90deg,
+    var(--aeej-green),
+    var(--aeej-green-dark)
+  );
+}
+
+/* Footer accent vert */
+footer{
+  background: linear-gradient(135deg, #083503, #057136);
+}

@@ -1,0 +1,418 @@
+html, body{
+    overflow-x:hidden;
+}
+
+.section1 {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+}
+
+.slider img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+#texte-sur-image {
+  position: absolute;
+  bottom: 50px;
+  left: 50px;
+  width: 90%;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+
+  /* effet néon léger */
+  text-shadow:
+    0 0 5px #00eaff,
+    0 0 10px #00eaff,
+    0 0 20px rgba(0,234,255,0.6);
+}
+
+/* animation d’apparition de droite vers gauche */
+.slide-in {
+  animation: slideIn 1s ease forwards;
+}
+
+/* définition de l’animation */
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(-10%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+
+#texte-sur-image{
+    position: absolute;
+    color: #fff;
+    
+}
+.texte-sur-image h1{
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+.texte-sur-image p{
+    font-size: 1.2em;
+   margin-bottom: 25px;
+   text-align: center;
+}
+
+.image-acceuil{
+    width: 100%;
+    height: auto;
+    object-fit:cover;
+    filter:brightness(50%);
+}
+
+.Apropos{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 100px;
+    margin: 30px;
+    text-align: center;
+    box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.25);
+    border-radius: 10px ;
+
+}
+.Apropos h2{
+    font-size: 2em;
+}
+.Apropos p{
+    font-size: 1.em;
+    line-height: 1.6;
+}
+
+/*Les cartes*/
+h2{
+    text-align: center;
+    margin:2.5rem 0 1rem;
+    color:#0055cc;
+    position:relative;
+    animation: slideDown 1s ease;
+}
+
+.contenu-carte{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(260px,1fr)) ;
+    gap:1.8rem;
+    padding-bottom:2rem;
+
+}
+
+.carte{
+    background-color: rgb(249, 249, 249);
+    padding:1.5rem;
+    border-radius:18px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.08);
+    text-align:center;
+    transition:transform 0.4s ease, box-shadow 0.4s ease;
+    opacity: 0;
+    animation:fadeUp 0.8s ease forwards;
+}
+
+.carte:nth-child(1) { animation-delay: 0.2s; }
+    .carte:nth-child(2) { animation-delay: 0.4s; }
+    .carte:nth-child(3) { animation-delay: 0.6s; }
+    .carte:nth-child(4) { animation-delay: 0.8s; }
+
+    .carte:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .icon {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      color: #00bfa5;
+      transition: transform 0.4s ease, color 0.4s ease;
+    }
+
+.carte:hover .icon {
+      transform: rotate(10deg) scale(1.1);
+      color: #0055cc;
+    }
+
+    .card h3 {
+      margin-bottom: 0.6rem;
+      color: #0055cc;
+    }
+
+    .carte p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .liste-valeur {
+      list-style: none;
+      margin-top: 1rem;
+    }
+
+    .values-list li {
+      background: #e6f7f5;
+      padding: 0.6rem;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+      transition: background 0.3s, transform 0.3s;
+      font-weight: 500;
+    }
+
+    .values-list li:hover {
+      background: #bdf0e7;
+      transform: scale(1.05);
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+/* ============================================
+   SECTION DASHBOARD STATISTIQUES
+   ============================================ */
+
+.dashboard-section {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    margin: 3rem 0;
+}
+
+.dashboard-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #0055cc;
+    margin-bottom: 3rem;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.dashboard-title i {
+    margin-right: 1rem;
+    color: #00bfa5;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Carte statistique */
+.stat-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #0055cc, #00bfa5);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.stat-card:hover::before {
+    transform: scaleX(1);
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+.stat-card:nth-child(5) { animation-delay: 0.5s; }
+.stat-card:nth-child(6) { animation-delay: 0.6s; }
+
+.stat-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 85, 204, 0.2);
+}
+
+/* Icône de la carte */
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.stat-card:hover .stat-icon::after {
+    width: 200px;
+    height: 200px;
+}
+
+.stat-card:hover .stat-icon {
+    transform: rotate(10deg) scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Contenu de la carte */
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0055cc;
+    margin: 0;
+    line-height: 1.2;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: #666;
+    margin: 0.5rem 0;
+    font-weight: 500;
+}
+
+.stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #00bfa5;
+    margin-top: 0.5rem;
+    font-weight: 600;
+}
+
+.stat-trend i {
+    font-size: 0.75rem;
+}
+
+/* Responsive pour les cartes statistiques */
+@media (max-width: 768px) {
+    .dashboard-section {
+        padding: 2rem 1rem;
+        margin: 2rem 0;
+    }
+
+    .dashboard-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 1.2rem;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+    }
+}

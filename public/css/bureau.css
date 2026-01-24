@@ -1,0 +1,447 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #1f2937 0, #020617 45%, #000 100%);
+  color: #f9fafb;
+  font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+
+.contenu-principal {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px 32px;
+  gap: 32px;
+}
+
+/* ---- Hero (entête avant les cartes) ---- */
+.hero-bureau {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 32px 24px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(236,72,153,0.12));
+  border: 1px solid rgba(148,163,184,0.4);
+  box-shadow: 0 20px 60px rgba(15,23,42,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bureau::before,
+.hero-bureau::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(59,130,246,0.45), transparent 60%);
+  opacity: 0.4;
+  filter: blur(6px);
+}
+
+.hero-bureau::before {
+  top: -80px;
+  left: -80px;
+}
+
+.hero-bureau::after {
+  bottom: -80px;
+  right: -40px;
+  background: radial-gradient(circle, rgba(236,72,153,0.5), transparent 60%);
+}
+
+.hero-texte {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+}
+
+.hero-bureau h1 {
+  font-size: clamp(2.2rem, 3vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  margin-bottom: 12px;
+}
+
+.hero-bureau p {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: #cbd5f5;
+}
+
+/* ---- Galerie ---- */
+.galerie {
+  position: relative;
+  width: min(1000px, 95%);
+  height: 420px;
+  overflow: visible;
+  perspective: 1200px;
+  cursor: grab;
+}
+
+.galerie:active {
+  cursor: grabbing;
+}
+
+.cartes {
+  list-style: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+/* ---- Carte ---- */
+.cartes li {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  width: 200px;
+  height: 280px;
+  border-radius: 16px;
+  background-color: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.95);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.45s ease,
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  backface-visibility: hidden;
+  will-change: transform;
+  border: 1px solid rgba(148,163,184,0.4);
+}
+
+/* ---- Effet hover sur les cartes ---- */
+.cartes li:hover {
+  box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2);
+  z-index: 200 !important;
+}
+
+/* ---- Carte centrale (active) ---- */
+.cartes li.active {
+  box-shadow: 0 26px 70px rgba(15, 23, 42, 1);
+  z-index: 150 !important;
+  border-color: rgba(59,130,246,0.9);
+}
+
+.cartes li.active:hover {
+  box-shadow: 0 30px 85px rgba(15, 23, 42, 1);
+}
+
+/* ---- Image ---- */
+ .cartes li img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.cartes li:hover img {
+  transform: scale(1.05);
+  filter: saturate(1.08);
+}
+
+/* ---- Texte ---- */
+.cartes li h3 {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.9));
+  text-align: center;
+  padding: 10px 0;
+  font-size: 1.1em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  transition: background 0.3s ease, padding 0.3s ease;
+}
+
+.cartes li.active h3 {
+  background: linear-gradient(to right, rgba(37,99,235,0.95), rgba(59,130,246,0.9));
+  padding: 12px 0;
+}
+
+/* ---- Informations supplémentaires (carte centrale) ---- */
+.carte-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(15,23,42,0.98), rgba(15,23,42,0.9));
+  padding: 15px;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+  text-align: center;
+  font-size: 0.9em;
+  line-height: 1.4;
+  border-radius: 0 0 16px 16px;
+}
+
+/* ---- Informations supplémentaires (carte centrale) ---- */
+.carte-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 15px;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+  text-align: center;
+  font-size: 0.9em;
+  line-height: 1.4;
+  border-radius: 0 0 12px 12px;
+}
+
+.cartes li.active .carte-info {
+  transform: translateY(0);
+}
+
+.carte-info p {
+  margin: 0;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+/* ---- Boutons de navigation ---- */
+.boutons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  pointer-events: none;
+  z-index: 300;
+}
+
+.bouton-nav {
+  width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148,163,184,0.6);
+  color: #e5e7eb;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  pointer-events: all;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.bouton-nav:hover {
+  background: rgba(37,99,235,0.9);
+  border-color: rgba(191,219,254,0.9);
+  transform: scale(1.08);
+  box-shadow: 0 12px 30px rgba(37,99,235,0.6);
+}
+
+.bouton-nav:active {
+  transform: scale(0.95);
+}
+
+.bouton-nav svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 3;
+}
+
+/* ---- Pied de page ---- */
+.pied-de-page {
+  border-top: 1px solid rgba(31,41,55,0.9);
+  background: linear-gradient(to right, #020617, #020617, #020617);
+  padding: 24px 16px 18px;
+  color: #9ca3af;
+}
+
+.pied-de-page-contenu {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.pied-gauche h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #e5e7eb;
+  margin-bottom: 6px;
+}
+
+.pied-gauche p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.pied-centre h3,
+.pied-droit h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pied-centre ul {
+  list-style: none;
+}
+
+.pied-centre li + li {
+  margin-top: 4px;
+}
+
+.pied-centre a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.pied-centre a:hover {
+  color: #e5e7eb;
+}
+
+.pied-droit p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.pied-copy {
+  max-width: 1100px;
+  margin: 14px auto 0;
+  border-top: 1px solid rgba(31,41,55,0.9);
+  padding-top: 10px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .pied-de-page-contenu {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .contenu-principal {
+    padding: 28px 14px 24px;
+    gap: 24px;
+  }
+
+  .hero-bureau {
+    padding: 24px 18px;
+  }
+
+  .hero-bureau h1 {
+    font-size: 1.8rem;
+  }
+
+  .galerie {
+    height: 380px;
+  }
+
+  .cartes li {
+    width: 160px;
+    height: 240px;
+  }
+  
+  .bouton-nav {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .bouton-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .carte-info {
+    padding: 12px;
+    font-size: 0.85em;
+  }
+
+  .pied-de-page-contenu {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-bureau {
+    padding: 20px 16px;
+  }
+
+  .hero-bureau h1 {
+    font-size: 1.6rem;
+  }
+
+  .galerie {
+    height: 360px;
+  }
+
+  .cartes li {
+    width: 130px;
+    height: 200px;
+  }
+  
+  .cartes li h3 {
+    font-size: 0.9em;
+    padding: 8px 0;
+  }
+  
+  .bouton-nav {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .bouton-nav svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .boutons {
+    padding: 0 10px;
+  }
+  
+  .carte-info {
+    padding: 10px;
+    font-size: 0.8em;
+  }
+}
