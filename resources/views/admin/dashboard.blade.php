@@ -1,3 +1,4 @@
+{{-- resources/views/admin/dashboard.blade.php --}}
 @extends('layouts.admin')
 
 @section('title', 'Admin • Dashboard')
@@ -129,11 +130,64 @@
   font-weight:950;
 }
 
+/* ===== Accès rapides (Galerie + Admins) ===== */
+.admQuick{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0,1fr));
+  gap:12px;
+}
+.admQuick__card{
+  grid-column: span 6;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;
+  background: rgba(255,255,255,.04);
+  box-shadow: 0 18px 40px rgba(0,0,0,.33);
+  overflow:hidden;
+}
+.admQuick__head{
+  padding:14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.02);
+}
+.admQuick__body{
+  padding:14px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.admQuick__btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:10px 12px;
+  border-radius:16px;
+  text-decoration:none;
+  color: rgba(229,231,235,.95);
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.10);
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+.admQuick__btn:hover{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.18);
+  transform: translateY(-1px);
+}
+.admQuick__btn--green{
+  border-color: rgba(34,197,94,.35);
+  background: rgba(34,197,94,.10);
+}
+.admQuick__btn--green:hover{
+  background: rgba(34,197,94,.14);
+}
+
 /* Responsive */
 @media (max-width: 1200px){
   .admKpi{grid-column: span 6;}
   .admPanel{grid-column: span 12;}
   .admChip{grid-column: span 6;}
+  .admQuick__card{grid-column: span 12;}
 }
 @media (max-width: 760px){
   .admKpi{grid-column: span 12;}
@@ -145,13 +199,17 @@
 
 @section('content')
 
+@php
+  $u = auth()->user();
+@endphp
+
 <div class="admDash">
 
   <div class="admDash__head">
       <div>
           <h1 class="admDash__title">Tableau de bord</h1>
           <p class="admDash__sub">
-              Statistiques globales et répartitions (pays, départements, années, sexe).
+              Statistiques globales et répartitions (pays, départements, années, sexe, communautés).
           </p>
       </div>
   </div>
@@ -195,6 +253,7 @@
       </div>
   </div>
 
+  
   {{-- Répartitions --}}
   <div class="admGrid">
 

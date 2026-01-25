@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+
+
+
+
 @section('title', 'Admin • Modifier pays')
 @section('header', 'Modifier un pays')
 
@@ -13,13 +17,13 @@
         <a class="btn btn--ghost" href="{{ route('admin.pays.index') }}">← Retour</a>
     </div>
 
-    <form class="form" method="POST" action="{{ route('admin.pays.update', $pay) }}">
+    <form class="form" method="POST" action="{{ route('admin.pays.update', $pays) }}">
         @csrf
         @method('PUT')
 
         <div class="field">
             <label>Nom</label>
-            <input class="input" name="nom" value="{{ old('nom', $pay->nom) }}" required>
+            <input class="input" name="nom" value="{{ old('nom', $pays->nom) }}" required>
             @error('nom') <div class="help" style="color:#fb7185;">{{ $message }}</div> @enderror
         </div>
 

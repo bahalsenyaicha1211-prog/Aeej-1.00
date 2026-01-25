@@ -6,12 +6,15 @@ use App\Models\Activite;
 use App\Models\Departement;
 use App\Models\Membre;
 use App\Models\Pays;
+use App\Models\BureauMembre;
 use App\Models\GaleriePhoto;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+
+
 use Illuminate\Support\Str;
 
 class FrontendController extends Controller
@@ -22,15 +25,22 @@ class FrontendController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function accueil()
-    {
-        return view('accueil', [
-            'membresCount'      => Membre::count(),
-            'departementsCount' => Departement::count(),
-            'activitesCount'    => Activite::count(),
-            'paysCount'         => Pays::count(),
-        ]);
-    }
+ public function accueil()
+{
+    $startMonth = now()->startOfMonth();
+    $endMonth   = now()->endOfMonth();
+
+    return view('accueil', [
+        'membresCount'      => Membre::count(),
+        'departementsCount' => Departement::count(),
+        'activitesCount'    => Activite::count(),
+        'paysCount'         => Pays::count(),
+        'bureauCount'       => BureauMembre::count(),
+
+        // ✅ inscriptions du mois (suppose que "created_at" existe sur membres)
+        'inscriptionsRecent' => Membre::whereBetween('created_at', [$startMonth, $endMonth])->count(),
+    ]);
+}
 
     public function apropos()
     {

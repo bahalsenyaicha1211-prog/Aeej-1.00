@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Annonce;
 use App\Models\User;
 use App\Notifications\NewAnnoncePublished;
+use App\Models\BureauMembre;
 use App\Models\GaleriePhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -20,9 +21,12 @@ class AnnonceController extends Controller
     }
 
     public function create()
-    {
-        return view('admin.annonces.create');
-    }
+{
+    $bureau = BureauMembre::orderBy('ordre')->get();
+
+    return view('admin.annonces.create', compact('bureau'));
+}
+
 
     public function store(Request $request)
     {
@@ -57,10 +61,14 @@ class AnnonceController extends Controller
         return redirect()->route('admin.annonces.index')->with('success', 'Annonce créée.');
     }
 
-    public function edit(Annonce $annonce)
-    {
-        return view('admin.annonces.edit', compact('annonce'));
-    }
+
+public function edit(Annonce $annonce)
+{
+    $bureau = BureauMembre::orderBy('ordre')->get();
+
+    return view('admin.annonces.edit', compact('annonce', 'bureau'));
+}
+
 
     public function update(Request $request, Annonce $annonce)
     {

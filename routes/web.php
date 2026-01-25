@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\ActiviteController;
 use App\Http\Controllers\Membre\AnnonceMembreController;
 use App\Http\Controllers\Membre\NotificationController;
 use App\Http\Controllers\Admin\GalerieController;
+use App\Http\Controllers\Admin\AdminUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,8 @@ Route::get('/galerie', [FrontendController::class, 'galerie'])->name('galerie');
 Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 Route::post('/contact', [FrontendController::class, 'contactStore'])->name('contact.store');
 
+Route::get('/jendouba', fn() => view('jendouba'))->name('jendouba');
+Route::get('/faculte', fn() => view('faculte'))->name('faculte');
 
 /*
 |--------------------------------------------------------------------------
@@ -102,11 +105,21 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(function () {
 
+    Route::resource('admins', AdminUserController::class)->except(['show']);
+    Route::patch('admins/{admin}/toggle-super', [AdminUserController::class, 'toggleSuper'])
+    ->middleware('super_admin')
+    ->name('admins.toggleSuper');
+
+
+
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::resource('departements', DepartementController::class)->except(['show']);
-        Route::resource('pays', PaysController::class)->except(['show']);
+        Route::resource('pays', PaysController::class)
+    ->parameters(['pays' => 'pays'])
+    ->except(['show']);
+
 
         // Membres : inscription publique => pas de create/store ici
         Route::resource('membres', MembreController::class)->only(['index','show','edit','update','destroy']);
@@ -116,6 +129,11 @@ Route::prefix('admin')
         Route::resource('bureau', BureauMembreController::class)->except(['show']);
         Route::resource('annonces', AnnonceController::class)->except(['show']);
 
-        Route::resource('galerie', GalerieController::class)->except(['show']);
-        Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])->name('galerie.toggle');
+        Route::resource('galerie', GalerieController::class)
+    ->parameters(['galerie' => 'photo'])
+    ->except(['show']);
+
+Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
+    ->name('galerie.toggle');
+
     });

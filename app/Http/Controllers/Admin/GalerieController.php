@@ -14,7 +14,8 @@ class GalerieController extends Controller
         $q = GaleriePhoto::query()->orderByDesc('event_date')->orderByDesc('id');
 
         if ($request->filled('category')) {
-            $q->where('category', $request->string('category'));
+            $q->where('category', (string) $request->input('category'));
+
         }
 
         if ($request->filled('status')) {

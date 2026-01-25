@@ -40,6 +40,8 @@
                 <li><a href="{{ route('guideEtudiant') }}">Guide étudiant</a></li>
                 <li><a href="{{ route('bureau') }}">Bureau</a></li>
                 <li><a href="{{ route('activites.public') }}">Activités</a></li>
+                <li><a href="{{ route('jendouba') }}">Jendouba</a></li>
+                <li><a href="{{ route('faculte') }}"> Notre Faculté</a></li>
                 <li><a href="{{ route('galerie') }}" title="voir des images">Galerie</a></li>
                 <li><a href="{{ route('contact') }}">Contact</a></li>
 
@@ -79,15 +81,8 @@
                 <li><img src="{{ asset('images/drapeau/Comores.png') }}" alt="Comores"> Comores</li>
                 <li><img src="{{ asset('images/drapeau/Tchad.png') }}" alt="Tchad"> Tchad</li>
                 <li><img src="{{ asset('images/drapeau/Congo.png') }}" alt="Congo"> Congo</li>
-
-             <li>
-                <img src="{{ asset('images/drapeaux/niger.png') }}" alt="Niger">
-                <span>Niger</span>
-                </li>
-
-                <li>
-                <img src="{{ asset('images/drapeaux/cote-ivoire.png') }}" alt="Côte d’Ivoire">
-                <span>Côte d’Ivoire</span>
+                <li><img src="{{ asset('images/drapeau/cote.png') }}" alt="Côte d’Ivoire"> Côte d’Ivoire</li>
+                <li><img src="{{ asset('images/drapeau/niger.png') }}" alt="Niger"> Niger</li>
 </li>
 
                 

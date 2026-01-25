@@ -67,10 +67,20 @@
             <a class="nav__item {{ $isMembres ? 'is-active' : '' }}" href="{{ route('admin.membres.index') }}">Membres</a>
             <a class="nav__item {{ $isDeps ? 'is-active' : '' }}" href="{{ route('admin.departements.index') }}">Départements</a>
             <a class="nav__item {{ $isPays ? 'is-active' : '' }}" href="{{ route('admin.pays.index') }}">Pays</a>
+              
+            @if($user->is_super_admin)
+            <a class="nav__item {{ request()->routeIs('admin.admins.*') ? 'is-active' : '' }}"
+             href="{{ route('admin.admins.index') }}">
+            Admins
+             </a>
+        @endif
 
             <div class="nav__sep"></div>
 
             <a class="nav__item" href="{{ route('dashboard') }}">← Espace membre</a>
+
+          
+
         </nav>
 
         <div class="sidebar__bottom">
@@ -130,21 +140,30 @@
         </div>
 
         <nav class="nav">
-            <a class="nav__item {{ $isDash ? 'is-active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
-            <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('admin.annonces.index') }}">Annonces</a>
-            <a class="nav__item {{ $isActivites ? 'is-active' : '' }}" href="{{ route('admin.activites.index') }}">Activités</a>
-            <a class="nav__item {{ $isBureau ? 'is-active' : '' }}" href="{{ route('admin.bureau.index') }}">Bureau</a>
+    <a class="nav__item {{ $isDash ? 'is-active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+    <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('admin.annonces.index') }}">Annonces</a>
+    <a class="nav__item {{ $isActivites ? 'is-active' : '' }}" href="{{ route('admin.activites.index') }}">Activités</a>
+    <a class="nav__item {{ $isBureau ? 'is-active' : '' }}" href="{{ route('admin.bureau.index') }}">Bureau</a>
 
-            <div class="nav__sep"></div>
+    <a class="nav__item {{ request()->routeIs('admin.galerie.*') ? 'is-active' : '' }}"
+       href="{{ route('admin.galerie.index') }}">Galerie</a>
 
-            <a class="nav__item {{ $isMembres ? 'is-active' : '' }}" href="{{ route('admin.membres.index') }}">Membres</a>
-            <a class="nav__item {{ $isDeps ? 'is-active' : '' }}" href="{{ route('admin.departements.index') }}">Départements</a>
-            <a class="nav__item {{ $isPays ? 'is-active' : '' }}" href="{{ route('admin.pays.index') }}">Pays</a>
+    <div class="nav__sep"></div>
 
-            <div class="nav__sep"></div>
+    <a class="nav__item {{ $isMembres ? 'is-active' : '' }}" href="{{ route('admin.membres.index') }}">Membres</a>
+    <a class="nav__item {{ $isDeps ? 'is-active' : '' }}" href="{{ route('admin.departements.index') }}">Départements</a>
+    <a class="nav__item {{ $isPays ? 'is-active' : '' }}" href="{{ route('admin.pays.index') }}">Pays</a>
 
-            <a class="nav__item" href="{{ route('dashboard') }}">← Espace membre</a>
-        </nav>
+    @if($user && $user->is_super_admin)
+        <a class="nav__item {{ request()->routeIs('admin.admins.*') ? 'is-active' : '' }}"
+           href="{{ route('admin.admins.index') }}">Admins</a>
+    @endif
+
+    <div class="nav__sep"></div>
+
+    <a class="nav__item" href="{{ route('dashboard') }}">← Espace membre</a>
+</nav>
+
 
         <div class="sidebar__bottom">
             <form method="POST" action="{{ route('logout') }}">

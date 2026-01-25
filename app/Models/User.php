@@ -48,6 +48,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return (bool) $this->is_admin;
     }
 
+    public function isSuperAdmin(): bool
+{
+    return (bool) ($this->is_super_admin ?? false);
+}
+
     /**
      * URL avatar prêt à l’emploi : auth()->user()->profile_photo_url
      */
