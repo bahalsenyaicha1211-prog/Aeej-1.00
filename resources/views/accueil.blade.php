@@ -16,10 +16,22 @@
   {{-- HERO --}}
   <section class="home__hero">
     <div class="slider" aria-label="Slider AEEJ">
-      <img src="{{ asset('images/image3.JPG') }}" alt="AEEJ 1" class="slide active">
-      <img src="{{ asset('images/imag2.JPG') }}" alt="AEEJ 2" class="slide">
-      <img src="{{ asset('images/image1.JPG') }}" alt="AEEJ 3" class="slide">
-      <img src="{{ asset('images/image4.JPG') }}" alt="AEEJ 4" class="slide">
+      <img src="{{ asset('images/img1.jpg') }}" alt="AEEJ 1" class="slide active">
+      <img src="{{ asset('images/img2.JPG') }}" alt="AEEJ 2" class="slide">
+      <img src="{{ asset('images/img3.JPG') }}" alt="AEEJ 3" class="slide">
+      <img src="{{ asset('images/img4.JPG') }}" alt="AEEJ 4" class="slide">
+      <img src="{{ asset('images/img5.JPG') }}" alt="AEEJ 5" class="slide">
+      <img src="{{ asset('images/img6.JPG') }}" alt="AEEJ 6" class="slide">
+      <img src="{{ asset('images/img7.JPG') }}" alt="AEEJ 7" class="slide">
+      <img src="{{ asset('images/img8.JPG') }}" alt="AEEJ 8" class="slide">
+      <img src="{{ asset('images/img9.JPG') }}" alt="AEEJ 9" class="slide">
+      <img src="{{ asset('images/img10.jpg') }}" alt="AEEJ 10" class="slide">
+      <img src="{{ asset('images/img11.JPG') }}" alt="AEEJ 11" class="slide">
+      <img src="{{ asset('images/img12.jpeg') }}" alt="AEEJ 12" class="slide">
+      <img src="{{ asset('images/img13.JPG') }}" alt="AEEJ 13" class="slide">
+      <img src="{{ asset('images/img14.JPG') }}" alt="AEEJ 14" class="slide">
+      
+    
     </div>
 
     {{-- Overlay + texte dynamique --}}
