@@ -1,6 +1,5 @@
 @extends('layouts.public')
 
-
 @section('title', 'Guide Étudiant - AEEJ')
 
 @section('styles')
@@ -12,88 +11,178 @@
 @endsection
 
 @section('content')
-    <!-- Section Accès rapide -->
-    <section class="section" id="services">
+<main class="guide-page">
+
+    {{-- HERO --}}
+    <section class="guide-hero">
         <div class="container">
-            <h2>Accès rapide</h2>
-            <p class="lead">Les sujets les plus demandés par les étudiants. Cliquez pour voir les guides détaillés.</p>
-            <div class="cards">
-                <div class="card">
-                    <div class="icon"><i class="fa-solid fa-seedling"></i></div>
-                    <h3>Intégration</h3>
-                    <p>Premiers pas à Tunis: carte SIM, transport, santé, repères utiles.</p>
-                    <a href="#guide-sejour" onclick="showContent('integration')">Ouvrir le guide →</a>
-                </div>
-                <div class="card">
-                    <div class="icon"><i class="fa-solid fa-passport"></i></div>
-                    <h3>Séjour</h3>
-                    <p>Renouvellement, première demande, documents nécessaires.</p>
-                    <a href="#guide-sejour" onclick="showContent('sejour')">Démarches de séjour →</a>
-                </div>
-                <div class="card">
-                    <div class="icon"><i class="fa-solid fa-house"></i></div>
-                    <h3>Logement</h3>
-                    <p>Quartiers, loyers moyens, contrat, colocation, astuces.</p>
-                    <a href="#guide-sejour" onclick="showContent('logement')">Trouver un logement →</a>
-                </div>
-                <div class="card">
-                    <div class="icon"><i class="fa-solid fa-coins"></i></div>
-                    <h3>Finances</h3>
-                    <p>Banques, transferts, bourses, dépenses à prévoir.</p>
-                    <a href="#guide-sejour" onclick="showContent('finance')">Gérer son budget →</a>
+            <div class="hero-box">
+                <span class="badge">Guide Étudiant AEEJ</span>
+                <h1>Tout pour réussir votre arrivée et votre installation en Tunisie</h1>
+                <p>
+                    L’AEEJ vous accompagne étape par étape : intégration, séjour, logement et gestion du budget.
+                    Choisissez un thème et accédez directement aux informations essentielles.
+                </p>
+
+                <div class="hero-actions">
+                    <button class="chip is-active" type="button" data-target="integration">
+                        <i class="fa-solid fa-seedling"></i> Intégration
+                    </button>
+                    <button class="chip" type="button" data-target="sejour">
+                        <i class="fa-solid fa-passport"></i> Séjour
+                    </button>
+                    <button class="chip" type="button" data-target="logement">
+                        <i class="fa-solid fa-house"></i> Logement
+                    </button>
+                    <button class="chip" type="button" data-target="finance">
+                        <i class="fa-solid fa-coins"></i> Finances
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="guide-sejour">
-        <h1>Guide Étudiant</h1>
-        <p>« Les démarches ne sont pas compliquées du tout : l'association vous accompagnera à chaque étape — de l'arrivée en Tunisie à l'installation complète — en vous guidant dans toutes les formalités administratives, la recherche de logement, et en vous apportant un soutien personnalisé pour que vous puissiez vous concentrer sereinement sur vos études. »</p>
-        <p>« Cliquez sur les boutons ci-dessous pour découvrir l'idée qui se cache derrière chaque section. »</p>
+    
 
-        <!-- BOUTONS -->
-        <div class="buttons">
-            <button onclick="showContent('integration')">Intégration</button>
-            <button onclick="showContent('sejour')">Séjour</button>
-            <button onclick="showContent('logement')">Logement</button>
-            <button onclick="showContent('finance')">Finance</button>
+    {{-- CONTENU --}}
+    <section id="guide-content" class="guide-content">
+        <div class="container">
+            <div class="content-layout">
+                {{-- MENU --}}
+                <aside class="side">
+                    <div class="side-title">Sections</div>
+
+                    <nav class="side-nav">
+                        <button class="side-link is-active" type="button" data-target="integration">
+                            <i class="fa-solid fa-seedling"></i> Intégration
+                        </button>
+                        <button class="side-link" type="button" data-target="sejour">
+                            <i class="fa-solid fa-passport"></i> Séjour
+                        </button>
+                        <button class="side-link" type="button" data-target="logement">
+                            <i class="fa-solid fa-house"></i> Logement
+                        </button>
+                        <button class="side-link" type="button" data-target="finance">
+                            <i class="fa-solid fa-coins"></i> Finances
+                        </button>
+                    </nav>
+
+                    <div class="side-note">
+                        Cliquez sur une section pour afficher le contenu.
+                    </div>
+                </aside>
+
+                {{-- PANELS --}}
+                <div class="panels">
+                    <article id="integration" class="panel is-active" data-panel>
+                        <h2>Intégration</h2>
+                        <p>Premiers repères et bons réflexes dès l’arrivée.</p>
+
+                        <div class="panel-grid">
+                            <div class="box">
+                                <h3><i class="fa-solid fa-sim-card"></i> Dès l’arrivée</h3>
+                                <ul>
+                                    <li>Prendre une <strong>carte SIM</strong> locale (TT, Ooredoo, Orange).</li>
+                                    <li>Rejoindre les <strong>groupes WhatsApp/Facebook</strong> utiles.</li>
+                                    <li>Identifier <strong>services proches</strong> (hôpital, police, transport).</li>
+                                </ul>
+                            </div>
+
+                            <div class="box">
+                                <h3><i class="fa-solid fa-people-group"></i> Réseau & entraide</h3>
+                                <ul>
+                                    <li>Participer aux activités AEEJ.</li>
+                                    <li>Demander un “ancien” pour orientation rapide.</li>
+                                    <li>Noter les contacts importants.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article id="sejour" class="panel" data-panel>
+                        <h2>Carte de séjour</h2>
+                        <p>Documents, étapes et erreurs à éviter.</p>
+
+                        <div class="panel-grid">
+                            <div class="box">
+                                <h3><i class="fa-solid fa-circle-check"></i> Pourquoi c’est important</h3>
+                                <p>
+                                    Elle facilite la régularisation et plusieurs démarches administratives.
+                                </p>
+                            </div>
+
+                            <div class="box">
+                                <h3><i class="fa-solid fa-folder-open"></i> Dossier type</h3>
+                                <ul>
+                                    <li>Pièce d’identité + copies</li>
+                                    <li>Attestation d’inscription</li>
+                                    <li>Photos d’identité</li>
+                                    <li>Justificatif de logement (selon cas)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article id="logement" class="panel" data-panel>
+                        <h2>Logement</h2>
+                        <p>Où chercher et quoi vérifier avant de payer.</p>
+
+                        <div class="panel-grid">
+                            <div class="box">
+                                <h3><i class="fa-solid fa-magnifying-glass"></i> Où chercher</h3>
+                                <ul>
+                                    <li>Groupes Facebook / WhatsApp</li>
+                                    <li>Bouche-à-oreille</li>
+                                    <li>Agences (si nécessaire)</li>
+                                </ul>
+                            </div>
+
+                            <div class="box">
+                                <h3><i class="fa-solid fa-key"></i> Avant de signer</h3>
+                                <ul>
+                                    <li>Visiter et vérifier eau/électricité</li>
+                                    <li>Clarifier charges incluses</li>
+                                    <li>Garder preuve de paiement</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article id="finance" class="panel" data-panel>
+                        <h2>Gestion financière</h2>
+                        <p>Budget mensuel et habitudes simples pour économiser.</p>
+
+                        <div class="panel-grid">
+                            <div class="box">
+                                <h3><i class="fa-solid fa-wallet"></i> Budget</h3>
+                                <ul>
+                                    <li>Loyer + charges</li>
+                                    <li>Transport</li>
+                                    <li>Alimentation</li>
+                                    <li>Internet/téléphone</li>
+                                    <li>Imprévus</li>
+                                </ul>
+                            </div>
+
+                            <div class="box">
+                                <h3><i class="fa-solid fa-piggy-bank"></i> Astuces</h3>
+                                <ul>
+                                    <li>Noter ses dépenses</li>
+                                    <li>Faire les courses par semaine</li>
+                                    <li>Limiter les achats impulsifs</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <div class="footer-note">
+                        Ne vous inquiétez pas : l’AEEJ vous accompagne à chaque étape.
+                        L’objectif est simple : vous permettre d’étudier dans de bonnes conditions.
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- CONTENUS (copiés du HTML original) -->
-        <div id="integration" class="content">
-            <h2>Intégration</h2>
-            <p>Participez aux événements associatifs, découvrez la culture tunisienne, et nouez des liens avec d'autres étudiants étrangers et locaux.</p>
-            <article class="card">
-                <h3><i class="fa-solid fa-sim-card"></i> Dès l'arrivée</h3>
-                <ul>
-                    <li>Prendre une <strong>carte SIM</strong> locale (TT, Ooredoo, Orange) et activer Internet.</li>
-                    <li>Rejoindre les <strong>groupes WhatsApp/Facebook</strong> d'étudiants guinéens.</li>
-                    <li>Localiser les <strong>services proches</strong> (hôpital, police, transports, ambassade/consulat).</li>
-                </ul>
-            </article>
-            <!-- Autres articles... -->
-        </div>
-
-        <div id="sejour" class="content">
-            <h2>Carte Séjour</h2>
-            <h3>1. Pourquoi la carte de séjour est indispensable</h3>
-            <p>Obligatoire pour tout étudiant étranger séjournant plus de 3 mois en Tunisie. Permet de rester en toute légalité.</p>
-            <!-- Contenu complet... -->
-        </div>
-
-        <div id="logement" class="content">
-            <h2>Logement</h2>
-            <p>Vous pouvez trouver un logement via les groupes Facebook, les agences ou par bouche-à-oreille. Pensez à visiter avant de signer.</p>
-            <!-- Contenu complet... -->
-        </div>
-
-        <div id="finance" class="content">
-            <h2>Gestion financière</h2>
-            <p>Ouvrir un compte bancaire local peut vous faciliter la vie. Prévoyez un budget mensuel pour loyer, transport, repas, et extras.</p>
-            <!-- Contenu complet... -->
-        </div>
-
-        <p>Ne vous inquiétez pas : vous serez accompagné(e) à chaque étape de votre arrivée et de votre installation en Tunisie. Dès l'aéroport, l'association vous guidera dans les démarches (visa, logement, carte de séjour…), pour que vous puissiez vous concentrer sur ce qui compte vraiment : vos études.</p>
     </section>
-@endsection
 
+</main>
+@endsection

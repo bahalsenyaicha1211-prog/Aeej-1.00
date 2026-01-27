@@ -1,197 +1,280 @@
-.container {
-  width: 90%;
-  max-width: 1100px;
-  margin: auto;
-  text-align: center;
-  padding: 40px 0;
+:root{
+  --green: #16a34a;
+  --green-soft: rgba(22,163,74,.12);
+  --text: #0f172a;
+  --muted: #475569;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --stroke: #e2e8f0;
+  --shadow: 0 10px 30px rgba(2,6,23,.08);
+  --radius: 16px;
 }
 
-/* ====== TITRES ====== */
-h1, h2, h3 {
-  color: #004b8d;
-  font-weight: 600;
+.guide-page{
+  background: var(--bg);
+  padding: 24px 0 60px;
 }
 
-h2 {
-  margin-bottom: 15px;
-  font-size: 2em;
+/* container */
+.container{
+  width: min(1120px, 92%);
+  margin: 0 auto;
 }
 
-p.lead {
-  font-size: 1.1em;
-  color: #555;
-  margin-bottom: 40px;
+/* HERO */
+.guide-hero{
+  padding: 18px 0 8px;
 }
-
-/* ====== SECTION "ACCÈS RAPIDE" ====== */
-.section {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 40px 20px;
-  margin-bottom: 60px;
+.hero-box{
+  background: linear-gradient(135deg, var(--green-soft), rgba(255,255,255,.9));
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
 }
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
+.badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(22,163,74,.12);
+  border: 1px solid rgba(22,163,74,.25);
+  color: var(--green);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: .9rem;
 }
-
-.card {
-  background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-  padding: 25px;
-  transition: all 0.3s ease;
+.hero-box h1{
+  margin: 12px 0 8px;
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+  color: var(--text);
 }
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-}
-
-.card h3 {
-  margin: 15px 0;
-  font-size: 1.3em;
-}
-
-.card p {
-  color: #555;
-  font-size: 0.95em;
-}
-
-.card a {
-  display: inline-block;
-  margin-top: 10px;
-  text-decoration: none;
-  color: #0077b6;
-  font-weight: 600;
-  transition: 0.3s;
-}
-
-.card a:hover {
-  color: #004b8d;
-}
-
-.icon {
-  font-size: 2em;
-  color: #0077b6;
-}
-
-/* ====== SECTION "GUIDE ÉTUDIANT" ====== */
-#guide-sejour {
-  padding: 50px 20px;
-  background-color: #f0f4f8;
-  border-radius: 20px;
-}
-
-#guide-sejour h1 {
-  margin-bottom: 20px;
-  font-size: 2.3em;
-}
-
-#guide-sejour p {
+.hero-box p{
+  margin: 0 0 14px;
+  color: var(--muted);
+  line-height: 1.6;
   max-width: 900px;
-  margin: 10px auto 30px;
-  color: #444;
 }
 
-/* ====== BOUTONS DE NAVIGATION ====== */
-.buttons {
-  margin-bottom: 40px;
+.hero-actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
-
-.buttons button {
-  background-color: #e5efff;
-  border: none;
-  color: #004b8d;
-  padding: 12px 18px;
-  margin: 5px;
-  font-size: 1em;
-  border-radius: 10px;
+.chip{
+  border: 1px solid var(--stroke);
+  background: #fff;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-weight: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: .2s;
+}
+.chip i{ color: var(--green); }
+.chip:hover{
+  transform: translateY(-1px);
+  border-color: rgba(22,163,74,.35);
+}
+.chip.is-active{
+  background: rgba(22,163,74,.10);
+  border-color: rgba(22,163,74,.45);
+  color: var(--green);
 }
 
-.buttons button:hover {
-  background-color: #0077b6;
-  color: white;
+/* HEAD */
+.section-head{
+  margin: 18px 0 12px;
+}
+.section-head h2{
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 1.5rem;
+}
+.section-head p{
+  margin: 0;
+  color: var(--muted);
 }
 
-/* ====== CONTENUS DES GUIDES ====== */
-.content {
-  display: none;
-  text-align: left;
-  background-color: white;
-  border-radius: 15px;
-  padding: 30px;
-  margin-bottom: 40px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+/* QUICK CARDS */
+.guide-quick{ padding: 10px 0 14px; }
+.quick-grid{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 14px;
 }
-
-.content h2 {
-  margin-bottom: 15px;
-  color: #0077b6;
-}
-
-.content h3 {
-  margin-top: 25px;
-  color: #004b8d;
-}
-
-.content ul {
-  list-style-type: disc;
-  margin: 15px 0 15px 30px;
-}
-
-.content li {
-  margin-bottom: 8px;
-}
-
-/* ====== LIENS UTILES ====== */
-.links {
-  margin-top: 10px;
-}
-
-.links .link {
-  display: inline-block;
-  margin-right: 10px;
+.quick-card{
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--stroke);
+  background: var(--card);
+  box-shadow: 0 6px 18px rgba(2,6,23,.06);
   text-decoration: none;
-  color: #0077b6;
-  font-weight: 600;
+  color: inherit;
+  transition: .2s;
+}
+.quick-card:hover{
+  transform: translateY(-2px);
+  border-color: rgba(22,163,74,.35);
+}
+.qc-icon{
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  background: rgba(22,163,74,.10);
+  border: 1px solid rgba(22,163,74,.20);
+  display: grid;
+  place-items: center;
+  color: var(--green);
+  flex: 0 0 auto;
+}
+.qc-body h3{
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 1.05rem;
+}
+.qc-body p{
+  margin: 0 0 10px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.qc-cta{
+  color: var(--green);
+  font-weight: 800;
 }
 
-.links .link:hover {
-  color: #004b8d;
+/* CONTENT */
+.guide-content{ padding: 14px 0 0; }
+.content-layout{
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 16px;
+  align-items: start;
 }
 
-/* ====== RESPONSIVE ====== */
-@media (max-width: 768px) {
-  h2 {
-    font-size: 1.6em;
-  }
+/* SIDE */
+.side{
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(2,6,23,.06);
+  position: sticky;
+  top: 90px;
+}
+.side-title{
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.side-nav{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.side-link{
+  border: 1px solid var(--stroke);
+  background: #fff;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 650;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: .2s;
+}
+.side-link i{ color: var(--green); }
+.side-link:hover{
+  border-color: rgba(22,163,74,.35);
+}
+.side-link.is-active{
+  background: rgba(22,163,74,.10);
+  border-color: rgba(22,163,74,.45);
+  color: var(--green);
+}
+.side-note{
+  margin-top: 12px;
+  font-size: .95rem;
+  color: var(--muted);
+}
 
-  .cards {
-    grid-template-columns: 1fr;
-  }
+/* PANELS */
+.panels{
+  min-width: 0;
+}
+.panel{
+  display: none;
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(2,6,23,.06);
+}
+.panel.is-active{ display: block; }
+.panel h2{
+  margin: 0 0 6px;
+  color: var(--text);
+}
+.panel p{
+  margin: 0 0 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
 
-  .card {
-    padding: 20px;
-  }
+.panel-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 14px;
+}
+.box{
+  border: 1px solid var(--stroke);
+  border-radius: 14px;
+  padding: 14px;
+  background: #fff;
+}
+.box h3{
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.box h3 i{ color: var(--green); }
+.box ul{
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.box strong{ color: var(--text); }
 
-  #guide-sejour {
-    padding: 30px 15px;
-  }
+.footer-note{
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(22,163,74,.25);
+  background: rgba(22,163,74,.08);
+  color: var(--muted);
+  line-height: 1.6;
+}
 
-  .buttons button {
-    display: block;
-    width: 100%;
-    margin: 8px 0;
-  }
+/* RESPONSIVE */
+@media (max-width: 1024px){
+  .quick-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .content-layout{ grid-template-columns: 1fr; }
+  .side{ position: relative; top: auto; }
+}
 
-  .content {
-    padding: 20px;
-  }
+@media (max-width: 640px){
+  .quick-grid{ grid-template-columns: 1fr; }
+  .panel-grid{ grid-template-columns: 1fr; }
+  .hero-box{ padding: 16px; }
 }
