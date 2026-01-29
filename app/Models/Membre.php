@@ -30,6 +30,11 @@ class Membre extends Model
         return $this->belongsTo(Pays::class, 'idpays', 'idpays');
     }
 
+    public function bureauMembres()
+    {
+        return $this->hasOne(BureauMembre::class, 'matricule', 'matricule');
+    }
+    
     public function user()
     {
         return $this->hasOne(User::class, 'matricule', 'matricule');

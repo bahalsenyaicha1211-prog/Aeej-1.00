@@ -21,9 +21,13 @@
 <header>
     <div class="conteneur">
         <div class="logo">
+            <div class="logo-icon">
             <a href="{{ route('accueil') }}">
                 <img src="{{ asset('images/drapeau/AEEJ.png') }}" alt="Logo AEEJ">
             </a>
+        </div>
+            
+            <p>ASSOCIATION DES ETUDIANTS ETRANGERS A JENDOUBA</p>
         </div>
 
         <div class="bouton-menu" id="bouton-menu">

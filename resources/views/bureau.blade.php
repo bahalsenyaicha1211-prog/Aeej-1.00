@@ -41,7 +41,7 @@
                     @endif
 
                     <div class="carte-info">
-                        <p>Membre du bureau exécutif</p>
+                        <p>{{$item->membre->nom}} {{$item->membre->prenom}}</p>
                     </div>
                 </li>
             @empty
