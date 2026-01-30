@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# 1. Installation des dépendances système + Node.js 20 (Recommandé pour Vite)
+# 1. Installation des dépendances système + Node.js 20
 RUN apt-get update && apt-get install -y \
     git unzip zip libzip-dev libpng-dev libicu-dev curl \
     && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
@@ -28,10 +28,12 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 6. Nettoyage du cache, Migrations et Lancement d'Apache
+# 6. Nettoyage du cache, Migrations, Lancement du Worker (Emails) et Apache
+# La commande entre parenthèses avec le '&' permet d'envoyer les emails en tâche de fond
 CMD php artisan config:clear && \
     php artisan cache:clear && \
     php artisan view:clear && \
     php artisan route:clear && \
     php artisan migrate --force && \
+    (php artisan queue:work --tries=3 --timeout=90 &) && \
     apache2-foreground
