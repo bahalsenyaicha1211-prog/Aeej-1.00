@@ -5,10 +5,7 @@
 
 @section('styles')
 <style>
-/* ================================
-   Galerie Admin (UNIQUEMENT page)
-   Objectif: vignettes petites + responsive
-================================== */
+
 
 .gal-admin-grid{
   display:grid;

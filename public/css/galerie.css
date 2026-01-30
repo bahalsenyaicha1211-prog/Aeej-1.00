@@ -155,7 +155,11 @@ body{margin:0; font-family:var(--font)}
   margin-top: 8px;
   font-weight: 900;
   letter-spacing: 0.1px;
+  
 }
+
+
+
 
 .gal-empty{
   border: 1px dashed rgba(255,255,255,0.16);
