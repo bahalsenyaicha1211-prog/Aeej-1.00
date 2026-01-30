@@ -158,17 +158,14 @@ Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
     ->name('galerie.toggle');
 
 //test
- Route::get('/debug-mail', function () {
-    try {
-        \Illuminate\Support\Facades\Mail::raw('Test SMTP Brevo', function ($message) {
-            $message->to('bahalseny.aicha1211@gmail.com')->subject('Test direct');
-        });
-        return "Succès ! L'email a été envoyé.";
-    } catch (\Exception $e) {
-        return "Erreur : " . $e->getMessage();
-    }
+ Route::get('/check-config', function () {
+    return [
+        'mailer' => config('mail.default'),
+        'host' => config('mail.mailers.smtp.host'),
+        'from' => config('mail.from.address'),
+        'env_mailer' => env('MAIL_MAILER'),
+    ];
 });
-
 
 
     });
