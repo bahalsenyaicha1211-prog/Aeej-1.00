@@ -49,11 +49,10 @@ return [
             | SSL OBLIGATOIRE POUR TiDB CLOUD
             |--------------------------------------------------------------------------
             */
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                // Force SSL sans certificat local (TiDB Serverless)
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+           'options' => extension_loaded('pdo_mysql') ? array_filter([
+    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+]) : [],
+
         ],
 
         'mariadb' => [
