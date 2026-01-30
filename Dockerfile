@@ -11,18 +11,20 @@ RUN a2enmod rewrite
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Code
 WORKDIR /var/www/html
 COPY . .
 
-# Dépendances Laravel
+# Installer les dépendances Laravel
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Apache public/
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' \
-    /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# 🔥 PERMISSIONS CRITIQUES LARAVEL
+# Permissions
 RUN mkdir -p storage bootstrap/cache \
  && chown -R www-data:www-data storage bootstrap/cache \
  && chmod -R 775 storage bootstrap/cache
+
+# 🔥 Migration automatique
+# Force l’exécution des migrations à chaque déploiement
+RUN php artisan migrate --force
