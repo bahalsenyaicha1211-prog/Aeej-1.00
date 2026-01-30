@@ -1,19 +1,28 @@
 FROM php:8.2-apache
 
+# Dépendances système
 RUN apt-get update && apt-get install -y \
     git unzip zip libzip-dev \
     && docker-php-ext-install pdo pdo_mysql zip
 
+# Apache
 RUN a2enmod rewrite
 
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Code
 WORKDIR /var/www/html
 COPY . .
 
+# Dépendances Laravel
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+# Apache public/
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' \
     /etc/apache2/sites-available/000-default.conf
 
-RUN chown -R www-data:www-data /var/www/html
+# 🔥 PERMISSIONS CRITIQUES LARAVEL
+RUN mkdir -p storage bootstrap/cache \
+ && chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
