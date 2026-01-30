@@ -1,5 +1,7 @@
 <?php
 
+
+
 use Illuminate\Support\Facades\Route;
 
 // Controllers Public
@@ -22,6 +24,25 @@ use App\Http\Controllers\Membre\AnnonceMembreController;
 use App\Http\Controllers\Membre\NotificationController;
 use App\Http\Controllers\Admin\GalerieController;
 use App\Http\Controllers\Admin\AdminUserController;
+
+use Illuminate\Support\Facades\Mail;
+
+
+Route::get('/hello', function () {
+    return "Le routage fonctionne !";
+});
+
+Route::get('/debug-mail', function () {
+    try {
+        Mail::raw('Test SMTP Brevo', function ($message) {
+            $message->to('bahalseny.aicha1211@gmail.com')->subject('Test direct');
+        });
+        return "Succès ! L'email a été envoyé.";
+    } catch (\Exception $e) {
+        return "Erreur : " . $e->getMessage();
+    }
+});
+
 
 /*
 |--------------------------------------------------------------------------
