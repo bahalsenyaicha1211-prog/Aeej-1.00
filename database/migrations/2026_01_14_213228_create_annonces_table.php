@@ -17,8 +17,8 @@ return new class extends Migration {
 
             $table->index(['is_published', 'is_pinned', 'created_at']);
 
-            $table->string('image_path')->nullable()->after('contenu');
-        $table->timestamp('published_at')->nullable()->after('is_published');
+           $table->string('image_path')->nullable();
+$table->timestamp('published_at')->nullable();
         });
     }
 
