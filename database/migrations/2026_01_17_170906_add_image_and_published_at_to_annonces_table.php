@@ -12,8 +12,8 @@ return new class extends Migration
    public function up(): void
 {
     Schema::table('annonces', function ($table) {
-        $table->string('image_path')->nullable()->after('contenu');
-        $table->timestamp('published_at')->nullable()->after('is_published');
+        $table->string('image_path')->nullable();
+$table->timestamp('published_at')->nullable();
     });
 }
 
