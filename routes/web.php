@@ -136,4 +136,18 @@ Route::prefix('admin')
 Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
     ->name('galerie.toggle');
 
+//test
+ Route::get('/debug-mail', function () {
+    try {
+        \Illuminate\Support\Facades\Mail::raw('Test SMTP Brevo', function ($message) {
+            $message->to('bahalseny.aicha1211@gmail.com')->subject('Test direct');
+        });
+        return "Succès ! L'email a été envoyé.";
+    } catch (\Exception $e) {
+        return "Erreur : " . $e->getMessage();
+    }
+});
+
+
+
     });
