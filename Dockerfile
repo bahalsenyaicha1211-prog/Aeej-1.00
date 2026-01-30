@@ -27,4 +27,4 @@ RUN mkdir -p storage bootstrap/cache \
 
 # 🔥 Migration automatique
 # Force l’exécution des migrations à chaque déploiement
-php artisan migrate --forc
+RUN php artisan migrate --force
