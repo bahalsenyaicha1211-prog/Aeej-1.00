@@ -3,6 +3,11 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
+if ($_SERVER['REQUEST_URI'] === '/test-direct') {
+    die("Le fichier public/index.php est bien a jour !");
+}
+
+
 define('LARAVEL_START', microtime(true));
 
 // Determine if the application is in maintenance mode...
