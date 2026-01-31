@@ -28,6 +28,26 @@ use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Support\Facades\Mail;
 
 
+use Illuminate\Support\Facades\Artisan;
+
+
+// Cette route va forcer le nettoyage du cache de l'intérieur
+Route::get('/force-clear', function () {
+    Artisan::call('route:clear');
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    return "Le cache Laravel a été vidé de force ! Réessaye maintenant de t'inscrire ou de tester le mail.";
+});
+
+Route::get('/check-config', function () {
+    return [
+        'mailer' => config('mail.default'),
+        'host' => config('mail.mailers.smtp.host'),
+        'from' => config('mail.from.address'),
+    ];
+});
+
+
 Route::get('/hello', function () {
     return "Le routage fonctionne !";
 });
