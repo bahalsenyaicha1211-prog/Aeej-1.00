@@ -63,7 +63,7 @@ class GalerieController extends Controller
         $response = Http::post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
             'file'          => 'data:image/' . $img->getClientOriginalExtension() . ';base64,' . base64_encode(file_get_contents($img->getRealPath())),
             'upload_preset' => 'ml_default', // Le nom que tu as mis sur l'image
-            'folder'        => 'galerie',
+            
         ]);
 
         if ($response->successful()) {
