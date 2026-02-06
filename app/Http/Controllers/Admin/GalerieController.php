@@ -60,12 +60,19 @@ class GalerieController extends Controller
         $isPublished = $request->boolean('is_published');
 
         $rows = [];
-        foreach ($request->file('images') as $img) {
+       foreach ($request->file('images') as $img) {
     $upload = Cloudinary::upload($img->getRealPath(), [
-        'folder' => 'galerie'
+        'folder' => 'galerie',
+        // On force les identifiants ici si le .env ne passe pas
+        'cloud_name' => 'dg9lez6mx',
+        'api_key'    => '463948669214468',
+        'api_secret' => '**********',
     ]);
-
+    
     $path = $upload->getSecurePath();
+
+
+
 
     $rows[] = [
         'title'        => $data['title'] ?? null,

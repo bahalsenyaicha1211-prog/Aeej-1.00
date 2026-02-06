@@ -390,8 +390,7 @@
         </h2>
         <p class="about__p">
           L’association est présidée par un président élu et un bureau exécutif.
-          Le mandat est d’une année, renouvelable une fois, afin d’assurer la continuité
-          et permettre l’alternance.
+          Le mandat est d’une année, non renouvelable, afin  permettre l’alternance.
         </p>
 
         <div class="chips" aria-label="Principes de gouvernance">
