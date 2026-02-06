@@ -59,19 +59,21 @@ class GalerieController extends Controller
 
     $rows = [];
     foreach ($request->file('images') as $img) {
-    // On génère un nom propre sans caractères bizarres
     $tempName = time() . '-' . uniqid();
 
-    $response = Http::post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
-        'file'          => 'data:image/' . $img->getClientOriginalExtension() . ';base64,' . base64_encode(file_get_contents($img->getRealPath())),
+    // On utilise asMultipart() pour un envoi de fichier standard, plus fiable
+    $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
+        'file'          => fopen($img->getRealPath(), 'r'),
         'upload_preset' => 'ml_default',
-        'public_id'     => $tempName, // On force un ID simple sans slash
+        'public_id'     => $tempName,
+        'folder'        => 'galerie', // On remet le dossier ici, SANS slash
     ]);
 
     if ($response->successful()) {
         $path = $response->json()['secure_url'];
     } else {
-        return back()->withErrors('Erreur Cloudinary : ' . $response->body());
+        // Affiche l'erreur complète pour comprendre si c'est encore le slash
+        return back()->withErrors('Détails Erreur : ' . $response->body());
     }
 
         $rows[] = [
