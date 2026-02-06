@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\GaleriePhoto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
@@ -45,54 +46,48 @@ class GalerieController extends Controller
      * input name: images[]
      */
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'category'     => ['required', 'string', 'max:80'],
-            'event_date'   => ['required', 'date'],
-            'title'        => ['nullable', 'string', 'max:180'],
-            'description'  => ['nullable', 'string', 'max:2000'],
-            'is_published' => ['nullable'],
+{
+    $data = $request->validate([
+        'category'     => ['required', 'string', 'max:80'],
+        'event_date'   => ['required', 'date'],
+        'title'        => ['nullable', 'string', 'max:180'],
+        'description'  => ['nullable', 'string', 'max:2000'],
+        'is_published' => ['nullable'],
+        'images'       => ['required', 'array', 'min:1'],
+        'images.*'     => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+    ]);
 
-            'images'       => ['required', 'array', 'min:1'],
-            'images.*'     => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+    $rows = [];
+    foreach ($request->file('images') as $img) {
+        // Envoi direct à Cloudinary via HTTP
+        $response = Http::post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
+            'file'          => 'data:image/' . $img->getClientOriginalExtension() . ';base64,' . base64_encode(file_get_contents($img->getRealPath())),
+            'upload_preset' => 'ml_default', // Le nom que tu as mis sur l'image
+            'folder'        => 'galerie',
         ]);
 
-        $isPublished = $request->boolean('is_published');
+        if ($response->successful()) {
+            $path = $response->json()['secure_url'];
+        } else {
+            return back()->withErrors('Erreur Cloudinary : ' . $response->body());
+        }
 
-        $rows = [];
-       foreach ($request->file('images') as $img) {
-    $upload = Cloudinary::upload($img->getRealPath(), [
-        'folder' => 'galerie',
-        // On force les identifiants ici si le .env ne passe pas
-        'cloud_name' => 'dg9lez6mx',
-        'api_key'    => '463948669214468',
-        'api_secret' => '**********',
-    ]);
-    
-    $path = $upload->getSecurePath();
-
-
-
-
-    $rows[] = [
-        'title'        => $data['title'] ?? null,
-        'category'     => $data['category'],
-        'event_date'   => $data['event_date'],
-        'description'  => $data['description'] ?? null,
-        'image_path'   => $path, // On stocke l'URL complète en base de données
-        'is_published' => $isPublished,
-        'created_by'   => auth()->id(),
-        'created_at'   => now(),
-        'updated_at'   => now(),
-    ];
-}
-
-        GaleriePhoto::insert($rows);
-
-        return redirect()
-            ->route('admin.galerie.index')
-            ->with('success', 'Photos ajoutées à la galerie.');
+        $rows[] = [
+            'title'        => $data['title'] ?? null,
+            'category'     => $data['category'],
+            'event_date'   => $data['event_date'],
+            'description'  => $data['description'] ?? null,
+            'image_path'   => $path,
+            'is_published' => $request->boolean('is_published'),
+            'created_by'   => auth()->id(),
+            'created_at'   => now(),
+            'updated_at'   => now(),
+        ];
     }
+
+    GaleriePhoto::insert($rows);
+    return redirect()->route('admin.galerie.index')->with('success', 'Photos ajoutées.');
+}
 
     public function edit(GaleriePhoto $photo)
     {
