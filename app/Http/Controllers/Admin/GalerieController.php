@@ -59,18 +59,20 @@ class GalerieController extends Controller
 
     $rows = [];
     foreach ($request->file('images') as $img) {
-        // Envoi direct à Cloudinary via HTTP
-        $response = Http::post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
-            'file'          => 'data:image/' . $img->getClientOriginalExtension() . ';base64,' . base64_encode(file_get_contents($img->getRealPath())),
-            'upload_preset' => 'ml_default', // Le nom que tu as mis sur l'image
-            
-        ]);
+    // On génère un nom propre sans caractères bizarres
+    $tempName = time() . '-' . uniqid();
 
-        if ($response->successful()) {
-            $path = $response->json()['secure_url'];
-        } else {
-            return back()->withErrors('Erreur Cloudinary : ' . $response->body());
-        }
+    $response = Http::post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
+        'file'          => 'data:image/' . $img->getClientOriginalExtension() . ';base64,' . base64_encode(file_get_contents($img->getRealPath())),
+        'upload_preset' => 'ml_default',
+        'public_id'     => $tempName, // On force un ID simple sans slash
+    ]);
+
+    if ($response->successful()) {
+        $path = $response->json()['secure_url'];
+    } else {
+        return back()->withErrors('Erreur Cloudinary : ' . $response->body());
+    }
 
         $rows[] = [
             'title'        => $data['title'] ?? null,
