@@ -7,6 +7,7 @@ use App\Models\BureauMembre;
 use App\Models\Membre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class BureauMembreController extends Controller
 {
@@ -28,33 +29,43 @@ class BureauMembreController extends Controller
         return view('admin.bureau.create', compact('membres'));
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'matricule' => ['required', 'exists:membres,matricule'],
-            'poste'     => ['required', 'string', 'max:120'],
-            'ordre'     => ['nullable', 'integer', 'min:0', 'max:9999'],
-            'is_actif'  => ['nullable', 'boolean'],
-            'photo'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+  public function store(Request $request)
+{
+    $validated = $request->validate([
+        'matricule' => ['required', 'exists:membres,matricule'],
+        'poste'     => ['required', 'string', 'max:120'],
+        'ordre'     => ['nullable', 'integer', 'min:0', 'max:9999'],
+        'is_actif'  => ['nullable', 'boolean'],
+        'photo'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+    ]);
+
+    $data = [
+        'matricule' => $validated['matricule'],
+        'poste'     => $validated['poste'],
+        'ordre'     => $validated['ordre'] ?? 0,
+        'is_actif'  => (bool) $request->boolean('is_actif'),
+    ];
+
+    if ($request->hasFile('photo')) {
+        $img = $request->file('photo');
+        $tempName = 'bureau-' . time() . '-' . uniqid();
+
+        $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
+            'file'          => fopen($img->getRealPath(), 'r'),
+            'upload_preset' => 'ml_default',
+            'public_id'     => $tempName,
+            'folder'        => 'bureau',
         ]);
 
-        $data = [
-            'matricule' => $validated['matricule'],
-            'poste'     => $validated['poste'],
-            'ordre'     => $validated['ordre'] ?? 0,
-            'is_actif'  => (bool) $request->boolean('is_actif'),
-        ];
-
-        if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('bureau', 'public');
+        if ($response->successful()) {
+            $data['photo'] = $response->json()['secure_url'];
         }
-
-        BureauMembre::create($data);
-
-        return redirect()
-            ->route('admin.bureau.index')
-            ->with('success', 'Membre du bureau ajouté.');
     }
+
+    BureauMembre::create($data);
+
+    return redirect()->route('admin.bureau.index')->with('success', 'Membre du bureau ajouté.');
+}
 
     public function edit(BureauMembre $bureau)
     {
@@ -64,41 +75,47 @@ class BureauMembreController extends Controller
         return view('admin.bureau.edit', compact('bureau', 'membres'));
     }
 
-    public function update(Request $request, BureauMembre $bureau)
-    {
-        $validated = $request->validate([
-            'matricule' => ['required', 'exists:membres,matricule'],
-            'poste'     => ['required', 'string', 'max:120'],
-            'ordre'     => ['nullable', 'integer', 'min:0', 'max:9999'],
-            'is_actif'  => ['nullable', 'boolean'],
-            'photo'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'remove_photo' => ['nullable', 'boolean'],
+   public function update(Request $request, BureauMembre $bureau)
+{
+    $validated = $request->validate([
+        'matricule' => ['required', 'exists:membres,matricule'],
+        'poste'     => ['required', 'string', 'max:120'],
+        'ordre'     => ['nullable', 'integer', 'min:0', 'max:9999'],
+        'is_actif'  => ['nullable', 'boolean'],
+        'photo'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        'remove_photo' => ['nullable', 'boolean'],
+    ]);
+
+    $data = [
+        'matricule' => $validated['matricule'],
+        'poste'     => $validated['poste'],
+        'ordre'     => $validated['ordre'] ?? 0,
+        'is_actif'  => (bool) $request->boolean('is_actif'),
+    ];
+
+    if ($request->boolean('remove_photo')) {
+        $data['photo'] = null;
+    }
+
+    if ($request->hasFile('photo')) {
+        $img = $request->file('photo');
+        $tempName = 'bureau-' . time() . '-' . uniqid();
+
+        $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
+            'file'          => fopen($img->getRealPath(), 'r'),
+            'upload_preset' => 'ml_default',
+            'public_id'     => $tempName,
+            'folder'        => 'bureau',
         ]);
 
-        $data = [
-            'matricule' => $validated['matricule'],
-            'poste'     => $validated['poste'],
-            'ordre'     => $validated['ordre'] ?? 0,
-            'is_actif'  => (bool) $request->boolean('is_actif'),
-        ];
-
-        if ($request->boolean('remove_photo') && $bureau->photo) {
-            Storage::disk('public')->delete($bureau->photo);
-            $data['photo'] = null;
+        if ($response->successful()) {
+            $data['photo'] = $response->json()['secure_url'];
         }
+    }
 
-        if ($request->hasFile('photo')) {
-            if ($bureau->photo) {
-                Storage::disk('public')->delete($bureau->photo);
-            }
-            $data['photo'] = $request->file('photo')->store('bureau', 'public');
-        }
+    $bureau->update($data);
 
-        $bureau->update($data);
-
-        return redirect()
-            ->route('admin.bureau.index')
-            ->with('success', 'Membre du bureau mis à jour.');
+    return redirect()->route('admin.bureau.index')->with('success', 'Membre du bureau mis à jour.');
     }
 
     public function destroy(BureauMembre $bureau)

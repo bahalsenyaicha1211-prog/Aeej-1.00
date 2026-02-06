@@ -26,8 +26,11 @@
             @forelse($bureau as $item)
                 @php $m = $item->membre; @endphp
                 <li data-role="{{ \Illuminate\Support\Str::slug($item->poste) }}">
-                    @if($item->photo)
-                        <img loading="lazy" src="{{ asset('storage/' . $item->photo) }}" alt="{{ $item->poste }}">
+                   @if($item->photo)
+                    {{-- On vérifie si c'est une URL Cloudinary ou un chemin local --}}
+                    <img loading="lazy" 
+                        src="{{ str_starts_with($item->photo, 'http') ? $item->photo : asset('storage/' . $item->photo) }}" 
+                        alt="{{ $item->poste }}">
                     @else
                         <img loading="lazy" src="{{ asset('images/image1.JPG') }}" alt="{{ $item->poste }}">
                     @endif
