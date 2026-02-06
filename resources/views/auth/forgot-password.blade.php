@@ -18,7 +18,7 @@
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
-                {{ __('Lien de réinitialisation du mot de passe par e-mail') }}
+                {{ __('Envoyer le lien de réinitialisation du mot de passe par e-mail') }}
             </x-primary-button>
         </div>
     </form>

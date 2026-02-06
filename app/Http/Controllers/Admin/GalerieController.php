@@ -60,20 +60,22 @@ class GalerieController extends Controller
 
         $rows = [];
         foreach ($request->file('images') as $img) {
-            $path = $img->store('galerie', 'public');
+    // On envoie sur Cloudinary au lieu du disque local
+    $upload = $img->storeOnCloudinary('galerie'); 
+    $path = $upload->getSecurePath(); // Récupère l'URL complète (https://...)
 
-            $rows[] = [
-                'title'        => $data['title'] ?? null,
-                'category'     => $data['category'],
-                'event_date'   => $data['event_date'],
-                'description'  => $data['description'] ?? null,
-                'image_path'   => $path,
-                'is_published' => $isPublished,
-                'created_by'   => auth()->id(),
-                'created_at'   => now(),
-                'updated_at'   => now(),
-            ];
-        }
+    $rows[] = [
+        'title'        => $data['title'] ?? null,
+        'category'     => $data['category'],
+        'event_date'   => $data['event_date'],
+        'description'  => $data['description'] ?? null,
+        'image_path'   => $path, // On stocke l'URL complète en base de données
+        'is_published' => $isPublished,
+        'created_by'   => auth()->id(),
+        'created_at'   => now(),
+        'updated_at'   => now(),
+    ];
+}
 
         GaleriePhoto::insert($rows);
 
@@ -108,13 +110,14 @@ class GalerieController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            if ($photo->image_path) {
-                Storage::disk('public')->delete($photo->image_path);
-            }
-            $data['image_path'] = $request->file('image')->store('galerie', 'public');
-        } else {
-            unset($data['image_path']);
-        }
+    $upload = $request->file('image')->storeOnCloudinary('galerie');
+    $data['image_path'] = $upload->getSecurePath();
+    } else {
+    // Crucial : si on ne télécharge pas de nouvelle image, 
+    // on retire image_path des données à mettre à jour 
+    // pour garder l'ancienne URL en base de données.
+    unset($data['image_path']);
+    }
 
         $photo->update($data);
 
@@ -123,15 +126,13 @@ class GalerieController extends Controller
             ->with('success', 'Photo mise à jour.');
     }
 
-    public function destroy(GaleriePhoto $photo)
-    {
-        if ($photo->image_path) {
-            Storage::disk('public')->delete($photo->image_path);
-        }
-        $photo->delete();
+    public function destroy(GaleriePhoto $photo) {
+    // On supprime juste la ligne en base de données. 
+    // L'image restera sur ton compte Cloudinary (ce qui est une sécurité).
+    $photo->delete();
 
-        return back()->with('success', 'Photo supprimée.');
-    }
+    return back()->with('success', 'Photo supprimée.');
+}
 
     public function toggle(GaleriePhoto $photo)
     {

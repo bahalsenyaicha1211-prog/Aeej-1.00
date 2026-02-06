@@ -38,7 +38,7 @@
       
     
     </div>
-
+ 
     {{-- Overlay + texte dynamique --}}
     <div class="homeHeroOverlay"></div>
 
@@ -53,7 +53,7 @@
         <a class="homeBtn homeBtn--primary" href="{{ route('inscription') }}">S’inscrire</a>
         <a class="homeBtn homeBtn--ghost" href="{{ route('apropos') }}">Découvrir l’association</a>
       </div>
-    </div>
+  </div>
   </section>
 
   {{-- STATS --}}
