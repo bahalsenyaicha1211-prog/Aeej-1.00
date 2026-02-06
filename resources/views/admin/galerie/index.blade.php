@@ -101,6 +101,23 @@
   flex-wrap: wrap;
 }
 
+/* Redimensionne les flèches de pagination de Laravel */
+.pager svg {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+.pager nav div {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.pager .hidden {
+    display: flex !important; /* Force l'affichage des infos sur mobile */
+}
+
 /* Boutons compacts uniquement ici */
 .gal-admin-actions .btn{
   padding: 8px 10px;
