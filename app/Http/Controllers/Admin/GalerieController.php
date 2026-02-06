@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GaleriePhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class GalerieController extends Controller
 {
@@ -60,9 +61,11 @@ class GalerieController extends Controller
 
         $rows = [];
         foreach ($request->file('images') as $img) {
-    // On envoie sur Cloudinary au lieu du disque local
-    $upload = $img->storeOnCloudinary('galerie'); 
-    $path = $upload->getSecurePath(); // Récupère l'URL complète (https://...)
+    $upload = Cloudinary::upload($img->getRealPath(), [
+        'folder' => 'galerie'
+    ]);
+
+    $path = $upload->getSecurePath();
 
     $rows[] = [
         'title'        => $data['title'] ?? null,
@@ -110,8 +113,10 @@ class GalerieController extends Controller
         }
 
         if ($request->hasFile('image')) {
-    $upload = $request->file('image')->storeOnCloudinary('galerie');
-    $data['image_path'] = $upload->getSecurePath();
+         $upload =Cloudinary::upload($request->file('image')->getRealPath(), [
+                'folder'=> 'galerie'
+             ]);
+         $data['image_path'] = $upload->getSecurePath();
     } else {
     // Crucial : si on ne télécharge pas de nouvelle image, 
     // on retire image_path des données à mettre à jour 
