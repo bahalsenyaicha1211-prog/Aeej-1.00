@@ -2,11 +2,14 @@
 
 namespace App\Models;
 use App\Notifications\WelcomeSetPassword;
+use App\Notifications\VerifyEmailFrench;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -70,6 +73,12 @@ class User extends Authenticatable implements MustVerifyEmail
             'annonce_id'
         )->withPivot('read_at');
     }
+
+public function sendEmailVerificationNotification()
+{
+    $this->notify(new VerifyEmailFrench);
+}
+
 
     public function sendPasswordResetNotification($token)
 {
