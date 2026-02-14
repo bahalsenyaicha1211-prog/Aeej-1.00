@@ -31,7 +31,12 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
 
 
-// Cette route va forcer le nettoyage du cache de l'intérieur
+Route::get('/check-lang', function() {
+    return app()->getLocale();
+});
+
+
+/* Cette route va forcer le nettoyage du cache de l'intérieur
 Route::get('/force-clear', function () {
     Artisan::call('route:clear');
     Artisan::call('config:clear');
@@ -62,7 +67,7 @@ Route::get('/debug-mail', function () {
         return "Erreur : " . $e->getMessage();
     }
 });
-
+*/
 
 /*
 |--------------------------------------------------------------------------
@@ -178,14 +183,15 @@ Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
     ->name('galerie.toggle');
 
 //test
- Route::get('/check-config', function () {
+ /*Route::get('/check-config', function () {
     return [
         'mailer' => config('mail.default'),
         'host' => config('mail.mailers.smtp.host'),
         'from' => config('mail.from.address'),
         'env_mailer' => env('MAIL_MAILER'),
     ];
-});
+});*/
+
 
 
     });
