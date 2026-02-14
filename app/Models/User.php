@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\WelcomeSetPassword;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -32,12 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_admin'          => 'boolean',
     ];
 
-    /**
-     * Relation User -> Membre (1-1)
-     * IMPORTANT :
-     * - Dans ton modèle Membre, tu as `hasOne(User::class, 'matricule', 'matricule')`
-     *   donc ici le plus cohérent est `belongsTo`, car users.matricule pointe vers membres.matricule.
-     */
+
     public function membre()
     {
         return $this->belongsTo(Membre::class, 'matricule', 'matricule');
@@ -63,11 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
             : asset('images/default-avatar.png');
     }
 
-    /**
-     * Pivot annonces lues
-     * Note : avec ta migration annonces_lues, c’est annonce_id / user_id.
-     * On précise les clés pour éviter toute ambiguïté.
-     */
+  
     public function annoncesLues()
     {
         return $this->belongsToMany(
@@ -77,4 +69,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'annonce_id'
         )->withPivot('read_at');
     }
+
+    public function sendPasswordResetNotification($token)
+{
+    $this->notify(new WelcomeSetPassword($token));
+}
 }
