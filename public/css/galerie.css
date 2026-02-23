@@ -221,3 +221,58 @@ body{margin:0; font-family:var(--font)}
 }
 .lightbox__title{font-weight: 900}
 .lightbox__meta{color: var(--muted); font-size: 13px}
+
+
+/* Style de la zone de pagination */
+.gal-pager {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* On cible les éléments générés par Laravel */
+.gal-pager nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Style des liens et des chiffres */
+.gal-pager nav a, 
+.gal-pager nav span {
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #1a202c;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* Au survol */
+.gal-pager nav a:hover {
+    background: #f7fafc;
+    border-color: #3182ce;
+    color: #3182ce;
+}
+
+/* Page active */
+.gal-pager nav span[aria-current="page"] {
+    background: #3182ce; /* Couleur bleue AEEJ */
+    color: white;
+    border-color: #3182ce;
+}
+
+/* Correction spécifique pour les flèches SVG trop grandes */
+.gal-pager svg {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Cacher le texte "Showing X to Y results" qui prend trop de place sur mobile */
+.gal-pager .hidden.sm\:flex-1 {
+    display: none;
+}

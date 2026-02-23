@@ -1,6 +1,6 @@
 {
-    "Email": "Adresse e-mail",
-    "Password": "Mot de passe",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
     "Confirm Password": "Confirmer le mot de passe",
     "Remember me": "Se souvenir de moi",
     "Forgot your password?": "Mot de passe oublié ?",
