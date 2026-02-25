@@ -264,7 +264,7 @@ body{margin:0; font-family:var(--font)}
     border-color: #3182ce;
 }
 
-/* Correction spécifique pour les flèches SVG trop grandes */
+/* Correction spécifique pour les flèches SVG trop grandes 
 .gal-pager svg {
     width: 20px;
     height: 20px;
@@ -272,7 +272,38 @@ body{margin:0; font-family:var(--font)}
     vertical-align: middle;
 }
 
-/* Cacher le texte "Showing X to Y results" qui prend trop de place sur mobile */
+ Cacher le texte "Showing X to Y results" qui prend trop de place sur mobile 
 .gal-pager .hidden.sm\:flex-1 {
+    display: none;
+}      
+*/
+/* Style pour la zone de pagination */
+.gal-pager nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+/* Style des boutons Précédent et Suivant */
+.gal-pager a, .gal-pager span {
+    padding: 8px 16px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: #3182ce;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.gal-pager a:hover {
+    background-color: #3182ce;
+    color: white;
+}
+
+/* Cache les infos inutiles (Showing 1 to 10...) */
+.gal-pager .flex.items-center.justify-between div:first-child {
     display: none;
 }
