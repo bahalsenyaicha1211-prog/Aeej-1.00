@@ -1,132 +1,78 @@
-/* Style général */
-body {
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #e9f0ff, #fdfbfb);
-  color: #222;
-  margin: 0;
-  padding: 0;
+:root {
+    --primary: #3182ce;
+    --gold: #d4af37;
+    --text: #2d3748;
+    --bg: #f7fafc;
 }
 
-.conteneur2 {
-
-  max-width: 1000px;
-  margin: 100px auto;
-  background: #fff;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  padding: 2rem;
-}
-.conteneur2 h1 {
-  
-  display: none;
-}
-.contact-info {
-
-  
-  flex: 1;
-  min-width: 250px;
+.contact-page {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.contact-info h3 {
-  margin-bottom: 20px;
-  font-size: 2em;
-}
-.contact-info ul {
-  list-style: none;
-  padding: 0;
+
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 350px; /* Grille pour desktop */
+    gap: 40px;
 }
 
-.contact-info li {
-  display: flex;
-  margin: 20px 0;
-  font-size: 1.7em;
-  color: #031632;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.contact-info li:hover {
-  transform: translateX(5px);
-  color: #2e3359;
-}
-.contact-form {
-  flex: 2;
-  min-width: 300px;
+/* Grille des membres */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.input-group label {
-  font-weight: 600;
-}
-
-.input-group input,
-.input-group textarea {
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 1rem;
-  transition: border 0.3s, box-shadow 0.3s;
-}
-
-.input-group input:focus,
-.input-group textarea:focus {
-  border-color: #2e3359;
-  box-shadow: 0 0 5px rgba(46, 51, 89, 0.3);
-  outline: none;
-}
-
-textarea {
-  resize: none;
-  height: 120px;
-}
-
-.btn-submit {
-  background-color: #2e3359;
-  color: #fff;
-  padding: 0.9rem;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: 0.3s;
-}
-
-.btn-submit:hover {
-  background-color: #3f4780;
-  transform: translateY(-2px);
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-  .conteneur2 {
-    margin-bottom: 100px;
-    flex-direction: column-reverse;
-    
-  }
-  .conteneur2 h1 {
-   position: absolute;
-   top: 100px;
-    display: block;
-    color: #021839;
+.member-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
     text-align: center;
-  }
-contact-info ul li {
-    font-size: 1em;
-    
 }
 
-  
+.member-card:hover { transform: translateY(-10px); }
+
+/* Style spécial pour le président */
+.admin-gold { border: 2px solid var(--gold); }
+.admin-gold .role { color: var(--gold); font-weight: bold; }
+
+.member-photo img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover; /* Garde les proportions de la photo */
 }
 
-a{
-  text-decoration: none;
-  
+.member-info { padding: 20px; }
+.member-info h3 { margin: 0; font-size: 1.2rem; }
+.role { display: block; color: #718096; margin-bottom: 15px; font-size: 0.9rem; }
+
+.member-contact a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+/* Sidebar */
+.contact-sidebar {
+    background: #2d3748;
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    height: fit-content;
+}
+
+.sticky-info h3 { margin-bottom: 20px; border-bottom: 2px solid var(--primary); display: inline-block; }
+
+.info-item { display: flex; gap: 15px; margin-bottom: 25px; align-items: flex-start; }
+.info-item i { font-size: 1.5rem; color: var(--primary); }
+.info-item a { color: #ebf8ff; text-decoration: none; }
+
+/* Mobile */
+@media (max-width: 992px) {
+    .contact-container { grid-template-columns: 1fr; }
+    .contact-sidebar { order: -1; } /* Met le mail de l'asso en haut sur mobile */
 }
