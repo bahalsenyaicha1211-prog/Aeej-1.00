@@ -223,44 +223,60 @@ body{margin:0; font-family:var(--font)}
 .lightbox__meta{color: var(--muted); font-size: 13px}
 
 
-/* Style de la zone de pagination */
+/* --- STYLE MODERNE POUR LES BOUTONS PRÉCÉDENT / SUIVANT --- */
+
 .gal-pager {
-    margin-top: 3rem;
+    margin-top: 4rem;
     display: flex;
     justify-content: center;
+    padding-bottom: 2rem;
 }
 
-/* On cible les éléments générés par Laravel */
 .gal-pager nav {
     display: flex;
+    gap: 15px;
     align-items: center;
-    gap: 10px;
 }
 
-/* Style des liens et des chiffres */
+/* On cible les liens "Précédent" et "Suivant" */
 .gal-pager nav a, 
 .gal-pager nav span {
-    padding: 10px 16px;
-    border-radius: 8px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    color: #1a202c;
     text-decoration: none;
+    padding: 12px 24px;
+    border-radius: var(--r); /* Utilise ton arrondi de 18px */
+    background: var(--panel); /* Utilise ton fond transparent */
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 800;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
 }
 
-/* Au survol */
+/* Effet au survol : on utilise ton vert AEEJ */
 .gal-pager nav a:hover {
-    background: #f7fafc;
-    border-color: #3182ce;
-    color: #3182ce;
+    background: rgba(34, 197, 94, 0.15);
+    border-color: var(--green);
+    color: var(--green);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Page active */
+/* Style pour le chiffre de la page active */
 .gal-pager nav span[aria-current="page"] {
-    background: #3182ce; /* Couleur bleue AEEJ */
-    color: white;
-    border-color: #3182ce;
+    background: var(--green);
+    color: #000; /* Texte noir sur fond vert pour plus de contraste */
+    border-color: var(--green);
 }
 
+/* Masquer les flèches SVG géantes et les textes "Showing..." de Laravel */
+.gal-pager svg { display: none !important; }
+.gal-pager .hidden.sm\:flex-1, 
+.gal-pager p { display: none !important; }
+
+/* Responsive mobile */
+@media (max-width: 520px) {
+    .gal-pager nav { gap: 8px; }
+    .gal-pager nav a { padding: 10px 15px; font-size: 0.85rem; }
+}
