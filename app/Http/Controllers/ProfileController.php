@@ -37,6 +37,9 @@ class ProfileController extends Controller
      */
     public function updatePhoto(Request $request)
     {
+        // Ajoute cette ligne, tente un upload, et dis-moi ce qui s'affiche à l'écran
+    dd($request->all(), $request->file('photo'));
+
         $user = Auth::user();
 
         $request->validate([
