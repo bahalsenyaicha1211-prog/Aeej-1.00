@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Http;
+
+
+
 
 class ProfileController extends Controller
 {
@@ -37,7 +41,6 @@ class ProfileController extends Controller
      * Mise à jour de la photo uniquement
      */
 
-use Illuminate\Support\Facades\Http;
 
 public function updatePhoto(Request $request)
 {
@@ -49,26 +52,31 @@ public function updatePhoto(Request $request)
 
     if ($request->hasFile('photo')) {
         $img = $request->file('photo');
-        $tempName = 'avatar-' . $user->id . '-' . time();
+        
+        // On extrait l'identifiant du compte Cloudinary depuis votre URL de galerie
+        // D'après votre code galerie, c'est : dg9lez6mx
+        $cloudName = "dg9lez6mx"; 
 
-        // On utilise la même méthode HTTP que dans ta Galerie (plus fiable sur Render)
-        $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
+        $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
             'file'          => fopen($img->getRealPath(), 'r'),
-            'upload_preset' => 'ml_default', // Assure-toi que ce preset est correct
-            'public_id'     => $tempName,
+            'upload_preset' => 'ml_default', 
             'folder'        => 'avatars',
         ]);
 
         if ($response->successful()) {
+            // On récupère l'URL sécurisée retournée par Cloudinary
             $path = $response->json()['secure_url'];
+            
+            // Mise à jour de l'utilisateur avec l'URL directe
             $user->update(['profile_photo_path' => $path]);
-            return back()->with('success', 'Photo de profil mise à jour !');
+
+            return back()->with('success', 'Photo de profil mise à jour avec succès !');
         }
 
         return back()->withErrors('Erreur Cloudinary : ' . $response->body());
     }
 
-    return back()->with('error', 'Aucune photo sélectionnée.');
+    return back()->with('error', 'Veuillez sélectionner une photo.');
 }
     public function destroy(Request $request)
     {
