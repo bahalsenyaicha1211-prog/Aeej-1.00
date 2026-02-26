@@ -46,15 +46,22 @@ public function updatePhoto(Request $request)
 {
     $user = Auth::user();
 
+    // 1. GESTION DE LA SUPPRESSION
+    if ($request->has('remove_photo')) {
+        if ($user->profile_photo_path && !str_starts_with($user->profile_photo_path, 'http')) {
+            Storage::disk('public')->delete($user->profile_photo_path);
+        }
+        $user->update(['profile_photo_path' => null]);
+        return back()->with('success', 'Photo de profil retirée.');
+    }
+
+    // 2. GESTION DE L'UPLOAD AUTOMATIQUE
     $request->validate([
         'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
     ]);
 
     if ($request->hasFile('photo')) {
         $img = $request->file('photo');
-        
-        // On extrait l'identifiant du compte Cloudinary depuis votre URL de galerie
-        // D'après votre code galerie, c'est : dg9lez6mx
         $cloudName = "dg9lez6mx"; 
 
         $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
@@ -64,13 +71,9 @@ public function updatePhoto(Request $request)
         ]);
 
         if ($response->successful()) {
-            // On récupère l'URL sécurisée retournée par Cloudinary
             $path = $response->json()['secure_url'];
-            
-            // Mise à jour de l'utilisateur avec l'URL directe
             $user->update(['profile_photo_path' => $path]);
-
-            return back()->with('success', 'Photo de profil mise à jour avec succès !');
+            return back()->with('success', 'Photo de profil mise à jour !');
         }
 
         return back()->withErrors('Erreur Cloudinary : ' . $response->body());

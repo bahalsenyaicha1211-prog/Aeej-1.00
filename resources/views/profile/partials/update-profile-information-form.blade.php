@@ -1,17 +1,108 @@
+<style>
+    .avatar-container {
+        position: relative;
+        width: 140px; /* Un peu plus grand pour le style */
+        height: 140px;
+        margin: 0 auto 15px;
+    }
+
+    .avatar-label {
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        border: 4px solid #fff; /* Bordure blanche pour détacher l'image */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .avatar-label:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .camera-icon {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .avatar-label:hover .camera-icon { opacity: 1; }
+    .camera-icon svg { width: 32px; }
+
+    .avatar-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+
+    .avatar-overlay.is-active { display: flex; }
+
+    .spinner {
+        width: 35px;
+        height: 35px;
+        border: 4px solid #3182ce;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .photo-info { text-align: center; }
+
+    .btn-remove {
+        background: none;
+        border: none;
+        color: #e53e3e;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: underline;
+        cursor: pointer;
+        margin-top: 8px;
+        padding: 5px;
+    }
+    
+    .btn-remove:hover { color: #c53030; }
+</style>
+
 <section class="profile-photo-section">
     <div class="photo-card">
-        <h2 class="photo-card__title">Photo de profil</h2>
-        
+        {{-- Formulaire d'upload automatique --}}
         <form id="autoUploadForm" action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
 
             <div class="avatar-container">
                 <label for="photoInput" class="avatar-label" title="Cliquer pour changer de photo">
-                    <img id="avatarPreview" 
-                         src="{{ auth()->user()->profile_photo_path ?? asset('images/default-avatar.png') }}" 
-                         alt="Avatar" 
-                         class="avatar-img">
+                    {{-- LOGIQUE D'AFFICHAGE CORRIGÉE --}}
+                    @php
+                        $path = auth()->user()->profile_photo_path;
+                        $src = $path 
+                               ? (str_starts_with($path, 'http') ? $path : asset('storage/' . $path)) 
+                               : asset('images/default-avatar.png');
+                    @endphp
+                    
+                    <img id="avatarPreview" src="{{ $src }}" alt="Avatar" class="avatar-img">
                     
                     <div id="uploadOverlay" class="avatar-overlay">
                         <div class="spinner"></div>
@@ -30,11 +121,15 @@
         </form>
 
         <div class="photo-info">
-            <p class="photo-info__text">Cliquez sur l'image pour la modifier.</p>
+            <p class="text-sm text-gray-500">Cliquez sur l'image pour la modifier.</p>
+            
+            {{-- Formulaire de suppression séparé --}}
             @if(auth()->user()->profile_photo_path)
-                <form action="{{ route('profile.photo.update') }}" method="POST">
-                    @csrf @method('PATCH')
-                    <button type="submit" name="remove_photo" value="1" class="btn-remove">Supprimer la photo</button>
+                <form action="{{ route('profile.photo.update') }}" method="POST" onsubmit="return confirm('Supprimer la photo ?')">
+                    @csrf 
+                    @method('PATCH')
+                    <input type="hidden" name="remove_photo" value="1">
+                    <button type="submit" class="btn-remove">Supprimer la photo</button>
                 </form>
             @endif
         </div>
@@ -42,10 +137,11 @@
 </section>
 
 <script>
-    // Déclenchement automatique de l'envoi
     document.getElementById('photoInput').onchange = function() {
-        const overlay = document.getElementById('uploadOverlay');
-        overlay.classList.add('is-active'); // Affiche le spinner
-        document.getElementById('autoUploadForm').submit(); // Envoie le formulaire
+        if (this.files && this.files[0]) {
+            const overlay = document.getElementById('uploadOverlay');
+            overlay.classList.add('is-active'); 
+            document.getElementById('autoUploadForm').submit();
+        }
     };
 </script>
