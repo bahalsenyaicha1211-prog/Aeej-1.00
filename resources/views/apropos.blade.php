@@ -319,7 +319,7 @@
 
       <aside class="about__heroAside" aria-label="Chiffres clés">
         <div>
-          <h2 class="about__asideTitle">Aujourd’hui, 21 ans plus tard</h2>
+          <h2 class="about__asideTitle">Aujourd’hui, {{ date('Y') - 2005 }} ans plus tard</h2>
           <p class="about__asideText">
             L’AEEJ regroupe des étudiants inscrits à la Faculté des Sciences Juridiques,
             Économiques et de Gestion de Jendouba, organisés en communautés.
@@ -332,11 +332,11 @@
             <div class="about__statL">Année de création</div>
           </div>
           <div class="about__stat">
-            <div class="about__statN">21+</div>
+            <div class="about__statN">{{ date('Y') - 2005 }}</div>
             <div class="about__statL">Ans d’existence</div>
           </div>
           <div class="about__stat">
-            <div class="about__statN">7</div>
+            <div class="about__statN">{{$pays}}</div>
             <div class="about__statL">Communautés</div>
           </div>
         </div>
@@ -358,7 +358,7 @@
 
         <div class="timeline">
           <div class="titem">
-            <div class="tbadge">Jan 2005</div>
+            <div class="tbadge">Janvier 2005</div>
             <div class="tcontent">
               <p class="ttitle">Naissance de l’AEEJ</p>
               <p class="ttext">Les étudiants se donnent un “nom de famille” commun et fondent l’association.</p>
@@ -390,13 +390,13 @@
         </h2>
         <p class="about__p">
           L’association est présidée par un président élu et un bureau exécutif.
-          Le mandat est d’une année, non renouvelable, afin  permettre l’alternance.
+          Le mandat est d’une année, non renouvelable, afin de permettre l’alternance.
         </p>
 
         <div class="chips" aria-label="Principes de gouvernance">
           <div class="chip"><strong>Élection</strong> annuelle</div>
           <div class="chip"><strong>Mandat</strong> 1 an</div>
-          <div class="chip"><strong>Renouvelable</strong> 1 fois</div>
+          <div class="chip"><strong>Non renouvelable</strong></div>
           <div class="chip"><strong>Bureau</strong> exécutif</div>
         </div>
 
@@ -470,7 +470,7 @@
       <div>
         <h3>Découvrir nos activités et revivre nos événements</h3>
         <p>
-          Consultez la galerie et les annonces pour suivre la vie de l’AEEJ au quotidien.
+          Consultez la galerie pour suivre la vie de l’AEEJ au quotidien.
         </p>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
