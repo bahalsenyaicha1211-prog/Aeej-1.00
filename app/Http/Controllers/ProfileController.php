@@ -37,39 +37,38 @@ class ProfileController extends Controller
      * Mise à jour de la photo uniquement
      */
 
+use Illuminate\Support\Facades\Http;
+
 public function updatePhoto(Request $request)
 {
     $user = Auth::user();
 
     $request->validate([
-        'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
     ]);
 
-    // Action : Retirer la photo
-    if ($request->has('remove_photo')) {
-        // Note : On laisse généralement l'image sur Cloudinary par sécurité, 
-        // ou on la supprime via l'API si nécessaire. Ici on nettoie juste la base.
-        $user->update(['profile_photo_path' => null]);
-        return back()->with('success', 'Photo supprimée.');
-    }
-
-    // Action : Upload sur Cloudinary
     if ($request->hasFile('photo')) {
-        // Envoi vers Cloudinary dans un dossier "avatars"
-        $upload = Cloudinary::upload($request->file('photo')->getRealPath(), [
-            'folder' => 'avatars'
+        $img = $request->file('photo');
+        $tempName = 'avatar-' . $user->id . '-' . time();
+
+        // On utilise la même méthode HTTP que dans ta Galerie (plus fiable sur Render)
+        $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
+            'file'          => fopen($img->getRealPath(), 'r'),
+            'upload_preset' => 'ml_default', // Assure-toi que ce preset est correct
+            'public_id'     => $tempName,
+            'folder'        => 'avatars',
         ]);
 
-        // On récupère l'URL sécurisée (https) fournie par Cloudinary
-        $path = $upload->getSecurePath();
+        if ($response->successful()) {
+            $path = $response->json()['secure_url'];
+            $user->update(['profile_photo_path' => $path]);
+            return back()->with('success', 'Photo de profil mise à jour !');
+        }
 
-        // On enregistre l'URL complète en base de données
-        $user->update(['profile_photo_path' => $path]);
-
-        return back()->with('success', 'Photo de profil mise à jour sur le cloud !');
+        return back()->withErrors('Erreur Cloudinary : ' . $response->body());
     }
 
-    return back()->with('error', 'Aucune photo envoyée.');
+    return back()->with('error', 'Aucune photo sélectionnée.');
 }
     public function destroy(Request $request)
     {
