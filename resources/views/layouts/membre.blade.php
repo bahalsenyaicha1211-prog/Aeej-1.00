@@ -60,12 +60,13 @@
                 </button>
 
                 {{-- Avatar --}}
-                <img
-                    class="h-9 w-9 rounded-full object-cover"
-                    src="{{ auth()->user()->profile_photo_path
-                        ? asset('storage/' . auth()->user()->profile_photo_path)
-                        : asset('images/default-avatar.png') }}"
-                >
+    <img class="h-9 w-9 rounded-full object-cover"
+        src="{{ auth()->user()->profile_photo_path 
+                ? (str_starts_with(auth()->user()->profile_photo_path, 'http') 
+                    ? auth()->user()->profile_photo_path 
+                    : asset('storage/' . auth()->user()->profile_photo_path))
+                : asset('images/default-avatar.png') }}"
+        alt="Photo de profil">
             </div>
         </header>
 
