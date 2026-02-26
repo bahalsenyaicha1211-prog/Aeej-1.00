@@ -20,13 +20,13 @@
         @csrf
         @method('PATCH')
 
-        @php
-            $u = auth()->user();
-            $avatar = $u->profile_photo_path
-                ? asset('storage/'.$u->profile_photo_path)
-                : asset('images/default-avatar.png');
-        @endphp
-
+       @php
+        $u = auth()->user();
+        
+            $avatar = $u->profile_photo_path 
+            ? $u->profile_photo_path 
+            : asset('images/default-avatar.png');
+    @endphp
         <div class="avatarRow">
             <img id="avatarPreview"
                  class="avatar"
