@@ -46,18 +46,15 @@ public function updatePhoto(Request $request)
 {
     $user = Auth::user();
 
-    // 1. GESTION DE LA SUPPRESSION
+    // Si on demande la suppression
     if ($request->has('remove_photo')) {
-        if ($user->profile_photo_path && !str_starts_with($user->profile_photo_path, 'http')) {
-            Storage::disk('public')->delete($user->profile_photo_path);
-        }
         $user->update(['profile_photo_path' => null]);
-        return back()->with('success', 'Photo de profil retirée.');
+        return back()->with('success', 'Photo supprimée.');
     }
 
-    // 2. GESTION DE L'UPLOAD AUTOMATIQUE
+    // Si on télécharge une photo
     $request->validate([
-        'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        'photo' => ['required', 'image', 'max:2048'],
     ]);
 
     if ($request->hasFile('photo')) {
@@ -71,15 +68,12 @@ public function updatePhoto(Request $request)
         ]);
 
         if ($response->successful()) {
-            $path = $response->json()['secure_url'];
-            $user->update(['profile_photo_path' => $path]);
-            return back()->with('success', 'Photo de profil mise à jour !');
+            $user->update(['profile_photo_path' => $response->json()['secure_url']]);
+            return back()->with('success', 'Photo mise à jour !');
         }
-
-        return back()->withErrors('Erreur Cloudinary : ' . $response->body());
     }
 
-    return back()->with('error', 'Veuillez sélectionner une photo.');
+    return back()->with('error', 'Échec de l\'envoi.');
 }
     public function destroy(Request $request)
     {

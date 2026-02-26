@@ -82,50 +82,51 @@
     }
 </style>
 
-<div class="avatar-upload-container">
-    {{-- Formulaire d'upload automatique --}}
-    <form id="avatarAutoForm" action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
+<div class="flex flex-col items-center p-4">
+    {{-- Formulaire unique pour Upload --}}
+    <form id="avatarForm" action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data" class="relative">
         @csrf
         @method('PATCH')
         
-        <label for="photoInput" class="avatar-clickable" title="Cliquez pour changer de photo">
-            {{-- Image --}}
-            <img src="{{ auth()->user()->profile_photo_path 
-                ? (str_starts_with(auth()->user()->profile_photo_path, 'http') ? auth()->user()->profile_photo_path : asset('storage/'.auth()->user()->profile_photo_path)) 
-                : asset('images/default-avatar.png') }}" alt="Avatar">
+        <label for="photoInput" class="group relative block w-32 h-32 cursor-pointer">
+            {{-- L'image de l'avatar avec détection URL Cloudinary --}}
+            <img id="preview" 
+                 src="{{ $user->profile_photo_path ? (str_starts_with($user->profile_photo_path, 'http') ? $user->profile_photo_path : asset('storage/'.$user->profile_photo_path)) : asset('images/default-avatar.png') }}" 
+                 class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg group-hover:opacity-75 transition">
             
-            {{-- Overlay Caméra --}}
-            <div class="avatar-overlay">
-                <span>📷</span>
+            {{-- Overlay Caméra au survol --}}
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                <span class="bg-black bg-opacity-50 text-white p-2 rounded-full">📷</span>
             </div>
 
-            {{-- Spinner --}}
-            <div id="uploadSpinner" class="loading-spinner">
-                <div class="loader"></div>
+            {{-- Spinner caché --}}
+            <div id="loading" class="hidden absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 rounded-full">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
         </label>
 
-        {{-- Input invisible --}}
-        <input type="file" name="photo" id="photoInput" class="hidden" accept="image/*" style="display:none" onchange="submitAvatar()">
+        <input type="file" name="photo" id="photoInput" class="hidden" accept="image/*" onchange="uploadAvatar()">
     </form>
 
-    {{-- Bouton supprimer --}}
-    @if(auth()->user()->profile_photo_path)
-        <form action="{{ route('profile.photo.update') }}" method="POST" onsubmit="return confirm('Supprimer cette photo ?')">
+    {{-- Bouton Supprimer (uniquement si une photo existe) --}}
+    @if($user->profile_photo_path)
+        <form action="{{ route('profile.photo.update') }}" method="POST" class="mt-4">
             @csrf
             @method('PATCH')
             <input type="hidden" name="remove_photo" value="1">
-            <button type="submit" class="btn-delete">Retirer la photo</button>
+            <button type="submit" class="text-red-500 text-sm hover:underline">
+                Supprimer la photo
+            </button>
         </form>
     @endif
 </div>
 
 <script>
-    function submitAvatar() {
-        const input = document.getElementById('photoInput');
-        if (input.files.length > 0) {
-            document.getElementById('uploadSpinner').classList.add('active');
-            document.getElementById('avatarAutoForm').submit();
-        }
+function uploadAvatar() {
+    const input = document.getElementById('photoInput');
+    if (input.files.length > 0) {
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('avatarForm').submit();
     }
+}
 </script>
