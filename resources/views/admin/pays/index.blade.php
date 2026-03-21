@@ -1,56 +1,75 @@
 @extends('layouts.admin')
 
 @section('title', 'Admin • Pays')
-@section('header', 'Gestion des pays')
+@section('header', 'Gestion géographique')
 
 @section('content')
-<div class="card">
-    <div class="toolbar">
+<div class="admDash">
+    {{-- Header --}}
+    <div class="admDash__head">
         <div>
-            <div style="font-weight:800; font-size:18px;">Pays</div>
-            <div class="help">Créer, modifier et supprimer les pays.</div>
+            <h1 class="admDash__title text-white">Référentiel des Pays</h1>
+            <p class="admDash__sub">Gérez la liste des pays de résidence disponibles pour les membres.</p>
         </div>
-        <a class="btn btn--primary" href="{{ route('admin.pays.create') }}">+ Nouveau</a>
+        <a class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 10px 20px; font-weight: 800; text-decoration: none;" href="{{ route('admin.pays.create') }}">
+            + Nouveau Pays
+        </a>
     </div>
 
-    <div class="table-wrap">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th style="width:220px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($pays as $p)
-                    <tr>
-                        <td>{{ $p->idpays }}</td>
-                        <td>{{ $p->nom }}</td>
-                        <td>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                <a class="btn" href="{{ route('admin.pays.edit', $p) }}">Modifier</a>
-                                <form method="POST" action="{{ route('admin.pays.destroy', $p) }}"
-                                      onsubmit="return confirm('Supprimer ce pays ?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn--danger" type="submit">Supprimer</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" style="color: rgba(229,231,235,0.75); padding:18px;">
-                            Aucun pays.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+    {{-- Table --}}
+    <div class="admPanel admPanel--full">
+        <div class="admPanel__body" style="padding: 0;">
+            <div class="table-wrap">
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: rgba(255,255,255,0.02); text-align: left;">
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase; width: 100px;">ID</th>
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase;">Nom du pays</th>
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="admRows">
+                        @forelse($pays as $p)
+                        <tr class="admRow" style="display: table-row; background: transparent; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 18px;">
+                                <span style="color: #3b82f6; font-family: monospace; font-weight: 700; background: rgba(59, 130, 246, 0.1); padding: 4px 10px; border-radius: 8px;">
+                                    #{{ $p->idpays }}
+                                </span>
+                            </td>
+                            <td style="padding: 18px;">
+                                <div style="font-weight: 800; color: #fff; font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                                    🌍 {{ $p->nom }}
+                                </div>
+                            </td>
+                            <td style="padding: 18px; text-align: right;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    <a class="admQuick__btn" href="{{ route('admin.pays.edit', $p) }}" style="padding: 6px 15px; font-size: 12px; text-decoration: none; border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+                                        Modifier
+                                    </a>
+                                    <form method="POST" action="{{ route('admin.pays.destroy', $p) }}" onsubmit="return confirm('Supprimer ce pays ?');">
+                                        @csrf @method('DELETE')
+                                        <button class="admQuick__btn" style="border-color: rgba(239,68,68,0.3); color: #f87171; background: rgba(239,68,68,0.05); padding: 6px 15px; font-size: 12px; cursor: pointer;">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="3" style="padding: 60px; text-align: center; color: #64748b;">
+                                Aucun pays dans la base de données.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div style="margin-top:14px;">
+    {{-- Pagination --}}
+    <div style="margin-top: 20px;">
         {{ $pays->links() ?? '' }}
     </div>
 </div>

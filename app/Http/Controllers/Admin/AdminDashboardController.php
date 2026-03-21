@@ -13,6 +13,7 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
+        // 1. Stats Globales (KPI)
         $stats = [
             'total_membres' => Membre::count(),
             'hommes'        => Membre::where('sexe', 'M')->count(),
@@ -22,7 +23,7 @@ class AdminDashboardController extends Controller
             'annonces'      => class_exists(Annonce::class) ? Annonce::count() : 0,
         ];
 
-        // Membres par pays
+        // 2. Membres par pays
         $parPays = DB::table('membres')
             ->join('pays', 'membres.idpays', '=', 'pays.idpays')
             ->select('pays.nom as label', DB::raw('COUNT(*) as total'))
@@ -30,7 +31,7 @@ class AdminDashboardController extends Controller
             ->orderByDesc('total')
             ->get();
 
-        // Membres par département
+        // 3. Membres par département
         $parDepartement = DB::table('membres')
             ->join('departements', 'membres.iddep', '=', 'departements.iddep')
             ->select('departements.nom as label', DB::raw('COUNT(*) as total'))
@@ -38,30 +39,22 @@ class AdminDashboardController extends Controller
             ->orderByDesc('total')
             ->get();
 
-        // Membres par année d’adhésion
+        // 4. Membres par année
         $parAnnee = DB::table('membres')
             ->select('annee_adhesion as label', DB::raw('COUNT(*) as total'))
             ->groupBy('annee_adhesion')
             ->orderByDesc('annee_adhesion')
             ->get();
 
-        // Membres par sexe (utile si demain tu ajoutes autre chose que M/F)
-        $parSexe = DB::table('membres')
-            ->select('sexe as label', DB::raw('COUNT(*) as total'))
-            ->groupBy('sexe')
-            ->orderByDesc('total')
-            ->get();
+        // 5. RÉPARTITION SEXE PAR PAYS (Correction des noms de colonnes)
+        $sexeParPays = DB::table('membres')
+            ->join('pays', 'membres.idpays', '=', 'pays.idpays')
+            ->select('pays.nom as pays_nom', 'membres.sexe', DB::raw('count(*) as total'))
+            ->groupBy('pays.nom', 'membres.sexe')
+            ->get() 
+            ->groupBy('pays_nom');
 
-        /**
-         * “Communauté par pays”
-         * IMPORTANT : dans ton modèle actuel, on n’a pas une colonne explicite "communaute".
-         * Donc je te propose 2 interprétations possibles :
-         *
-         * A) Communauté = Pays (même chose que $parPays) -> alors inutile.
-         * B) Communauté = (Pays + Département) => combien de membres par département DANS chaque pays.
-         *
-         * Je mets ici l’option B (plus utile).
-         */
+        // 6. Communautés par pays (Pays + Département)
         $communauteParPays = DB::table('membres')
             ->join('pays', 'membres.idpays', '=', 'pays.idpays')
             ->join('departements', 'membres.iddep', '=', 'departements.iddep')
@@ -74,14 +67,15 @@ class AdminDashboardController extends Controller
             ->orderBy('pays.nom')
             ->orderByDesc('total')
             ->get()
-            ->groupBy('pays'); // pour l’affichage (sections par pays)
+            ->groupBy('pays');
 
+        // 7. Retour à la vue avec les bonnes variables
         return view('admin.dashboard', compact(
             'stats',
             'parPays',
             'parDepartement',
             'parAnnee',
-            'parSexe',
+            'sexeParPays', // Correction ici (doit correspondre au nom dans la vue)
             'communauteParPays'
         ));
     }

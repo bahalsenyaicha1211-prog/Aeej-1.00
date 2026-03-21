@@ -1,4 +1,3 @@
-{{-- resources/views/admin/dashboard.blade.php --}}
 @extends('layouts.admin')
 
 @section('title', 'Admin • Dashboard')
@@ -6,372 +5,193 @@
 
 @section('styles')
 <style>
-/* ===== DASHBOARD ONLY (isolé) ===== */
-.admDash{display:flex; flex-direction:column; gap:14px}
+    /* Global Dashboard Impact */
+    .admDash { display: flex; flex-direction: column; gap: 24px; color: #fff; }
+    
+    /* Titre & Sous-titre */
+    .admDash__title { font-size: 28px; font-weight: 900; margin: 0; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .admDash__sub { color: #94a3b8; font-size: 14px; margin-top: 4px; }
 
-.admDash__head{
-  display:flex; align-items:flex-start; justify-content:space-between;
-  gap:12px; flex-wrap:wrap;
-}
-.admDash__title{margin:0; font-size:22px; font-weight:900; letter-spacing:.2px}
-.admDash__sub{margin:6px 0 0; color:rgba(229,231,235,.72); font-size:13px; line-height:1.5}
+    /* Grille de KPI (Haut) */
+    .admKpiGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .admKpi { 
+        background: rgba(255, 255, 255, 0.03); 
+        border: 1px solid rgba(255, 255, 255, 0.08); 
+        border-radius: 20px; padding: 20px; 
+        position: relative; overflow: hidden;
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s ease;
+    }
+    .admKpi:hover { transform: translateY(-5px); border-color: rgba(34, 197, 94, 0.4); }
+    .admKpi::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, transparent, rgba(34, 197, 94, 0.05)); pointer-events: none; }
+    .admKpi__label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; }
+    .admKpi__value { font-size: 32px; font-weight: 900; margin: 8px 0; }
+    .admKpi__meta { font-size: 12px; color: #4ade80; font-weight: 600; }
 
-/* KPI cards */
-.admKpiGrid{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0,1fr));
-  gap:12px;
-}
-.admKpi{
-  grid-column: span 4;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;
-  background: rgba(255,255,255,.04);
-  box-shadow: 0 14px 34px rgba(0,0,0,.30);
-  padding:14px;
-  position:relative;
-  overflow:hidden;
-}
-.admKpi::before{
-  content:"";
-  position:absolute; left:0; top:0; bottom:0;
-  width:4px;
-  background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(22,163,74,.55));
-}
-.admKpi__top{display:flex; align-items:center; justify-content:space-between; gap:10px}
-.admKpi__label{
-  font-size:11px; letter-spacing:.10em; text-transform:uppercase;
-  color: rgba(229,231,235,.70);
-}
-.admKpi__value{margin-top:10px; font-size:30px; font-weight:950; letter-spacing:.2px}
-.admKpi__meta{margin-top:4px; color: rgba(229,231,235,.68); font-size:12px}
+    /* Grille des Panels (Milieu) */
+    .admGrid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+    .admPanel { 
+        grid-column: span 6; 
+        background: rgba(15, 23, 42, 0.6); 
+        border: 1px solid rgba(255, 255, 255, 0.1); 
+        border-radius: 24px; overflow: hidden; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
 
-/* Panels grid */
-.admGrid{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0,1fr));
-  gap:12px;
-}
-.admPanel{
-  grid-column: span 6;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;
-  background: rgba(255,255,255,.04);
-  box-shadow: 0 18px 40px rgba(0,0,0,.33);
-  overflow:hidden;
-}
-.admPanel__head{
-  padding:14px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.02);
-}
-.admPanel__h{margin:0; font-weight:950; letter-spacing:.2px}
-.admPanel__p{margin:6px 0 0; color: rgba(229,231,235,.72); font-size:12px; line-height:1.5}
-.admPanel__body{padding:14px}
+    .admPanel--full { grid-column: span 12; }
 
-/* list rows */
-.admRows{display:flex; flex-direction:column; gap:10px}
-.admRow{
-  display:flex; justify-content:space-between; align-items:center;
-  gap:12px;
-  padding:12px;
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:16px;
-  background: rgba(0,0,0,.10);
-}
-.admRow__label{font-weight:850; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.admRow__value{
-  border:1px solid rgba(34,197,94,.28);
-  background: rgba(34,197,94,.10);
-  color: rgba(187,247,208,.95);
-  border-radius:999px;
-  padding:8px 10px;
-  font-size:12px;
-  white-space:nowrap;
-}
-.empty{padding: 12px; color: rgba(229,231,235,.70); text-align:center}
+    .admPanel__head { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255, 255, 255, 0.02); }
+    .admPanel__h { font-size: 16px; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 10px; }
+    .admPanel__p { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .admPanel__body { padding: 20px; }
 
-/* Communautés par pays */
-.admCountries{
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;
-  background: rgba(255,255,255,.04);
-  box-shadow: 0 18px 40px rgba(0,0,0,.33);
-  overflow:hidden;
-}
-.admCountries__head{
-  padding:14px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.02);
-}
-.admCountries__body{padding:14px}
-.admCountry{margin-bottom:14px}
-.admCountry__name{
-  font-weight:950;
-  margin:0 0 10px;
-  letter-spacing:.2px;
-}
-.admCountry__grid{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0,1fr));
-  gap:10px;
-}
-.admChip{
-  grid-column: span 4;
-  padding:10px 12px;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.10);
-  display:flex; justify-content:space-between; gap:10px;
-}
-.admChip__label{font-weight:850; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.admChip__value{
-  color: rgba(187,247,208,.95);
-  font-weight:950;
-}
+    /* Lignes de données */
+    .admRows { display: flex; flex-direction: column; gap: 10px; }
+    .admRow { 
+        display: flex; justify-content: space-between; align-items: center; 
+        padding: 12px 16px; border-radius: 14px; 
+        background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: background 0.2s;
+    }
+    .admRow:hover { background: rgba(255, 255, 255, 0.06); }
+    .admRow__label { font-size: 14px; font-weight: 600; color: #e2e8f0; }
+    .admRow__value { background: #22c55e; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; }
 
-/* ===== Accès rapides (Galerie + Admins) ===== */
-.admQuick{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0,1fr));
-  gap:12px;
-}
-.admQuick__card{
-  grid-column: span 6;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;
-  background: rgba(255,255,255,.04);
-  box-shadow: 0 18px 40px rgba(0,0,0,.33);
-  overflow:hidden;
-}
-.admQuick__head{
-  padding:14px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.02);
-}
-.admQuick__body{
-  padding:14px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-.admQuick__btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  padding:10px 12px;
-  border-radius:16px;
-  text-decoration:none;
-  color: rgba(229,231,235,.95);
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.10);
-  transition: transform .12s ease, background .12s ease, border-color .12s ease;
-}
-.admQuick__btn:hover{
-  background: rgba(255,255,255,.06);
-  border-color: rgba(255,255,255,.18);
-  transform: translateY(-1px);
-}
-.admQuick__btn--green{
-  border-color: rgba(34,197,94,.35);
-  background: rgba(34,197,94,.10);
-}
-.admQuick__btn--green:hover{
-  background: rgba(34,197,94,.14);
-}
+    /* Sexe Bar Impact */
+    .genderBar__container { margin-top: 10px; height: 8px; background: rgba(236, 72, 153, 0.2); border-radius: 10px; overflow: hidden; display: flex; }
+    .genderBar__fill { height: 100%; background: #3b82f6; transition: width 1s ease-in-out; }
 
-/* Responsive */
-@media (max-width: 1200px){
-  .admKpi{grid-column: span 6;}
-  .admPanel{grid-column: span 12;}
-  .admChip{grid-column: span 6;}
-  .admQuick__card{grid-column: span 12;}
-}
-@media (max-width: 760px){
-  .admKpi{grid-column: span 12;}
-  .admChip{grid-column: span 12;}
-  .admRow__label{white-space:normal}
-}
+    /* Chips pour les communautés */
+    .admCountry__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 15px; }
+    .admChip { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; }
+    .admChip__label { font-size: 12px; color: #94a3b8; }
+    .admChip__value { color: #fff; font-weight: 800; }
+
+    /* Responsive */
+    @media (max-width: 1024px) { .admPanel { grid-column: span 12; } }
 </style>
 @endsection
 
 @section('content')
-
-@php
-  $u = auth()->user();
-@endphp
-
 <div class="admDash">
+    {{-- Header --}}
+    <div class="admDash__head">
+        <div>
+            <h1 class="admDash__title text-white">Tableau de bord</h1>
+            <p class="admDash__sub text-white">Analyse en temps réel de votre communauté.</p>
+        </div>
+    </div>
 
-  <div class="admDash__head">
-      <div>
-          <h1 class="admDash__title">Tableau de bord</h1>
-          <p class="admDash__sub">
-              Statistiques globales et répartitions (pays, départements, années, sexe, communautés).
-          </p>
-      </div>
-  </div>
+    {{-- 1. Section KPI --}}
+    <div class="admKpiGrid">
+        @php
+            $kpis = [
+                ['Membres', $stats['total_membres'] ?? 0, 'Inscrits', 'blue'],
+                ['Hommes', $stats['hommes'] ?? 0, 'Sexe M', 'green'],
+                ['Femmes', $stats['femmes'] ?? 0, 'Sexe F', 'pink'],
+                ['Pays', $stats['pays'] ?? 0, 'Référencés', 'purple']
+            ];
+        @endphp
+        @foreach($kpis as $kpi)
+        <div class="admKpi">
+            <div class="admKpi__label text-white">{{ $kpi[0] }}</div>
+            <div class="admKpi__value text-white">{{ $kpi[1] }}</div>
+            <div class="admKpi__meta text-white">{{ $kpi[2] }}</div>
+        </div>
+        @endforeach
+    </div>
 
-  {{-- KPI --}}
-  <div class="admKpiGrid">
-      <div class="admKpi">
-          <div class="admKpi__top"><div class="admKpi__label">Total membres</div></div>
-          <div class="admKpi__value">{{ $stats['total_membres'] ?? 0 }}</div>
-          <div class="admKpi__meta">Inscrits</div>
-      </div>
+    {{-- 2. Grille Principale --}}
+    <div class="admGrid">
+        {{-- Sexe par Pays (Prend plus de place car important) --}}
+        <div class="admPanel admPanel--full">
+            <div class="admPanel__head">
+                <h2 class="admPanel__h text-white">🌍 Répartition Hommes/Femmes par Pays</h2>
+                <p class="admPanel__p text-white">Analyse démographique géographique.</p>
+            </div>
+            <div class="admPanel__body">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    @foreach($sexeParPays as $pays => $group)
+                        @php
+                            $m = $group->where('sexe', 'M')->first()->total ?? 0;
+                            $f = $group->where('sexe', 'F')->first()->total ?? 0;
+                            $total = $m + $f;
+                            $percM = $total > 0 ? ($m / $total) * 100 : 0;
+                        @endphp
+                        <div class="admRow" style="flex-direction: column; align-items: stretch;">
+                            <div style="display:flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="font-bold text-white">{{ $pays }}</span>
+                                <span style="font-size: 12px; color: #94a3b8;">Total: {{ $total }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px;">
+                                <span style="color: #3b82f6;">M: {{ $m }}</span>
+                                <span style="color: #ec4899;">F: {{ $f }}</span>
+                            </div>
+                            <div class="genderBar__container">
+                                <div class="genderBar__fill" style="width: {{ $percM }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
 
-      <div class="admKpi">
-          <div class="admKpi__top"><div class="admKpi__label">Hommes</div></div>
-          <div class="admKpi__value">{{ $stats['hommes'] ?? 0 }}</div>
-          <div class="admKpi__meta">Sexe M</div>
-      </div>
+        {{-- Membres par Pays --}}
+        <div class="admPanel">
+            <div class="admPanel__head">
+                <h2 class="admPanel__h text-white">📊 Top Pays</h2>
+            </div>
+            <div class="admPanel__body">
+                <div class="admRows">
+                    @foreach($parPays as $row)
+                        <div class="admRow">
+                            <span class="admRow__label text-white">{{ $row->label }}</span>
+                            <span class="admRow__value text-white">{{ $row->total }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
 
-      <div class="admKpi">
-          <div class="admKpi__top"><div class="admKpi__label">Femmes</div></div>
-          <div class="admKpi__value">{{ $stats['femmes'] ?? 0 }}</div>
-          <div class="admKpi__meta">Sexe F</div>
-      </div>
+        {{-- Membres par Année --}}
+        <div class="admPanel">
+            <div class="admPanel__head">
+                <h2 class="admPanel__h text-white">📅 Croissance annuelle</h2>
+            </div>
+            <div class="admPanel__body">
+                <div class="admRows">
+                    @foreach($parAnnee as $row)
+                        <div class="admRow">
+                            <span class="admRow__label text-white">Année {{ $row->label }}</span>
+                            <span class="admRow__value text-white" style="background:#8b5cf6">{{ $row->total }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
 
-      <div class="admKpi">
-          <div class="admKpi__top"><div class="admKpi__label">Départements</div></div>
-          <div class="admKpi__value">{{ $stats['departements'] ?? 0 }}</div>
-          <div class="admKpi__meta">Référencés</div>
-      </div>
-
-      <div class="admKpi">
-          <div class="admKpi__top"><div class="admKpi__label">Pays</div></div>
-          <div class="admKpi__value">{{ $stats['pays'] ?? 0 }}</div>
-          <div class="admKpi__meta">Référencés</div>
-      </div>
-
-      <div class="admKpi">
-          <div class="admKpi__top"><div class="admKpi__label">Annonces</div></div>
-          <div class="admKpi__value">{{ $stats['annonces'] ?? 0 }}</div>
-          <div class="admKpi__meta">Total</div>
-      </div>
-  </div>
-
-  
-  {{-- Répartitions --}}
-  <div class="admGrid">
-
-      <div class="admPanel">
-          <div class="admPanel__head">
-              <h2 class="admPanel__h">Membres par pays</h2>
-              <p class="admPanel__p">Répartition des membres par pays.</p>
-          </div>
-          <div class="admPanel__body">
-              @if(!empty($parPays) && count($parPays))
-                  <div class="admRows">
-                      @foreach($parPays as $row)
-                          <div class="admRow">
-                              <div class="admRow__label">{{ $row->label }}</div>
-                              <div class="admRow__value">{{ $row->total }}</div>
-                          </div>
-                      @endforeach
-                  </div>
-              @else
-                  <div class="empty">Aucune donnée.</div>
-              @endif
-          </div>
-      </div>
-
-      <div class="admPanel">
-          <div class="admPanel__head">
-              <h2 class="admPanel__h">Membres par département</h2>
-              <p class="admPanel__p">Répartition des membres par département.</p>
-          </div>
-          <div class="admPanel__body">
-              @if(!empty($parDepartement) && count($parDepartement))
-                  <div class="admRows">
-                      @foreach($parDepartement as $row)
-                          <div class="admRow">
-                              <div class="admRow__label">{{ $row->label }}</div>
-                              <div class="admRow__value">{{ $row->total }}</div>
-                          </div>
-                      @endforeach
-                  </div>
-              @else
-                  <div class="empty">Aucune donnée.</div>
-              @endif
-          </div>
-      </div>
-
-      <div class="admPanel">
-          <div class="admPanel__head">
-              <h2 class="admPanel__h">Membres par année d’inscription</h2>
-              <p class="admPanel__p">Évolution des adhésions par année.</p>
-          </div>
-          <div class="admPanel__body">
-              @if(!empty($parAnnee) && count($parAnnee))
-                  <div class="admRows">
-                      @foreach($parAnnee as $row)
-                          <div class="admRow">
-                              <div class="admRow__label">{{ $row->label }}</div>
-                              <div class="admRow__value">{{ $row->total }}</div>
-                          </div>
-                      @endforeach
-                  </div>
-              @else
-                  <div class="empty">Aucune donnée.</div>
-              @endif
-          </div>
-      </div>
-
-      <div class="admPanel">
-          <div class="admPanel__head">
-              <h2 class="admPanel__h">Membres par sexe</h2>
-              <p class="admPanel__p">Répartition par sexe (M/F).</p>
-          </div>
-          <div class="admPanel__body">
-              @if(!empty($parSexe) && count($parSexe))
-                  <div class="admRows">
-                      @foreach($parSexe as $row)
-                          <div class="admRow">
-                              <div class="admRow__label">{{ $row->label }}</div>
-                              <div class="admRow__value">{{ $row->total }}</div>
-                          </div>
-                      @endforeach
-                  </div>
-              @else
-                  <div class="empty">Aucune donnée.</div>
-              @endif
-          </div>
-      </div>
-
-  </div>
-
-  {{-- Communautés par pays (Pays -> Département) --}}
-  <div class="admCountries">
-      <div class="admCountries__head">
-          <h2 class="admPanel__h">Communautés par pays</h2>
-          <p class="admPanel__p">
-              Détail par pays : nombre de membres par “communauté” (ici : département).
-          </p>
-      </div>
-      <div class="admCountries__body">
-          @if(!empty($communauteParPays) && count($communauteParPays))
-              @foreach($communauteParPays as $pays => $items)
-                  <div class="admCountry">
-                      <h3 class="admCountry__name">{{ $pays }}</h3>
-                      <div class="admCountry__grid">
-                          @foreach($items as $it)
-                              <div class="admChip">
-                                  <div class="admChip__label">{{ $it->communaute }}</div>
-                                  <div class="admChip__value">{{ $it->total }}</div>
-                              </div>
-                          @endforeach
-                      </div>
-                  </div>
-              @endforeach
-          @else
-              <div class="empty">Aucune donnée.</div>
-          @endif
-      </div>
-  </div>
-
+    {{-- 3. Communautés par pays (Full Width) --}}
+    <div class="admPanel admPanel--full">
+        <div class="admPanel__head">
+            <h2 class="admPanel__h text-white">🏘️ Communautés par pays</h2>
+            <p class="admPanel__p text-white">Détail des membres par département au sein de chaque pays.</p>
+        </div>
+        <div class="admPanel__body">
+            @foreach($communauteParPays as $pays => $items)
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 14px; color: #4ade80; border-left: 3px solid #4ade80; padding-left: 10px; margin-bottom: 15px;">{{ $pays }}</h3>
+                    <div class="admCountry__grid">
+                        @foreach($items as $it)
+                            <div class="admChip">
+                                <span class="admChip__label text-white">{{ $it->communaute }}</span>
+                                <span class="admChip__value text-white">{{ $it->total }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
 </div>
-
 @endsection

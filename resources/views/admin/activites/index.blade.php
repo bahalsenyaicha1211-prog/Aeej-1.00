@@ -1,60 +1,77 @@
 @extends('layouts.admin')
 
 @section('title', 'Admin • Activités')
-@section('header', 'Gestion des activités')
+@section('header', 'Journal des Activités')
 
 @section('content')
-<div class="card">
-    <div class="toolbar">
+<div class="admDash">
+    <div class="admDash__head">
         <div>
-            <div style="font-weight:800; font-size:18px;">Activités</div>
-            <div class="help">Créer, modifier et supprimer les activités.</div>
+            <h1 class="admDash__title text-white">Activités de l'Association</h1>
+            <p class="admDash__sub">Historique et planification des événements et actions réalisées.</p>
         </div>
-
-        <a class="btn btn--primary" href="{{ route('admin.activites.create') }}">+ Nouvelle activité</a>
+        <a class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 10px 20px; font-weight: 800; text-decoration: none;" href="{{ route('admin.activites.create') }}">
+            + Nouvelle Activité
+        </a>
     </div>
 
-    <div class="table-wrap">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Libellé</th>
-                    <th>Catégorie</th>
-                    <th style="width:220px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($activites as $a)
-                    <tr>
-                        <td>{{ \Illuminate\Support\Carbon::parse($a->date)->format('d/m/Y') }}</td>
-                        <td>{{ $a->libelle }}</td>
-                        <td>{{ $a->categorie ?: '—' }}</td>
-                        <td>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                <a class="btn" href="{{ route('admin.activites.edit', $a) }}">Modifier</a>
-
-                                <form method="POST" action="{{ route('admin.activites.destroy', $a) }}"
-                                      onsubmit="return confirm('Supprimer cette activité ?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn--danger" type="submit">Supprimer</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" style="color: rgba(229,231,235,0.75); padding:18px;">
-                            Aucune activité pour le moment.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <div class="admPanel admPanel--full">
+        <div class="admPanel__body" style="padding: 0;">
+            <div class="table-wrap">
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: rgba(255,255,255,0.02); text-align: left;">
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase; width: 140px;">Date</th>
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase;">Libellé de l'activité</th>
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase;">Catégorie</th>
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="admRows">
+                        @forelse($activites as $a)
+                        <tr class="admRow" style="display: table-row; background: transparent; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 18px;">
+                                <div style="color: #4ade80; font-family: monospace; font-weight: 700; background: rgba(74, 222, 128, 0.1); padding: 4px 10px; border-radius: 8px; font-size: 13px; display: inline-block;">
+                                    {{ \Illuminate\Support\Carbon::parse($a->date)->format('d/m/Y') }}
+                                </div>
+                            </td>
+                            <td style="padding: 18px;">
+                                <div style="font-weight: 800; color: #fff; font-size: 15px;">{{ $a->libelle }}</div>
+                            </td>
+                            <td style="padding: 18px;">
+                                <span style="padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">
+                                    {{ $a->categorie ?: 'Non classée' }}
+                                </span>
+                            </td>
+                            <td style="padding: 18px; text-align: right;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    <a class="admQuick__btn" href="{{ route('admin.activites.edit', $a) }}" style="padding: 6px 15px; font-size: 12px; text-decoration: none; border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+                                        Modifier
+                                    </a>
+                                    <form method="POST" action="{{ route('admin.activites.destroy', $a) }}" onsubmit="return confirm('Supprimer cette activité ?');">
+                                        @csrf @method('DELETE')
+                                        <button class="admQuick__btn" style="border-color: rgba(239,68,68,0.3); color: #f87171; background: rgba(239,68,68,0.05); padding: 6px 15px; font-size: 12px; cursor: pointer;">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" style="padding: 60px; text-align: center; color: #64748b;">
+                                <div style="font-size: 40px; margin-bottom: 10px;">📅</div>
+                                Aucune activité enregistrée.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div style="margin-top:14px;">
+    <div style="margin-top: 20px;">
         {{ $activites->links() }}
     </div>
 </div>

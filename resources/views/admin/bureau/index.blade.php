@@ -1,71 +1,75 @@
 @extends('layouts.admin')
 
 @section('title', 'Gestion du Bureau')
-@section('header', 'Gestion du Bureau')
+@section('header', 'Structure du Bureau')
 
 @section('content')
-<div class="toolbar">
-    <div></div>
-    <a class="btn btn--primary" href="{{ route('admin.bureau.create') }}">Ajouter un membre</a>
-</div>
-
-<div class="card">
-    <div class="table-wrap">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Photo</th>
-                <th>Membre</th>
-                <th>Poste</th>
-                <th>Ordre</th>
-                <th>Actif</th>
-                <th style="width:190px;">Actions</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            @forelse($bureau as $b)
-                <tr>
-                    <td>
-                        <img
-                            src="{{ $b->photo ? asset('storage/'.$b->photo) : asset('images/image1.JPG') }}"
-                            alt="Photo"
-                            style="width:46px;height:46px;border-radius:999px;object-fit:cover;border:1px solid rgba(148,163,184,.22);"
-                        >
-                    </td>
-                    <td>
-                        <div style="font-weight:700;">
-                            {{ $b->membre?->prenom }} {{ $b->membre?->nom }}
-                        </div>
-                        <div style="font-size:12px;opacity:.75;">
-                            Matricule : {{ $b->matricule }}
-                        </div>
-                    </td>
-                    <td>{{ $b->poste }}</td>
-                    <td>{{ $b->ordre }}</td>
-                    <td>{{ $b->is_actif ? 'Oui' : 'Non' }}</td>
-                    <td>
-                        <a class="btn btn--ghost" href="{{ route('admin.bureau.edit', $b) }}">Modifier</a>
-
-                        <form method="POST"
-                              action="{{ route('admin.bureau.destroy', $b) }}"
-                              style="display:inline-block"
-                              onsubmit="return confirm('Supprimer ce membre du bureau ?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn--danger" type="submit">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="6">Aucun membre du bureau.</td></tr>
-            @endforelse
-            </tbody>
-        </table>
+<div class="admDash">
+    <div class="admDash__head">
+        <div>
+            <h1 class="admDash__title text-white">Gestion du Bureau</h1>
+            <p class="admDash__sub">Organisez la hiérarchie et l'affichage des membres du bureau public.</p>
+        </div>
+        <a class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 10px 20px; font-weight: 800;" href="{{ route('admin.bureau.create') }}">
+            + Ajouter un membre
+        </a>
     </div>
 
-    <div style="margin-top:12px;">
-        {{ $bureau->links() }}
+    <div class="admPanel admPanel--full">
+        <div class="admPanel__body" style="padding: 0;">
+            <div class="table-wrap">
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: rgba(255,255,255,0.02); text-align: left;">
+                            <th style="padding: 15px; color: #64748b; font-size: 11px; text-transform: uppercase;">Membre</th>
+                            <th style="padding: 15px; color: #64748b; font-size: 11px; text-transform: uppercase;">Poste / Mission</th>
+                            <th style="padding: 15px; color: #64748b; font-size: 11px; text-transform: uppercase; text-align: center;">Ordre</th>
+                            <th style="padding: 15px; color: #64748b; font-size: 11px; text-transform: uppercase;">Statut</th>
+                            <th style="padding: 15px; color: #64748b; font-size: 11px; text-transform: uppercase; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="admRows">
+                        @forelse($bureau as $b)
+                        <tr class="admRow" style="display: table-row; background: transparent; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img src="{{ $b->photo ? asset('storage/'.$b->photo) : asset('images/image1.JPG') }}" 
+                                         style="width: 45px; height: 45px; border-radius: 12px; object-fit: cover; border: 2px solid rgba(255,255,255,0.1);">
+                                    <div>
+                                        <div style="font-weight: 800; color: #fff;">{{ $b->membre?->prenom }} {{ $b->membre?->nom }}</div>
+                                        <div style="font-size: 11px; color: #64748b;">Matricule: {{ $b->matricule }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 15px; font-weight: 600; color: #e2e8f0;">{{ $b->poste }}</td>
+                            <td style="padding: 15px; text-align: center;">
+                                <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800;">
+                                    #{{ $b->ordre }}
+                                </span>
+                            </td>
+                            <td style="padding: 15px;">
+                                <span style="padding: 5px 12px; border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; background: {{ $b->is_actif ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)' }}; color: {{ $b->is_actif ? '#4ade80' : '#f87171' }}; border: 1px solid {{ $b->is_actif ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)' }};">
+                                    {{ $b->is_actif ? '• Public' : '• Masqué' }}
+                                </span>
+                            </td>
+                            <td style="padding: 15px; text-align: right;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    <a class="admQuick__btn" href="{{ route('admin.bureau.edit', $b) }}" style="padding: 6px 12px; font-size: 12px;">Modifier</a>
+                                    <form method="POST" action="{{ route('admin.bureau.destroy', $b) }}" onsubmit="return confirm('Supprimer ce membre ?')">
+                                        @csrf @method('DELETE')
+                                        <button class="admQuick__btn" style="border-color: rgba(239,68,68,0.3); color: #f87171; background: rgba(239,68,68,0.05); padding: 6px 12px; font-size: 12px;">Supprimer</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="5" style="padding: 40px; text-align: center; color: #64748b;">Aucun membre dans le bureau.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+    <div style="margin-top: 15px;">{{ $bureau->links() }}</div>
 </div>
 @endsection

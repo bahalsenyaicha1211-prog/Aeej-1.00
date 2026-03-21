@@ -1,84 +1,81 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin • Détails membre')
-@section('header', 'Détails du membre')
+@section('title', 'Admin • Profil')
+@section('header', 'Fiche Membre')
 
 @section('content')
 @php
     $u = $membre->user ?? null;
-    $avatarName = $u?->name ?: trim(($membre->prenom ?? '').' '.($membre->nom ?? ''));
-    $memberInitials = strtoupper(substr($avatarName, 0, 1) . (explode(' ', $avatarName)[1][0] ?? ''));
+    $avatarName = trim(($membre->prenom ?? '').' '.($membre->nom ?? ''));
+    $nameParts = explode(' ', $avatarName);
+    $initials = strtoupper(substr($nameParts[0], 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
 @endphp
 
-<div class="card">
-    <div class="toolbar" style="align-items:flex-start;">
-        <div style="display:flex; gap:12px; align-items:center; min-width:0;">
-            <div
-                style="width:54px; height:54px; border-radius:999px; border:1px solid rgba(255,255,255,.14); flex:0 0 auto; background:#2563eb; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; text-transform:uppercase;"
-            >
-                {{ $memberInitials }}
+<div class="admDash">
+    <div class="admDash__head">
+        <div style="display:flex; gap:20px; align-items:center;">
+            {{-- Avatar Initials --}}
+            <div style="width:70px; height:70px; border-radius:20px; background:linear-gradient(45deg, #2563eb, #3b82f6); color:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:900; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);">
+                {{ $initials }}
             </div>
+            <div>
+                <h1 class="admDash__title text-white">{{ $membre->prenom }} {{ $membre->nom }}</h1>
+                <p class="admDash__sub">Matricule : <span style="color:#4ade80; font-family:monospace;">{{ $membre->matricule }}</span></p>
+            </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <a class="admQuick__btn" href="{{ route('admin.membres.edit', $membre) }}" style="background:rgba(59, 130, 246, 0.1); color:#60a5fa; text-decoration:none;">Modifier le profil</a>
+            <a class="admQuick__btn" href="{{ route('admin.membres.index') }}" style="text-decoration:none;">← Retour</a>
+        </div>
+    </div>
 
-            <div style="min-width:0;">
-                <div style="font-weight:800; font-size:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                    {{ $membre->prenom }} {{ $membre->nom }}
+    <div class="admGrid">
+        {{-- Colonne Infos --}}
+        <div class="admPanel">
+            <div class="admPanel__head"><h2 class="admPanel__h text-white">Informations Générales</h2></div>
+            <div class="admPanel__body">
+                <div class="admRows">
+                    <div class="admRow"><span style="color:#64748b;">Sexe</span> <span class="text-white font-bold">{{ $membre->sexe }}</span></div>
+                    <div class="admRow"><span style="color:#64748b;">Département</span> <span class="text-white font-bold">{{ $membre->departement?->nom ?? '—' }}</span></div>
+                    <div class="admRow"><span style="color:#64748b;">Pays de résidence</span> <span class="text-white font-bold">{{ $membre->pays?->nom ?? '—' }}</span></div>
+                    <div class="admRow"><span style="color:#64748b;">Année d'adhésion</span> <span style="color:#a78bfa; font-weight:800;">{{ $membre->annee_adhesion }}</span></div>
                 </div>
-                <div class="help">Matricule : {{ $membre->matricule }}</div>
+            </div>
+        </div>
 
-                @if($u)
-                    <div class="help" style="margin-top:4px;">
-                        Compte lié : <strong>{{ $u->email }}</strong>
+        {{-- Colonne Contact --}}
+        <div class="admPanel">
+            <div class="admPanel__head"><h2 class="admPanel__h text-white">Coordonnées & Compte</h2></div>
+            <div class="admPanel__body">
+                <div class="admRows">
+                    <div class="admRow"><span style="color:#64748b;">Téléphone</span> <span class="text-white font-bold">{{ $membre->telephone ?: '—' }}</span></div>
+                    <div class="admRow"><span style="color:#64748b;">Email</span> <span class="text-white font-bold">{{ $membre->email ?: '—' }}</span></div>
+                    <div class="admRow">
+                        <span style="color:#64748b;">Compte lié</span>
+                        @if($u) <span style="color:#4ade80; font-size:12px;">✅ {{ $u->email }}</span>
+                        @else <span style="color:#fb7185; font-size:12px;">❌ Aucun compte</span> @endif
                     </div>
-                @else
-                    <div class="help" style="margin-top:4px; color:rgba(251,113,133,.95);">
-                        Aucun compte utilisateur lié à ce membre.
+                    <div class="admRow" style="flex-direction:column; align-items:flex-start;">
+                        <span style="color:#64748b; margin-bottom:5px;">Adresse</span>
+                        <span class="text-white" style="font-size:13px; line-height:1.4;">{{ $membre->adresse ?: 'Non renseignée' }}</span>
                     </div>
-                @endif
+                </div>
             </div>
         </div>
 
-        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
-            <a class="btn" href="{{ route('admin.membres.edit', $membre) }}">Modifier</a>
-            <a class="btn btn--ghost" href="{{ route('admin.membres.index') }}">← Retour</a>
-        </div>
-    </div>
-
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-        <div class="card" style="background: rgba(255,255,255,0.03); box-shadow:none;">
-            <div style="font-weight:800; margin-bottom:10px;">Informations</div>
-            <div style="display:grid; gap:10px;">
-                <div><span style="color:rgba(229,231,235,.75);">Sexe :</span> <strong>{{ $membre->sexe }}</strong></div>
-                <div><span style="color:rgba(229,231,235,.75);">Département :</span> <strong>{{ $membre->departement?->nom ?? '—' }}</strong></div>
-                <div><span style="color:rgba(229,231,235,.75);">Pays :</span> <strong>{{ $membre->pays?->nom ?? '—' }}</strong></div>
-                <div><span style="color:rgba(229,231,235,.75);">Année d’adhésion :</span> <strong>{{ $membre->annee_adhesion }}</strong></div>
+        {{-- Zone de Danger --}}
+        <div class="admPanel admPanel--full" style="border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.02);">
+            <div class="admPanel__body" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 style="color:#f87171; font-weight:800; margin:0;">Zone critique</h3>
+                    <p style="color:#64748b; font-size:12px; margin:0;">La suppression d'un membre est irréversible.</p>
+                </div>
+                <form method="POST" action="{{ route('admin.membres.destroy', $membre) }}" onsubmit="return confirm('Supprimer définitivement ce membre ?');">
+                    @csrf @method('DELETE')
+                    <button class="btn" style="background:#dc2626; color:#fff; border-radius:10px; padding:10px 20px; font-weight:800; cursor:pointer; border:none;">Supprimer ce membre</button>
+                </form>
             </div>
         </div>
-
-        <div class="card" style="background: rgba(255,255,255,0.03); box-shadow:none;">
-            <div style="font-weight:800; margin-bottom:10px;">Contact</div>
-            <div style="display:grid; gap:10px;">
-                <div><span style="color:rgba(229,231,235,.75);">Téléphone :</span> <strong>{{ $membre->telephone ?: '—' }}</strong></div>
-                <div><span style="color:rgba(229,231,235,.75);">Mail :</span> <strong>{{ $membre->email ?: '—' }}</strong></div>
-                <div><span style="color:rgba(229,231,235,.75);">Adresse :</span> <strong>{{ $membre->adresse ?: '—' }}</strong></div>
-            </div>
-        </div>
-    </div>
-
-    <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
-        <form method="POST" action="{{ route('admin.membres.destroy', $membre) }}"
-              onsubmit="return confirm('Supprimer définitivement ce membre ?');">
-            @csrf
-            @method('DELETE')
-            <button class="btn btn--danger" type="submit">Supprimer le membre</button>
-        </form>
     </div>
 </div>
-
-<style>
-@media (max-width: 900px){
-  .card > div[style*="grid-template-columns"]{ grid-template-columns: 1fr !important; }
-  .toolbar{ flex-direction:column; align-items:stretch; }
-  .toolbar > div:last-child{ justify-content:flex-start !important; }
-}
-</style>
 @endsection

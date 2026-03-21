@@ -294,6 +294,16 @@ body{
 .grid--2{grid-template-columns: 1fr 1fr}
 .field{display:flex; flex-direction:column}
 .field--full{grid-column: 1 / -1}
+.card > .form{padding:14px}
+.field > label,
+.form label{
+  display:block;
+  font-size:12px;
+  color: var(--muted);
+  margin-bottom:6px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
 
 /* --- Table --- */
 .tablewrap{
@@ -460,4 +470,106 @@ body{
   .drawer__panel .nav::-webkit-scrollbar-track{
     background: rgba(0,0,0,0.10);
   }
+}
+
+/* ===== Admin UI refresh ===== */
+.toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.toolbar > div:first-child{min-width:0}
+.help{
+  margin-top:6px;
+  color: var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.row{
+  display:grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+textarea.textarea,
+.textarea{
+  width:100%;
+  min-height:140px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  padding: 12px;
+  outline:none;
+  resize:vertical;
+  transition: border-color .12s ease, background .12s ease, box-shadow .12s ease;
+}
+.textarea:focus{
+  border-color: rgba(96,165,250,0.55);
+  background: rgba(255,255,255,0.04);
+  box-shadow: 0 0 0 4px rgba(96,165,250,0.16);
+}
+.table-wrap{padding:14px}
+.table-wrap .tablewrap{border-radius:14px}
+
+.nav__item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:650;
+}
+.nav__icon{
+  width:20px;
+  text-align:center;
+  opacity:0.92;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  font-size:11px;
+  font-weight:800;
+  border-radius:999px;
+  padding:6px 10px;
+  border:1px solid rgba(255,255,255,0.16);
+}
+.badge--success{
+  color: rgba(187,247,208,.95);
+  background: rgba(34,197,94,.14);
+  border-color: rgba(34,197,94,.35);
+}
+.badge--danger{
+  color: rgba(254,202,202,.95);
+  background: rgba(251,113,133,.12);
+  border-color: rgba(251,113,133,.35);
+}
+.badge--warn{
+  color: rgba(254,240,138,.95);
+  background: rgba(251,191,36,.12);
+  border-color: rgba(251,191,36,.35);
+}
+.badge--neutral{
+  color: rgba(229,231,235,.90);
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.2);
+}
+
+.table tbody tr:nth-child(even) td{
+  background: rgba(255,255,255,0.02);
+}
+.table tbody tr:hover td{
+  background: rgba(96,165,250,0.08);
+}
+
+input[type="checkbox"]{
+  accent-color: #60a5fa;
+}
+
+@media (max-width: 780px){
+  .row{grid-template-columns:1fr}
+  .toolbar{flex-direction:column; align-items:stretch}
 }

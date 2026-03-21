@@ -1,56 +1,71 @@
 @extends('layouts.admin')
 
 @section('title', 'Admin • Départements')
-@section('header', 'Gestion des départements')
+@section('header', 'Gestion des Départements')
 
 @section('content')
-<div class="card">
-    <div class="toolbar">
+<div class="admDash">
+    <div class="admDash__head">
         <div>
-            <div style="font-weight:800; font-size:18px;">Départements</div>
-            <div class="help">Créer, modifier et supprimer les départements.</div>
+            <h1 class="admDash__title text-white">Départements</h1>
+            <p class="admDash__sub">Structurez l'organisation en gérant les différents secteurs d'activité.</p>
         </div>
-        <a class="btn btn--primary" href="{{ route('admin.departements.create') }}">+ Nouveau</a>
+        <a class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 10px 20px; font-weight: 800;" href="{{ route('admin.departements.create') }}">
+            + Nouveau Département
+        </a>
     </div>
 
-    <div class="table-wrap">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th style="width:220px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($departements as $d)
-                    <tr>
-                        <td>{{ $d->iddep }}</td>
-                        <td>{{ $d->nom }}</td>
-                        <td>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                <a class="btn" href="{{ route('admin.departements.edit', $d) }}">Modifier</a>
-                                <form method="POST" action="{{ route('admin.departements.destroy', $d) }}"
-                                      onsubmit="return confirm('Supprimer ce département ?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn--danger" type="submit">Supprimer</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" style="color: rgba(229,231,235,0.75); padding:18px;">
-                            Aucun département.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <div class="admPanel admPanel--full">
+        <div class="admPanel__body" style="padding: 0;">
+            <div class="table-wrap">
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: rgba(255,255,255,0.02); text-align: left;">
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase; width: 80px;">ID</th>
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase;">Nom du département</th>
+                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="admRows">
+                        @forelse($departements as $d)
+                        <tr class="admRow" style="display: table-row; background: transparent; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 18px;">
+                                <span style="color: #4ade80; font-family: monospace; font-weight: 700; background: rgba(74, 222, 128, 0.1); padding: 4px 8px; border-radius: 6px;">
+                                    #{{ $d->iddep }}
+                                </span>
+                            </td>
+                            <td style="padding: 18px;">
+                                <div style="font-weight: 800; color: #fff; font-size: 15px;">{{ $d->nom }}</div>
+                            </td>
+                            <td style="padding: 18px; text-align: right;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    <a class="admQuick__btn" href="{{ route('admin.departements.edit', $d) }}" style="padding: 6px 12px; font-size: 12px;">
+                                        Modifier
+                                    </a>
+                                    <form method="POST" action="{{ route('admin.departements.destroy', $d) }}" onsubmit="return confirm('Supprimer ce département ?');">
+                                        @csrf @method('DELETE')
+                                        <button class="admQuick__btn" style="border-color: rgba(239,68,68,0.3); color: #f87171; background: rgba(239,68,68,0.05); padding: 6px 12px; font-size: 12px;">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="3" style="padding: 60px; text-align: center; color: #64748b;">
+                                <div style="font-size: 40px; margin-bottom: 10px;">📂</div>
+                                Aucun département enregistré pour le moment.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div style="margin-top:14px;">
+    <div style="margin-top: 20px;">
         {{ $departements->links() ?? '' }}
     </div>
 </div>

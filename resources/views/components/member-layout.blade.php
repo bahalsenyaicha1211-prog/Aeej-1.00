@@ -2,7 +2,6 @@
 @php
     $user = auth()->user();
     
-    // Logique robuste pour les initiales
     $nameParts = explode(' ', trim($user->name));
     if (count($nameParts) >= 2) {
         $initials = substr($nameParts[0], 0, 1) . substr(end($nameParts), 0, 1);
@@ -13,7 +12,6 @@
 
     $unreadAnnoncesCount = $unreadAnnoncesCount ?? 0;
 
-    // Helpers active
     $isDashboard = request()->routeIs('dashboard');
     $isAnnonces  = request()->routeIs('membre.annonces.*');
     $isProfile   = request()->routeIs('profile.edit');
@@ -30,7 +28,6 @@
     <script src="{{ asset('js/member.js') }}" defer></script>
     
     <style>
-        /* On définit le style de l'avatar une fois pour toutes */
         .avatar-circle {
             background: #055b20;
             color: #fff;
@@ -40,10 +37,14 @@
             font-weight: 700;
             text-transform: uppercase;
             border-radius: 50%;
-            flex-shrink: 0; /* Empêche le cercle de s'écraser */
+            flex-shrink: 0;
         }
         .avatar-sidebar { width: 45px; height: 45px; font-size: 1.2rem; }
         .avatar-topbar { width: 35px; height: 35px; font-size: 0.9rem; }
+        
+        /* Ajustement pour les icônes du menu */
+        .nav__item { display: flex; align-items: center; gap: 12px; }
+        .nav__icon { font-size: 1.1rem; width: 20px; text-align: center; }
     </style>
 </head>
 <body class="page">
@@ -53,7 +54,6 @@
     {{-- Sidebar Desktop --}}
     <aside class="sidebar" aria-label="Navigation membre">
         <div class="sidebar__top">
-            {{-- REMPLACÉ : Cercle d'initiales Sidebar --}}
             <div class="avatar-circle avatar-sidebar">
                 {{ $initials }}
             </div>
@@ -65,10 +65,12 @@
 
         <nav class="nav">
             <a class="nav__item {{ $isDashboard ? 'is-active' : '' }}" href="{{ route('dashboard') }}">
+                <span class="nav__icon">🏠</span>
                 <span>Tableau de bord</span>
             </a>
 
             <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('membre.annonces.index') }}">
+                <span class="nav__icon">📢</span>
                 <span>Annonces</span>
                 @if($unreadAnnoncesCount > 0)
                     <span class="badge">{{ $unreadAnnoncesCount }}</span>
@@ -76,11 +78,13 @@
             </a>
 
             <a class="nav__item {{ $isProfile ? 'is-active' : '' }}" href="{{ route('profile.edit') }}">
+                <span class="nav__icon">👤</span>
                 <span>Mon profil</span>
             </a>
 
             @if($user->is_admin)
                 <a class="nav__item" href="{{ route('admin.dashboard') }}">
+                    <span class="nav__icon">⚙️</span>
                     <span>Espace admin</span>
                 </a>
             @endif
@@ -89,7 +93,9 @@
         <div class="sidebar__bottom">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button class="btn btn--primary" style="width:100%;">Déconnexion</button>
+                <button class="btn btn--primary" style="width:100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>🚪</span> Déconnexion
+                </button>
             </form>
         </div>
     </aside>
@@ -113,7 +119,6 @@
                     @endif
                 </a>
 
-                {{-- REMPLACÉ : Cercle d'initiales Topbar --}}
                 <div class="avatar-circle avatar-topbar">
                     {{ $initials }}
                 </div>
@@ -132,19 +137,21 @@
     <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Menu membre">
         <div class="drawer__top">
             <div style="display:flex; align-items:center; gap:10px;">
-                {{-- REMPLACÉ : Cercle d'initiales Drawer --}}
                 <div class="avatar-circle avatar-sidebar">
                     {{ $initials }}
                 </div>
                 <div class="userbox">
                     <div class="userbox__name">{{ $user->name }}</div>
-                    <div class="userbox__email">{{ $user->email }}</div>
                 </div>
             </div>
-            <button class="drawer__close" data-drawer-close type="button" aria-label="Fermer le menu">✕</button>
+            <button class="drawer__close" data-drawer-close type="button">✕</button>
         </div>
-        
-        {{-- ... (reste du code identique) ... --}}
+
+        <nav class="nav">
+            <a class="nav__item {{ $isDashboard ? 'is-active' : '' }}" href="{{ route('dashboard') }}">🏠 Tableau de bord</a>
+            <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('membre.annonces.index') }}">📢 Annonces</a>
+            <a class="nav__item {{ $isProfile ? 'is-active' : '' }}" href="{{ route('profile.edit') }}">👤 Mon profil</a>
+        </nav>
     </div>
 </div>
 
