@@ -12,9 +12,9 @@
     $isPays      = request()->routeIs('admin.pays.*');
     $isDeps      = request()->routeIs('admin.departements.*');
 
-    $avatarUrl = $user?->profile_photo_path
-        ? asset('storage/'.$user->profile_photo_path)
-        : asset('images/default-avatar.png');
+    $initials = $user
+        ? strtoupper(substr($user->name, 0, 1) . (explode(' ', $user->name)[1][0] ?? ''))
+        : '??';
 @endphp
 
 <!doctype html>
@@ -44,7 +44,9 @@
             </div>
 
             <div class="who">
-                <img class="avatar" src="{{ $avatarUrl }}" alt="Avatar">
+                <div class="avatar" style="background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;text-transform:uppercase;">
+                    {{ $initials }}
+                </div>
                 <div class="who__meta">
                     <div class="who__name">{{ $user->name }}</div>
                     <div class="who__email">{{ $user->email }}</div>
@@ -103,7 +105,9 @@
 
             <div class="topbar__right">
                 <a class="btn btn--ghost" href="{{ route('accueil') }}">Site public</a>
-                <img class="avatar" src="{{ $avatarUrl }}" alt="Avatar">
+                <div class="avatar" style="background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;text-transform:uppercase;">
+                    {{ $initials }}
+                </div>
             </div>
         </header>
 
@@ -130,7 +134,9 @@
 
         <div class="drawer__top">
             <div class="who">
-                <img class="avatar" src="{{ $avatarUrl }}" alt="Avatar">
+                <div class="avatar" style="background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;text-transform:uppercase;">
+                    {{ $initials }}
+                </div>
                 <div class="who__meta">
                     <div class="who__name">{{ $user->name }}</div>
                     <div class="who__email">{{ $user->email }}</div>

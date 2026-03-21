@@ -5,22 +5,19 @@
 
 @section('content')
 @php
-    // Photo depuis le compte user lié au membre
     $u = $membre->user ?? null;
-
-    $memberAvatar = ($u && $u->profile_photo_path)
-        ? asset('storage/'.$u->profile_photo_path)
-        : asset('images/default-avatar.png');
+    $avatarName = $u?->name ?: trim(($membre->prenom ?? '').' '.($membre->nom ?? ''));
+    $memberInitials = strtoupper(substr($avatarName, 0, 1) . (explode(' ', $avatarName)[1][0] ?? ''));
 @endphp
 
 <div class="card">
     <div class="toolbar" style="align-items:flex-start;">
         <div style="display:flex; gap:12px; align-items:center; min-width:0;">
-            <img
-                src="{{ $memberAvatar }}"
-                alt="Photo de profil"
-                style="width:54px; height:54px; border-radius:999px; object-fit:cover; border:1px solid rgba(255,255,255,.14); flex:0 0 auto;"
+            <div
+                style="width:54px; height:54px; border-radius:999px; border:1px solid rgba(255,255,255,.14); flex:0 0 auto; background:#2563eb; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; text-transform:uppercase;"
             >
+                {{ $memberInitials }}
+            </div>
 
             <div style="min-width:0;">
                 <div style="font-weight:800; font-size:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">

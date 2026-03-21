@@ -48,11 +48,7 @@ class PaysController extends Controller
             ->with('success', 'Pays mis à jour.');
     }
 
-    public function index() {
-    $totalPays = \App\Models\Pays::count();
-    return view('appropos', compact('totalPays'));
-}
-
+ 
     public function destroy(Pays $pays)
     {
         $pays->delete();
