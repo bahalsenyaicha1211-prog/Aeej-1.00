@@ -95,9 +95,10 @@
         </div>
 
         {{-- Pagination --}}
-        <div style="margin-top:30px;">
-            {{ $photos->links() }}
-        </div>
+            
+    <div class="custom-pagination">
+        {{ $photos->links('pagination::bootstrap-4') }} 
+    </div>
     @endif
 </div>
 @endsection
