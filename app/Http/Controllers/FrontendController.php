@@ -44,7 +44,8 @@ class FrontendController extends Controller
 
     public function apropos()
     {
-        return view('apropos');
+        $pays = Pays::all();
+        return view('apropos', compact('pays'));
     }
 
     public function guideEtudiant()

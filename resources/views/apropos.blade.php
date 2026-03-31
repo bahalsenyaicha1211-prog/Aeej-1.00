@@ -336,7 +336,7 @@
             <div class="about__statL">Ans d’existence</div>
           </div>
           <div class="about__stat">
-            <div class="about__statN">{{$pays}}</div>
+            <div class="about__statN">{{ $pays->count() }}</div>
             <div class="about__statL">Communautés</div>
           </div>
         </div>
