@@ -79,7 +79,7 @@
                             name="matricule"
                             type="text"
                             value="{{ old('matricule') }}"
-                            placeholder="Ex: MEM010"
+                            placeholder="Votre identifiant universitaire"
                             required
                             autocomplete="off"
                         >
@@ -144,7 +144,7 @@
                     id="annee_adhesion"
                     name="annee_adhesion"
                     type="number"
-                    min="2020"
+                    min="2010"
                     max="{{ date('Y') + 1 }}"
                     value="{{ old('annee_adhesion', date('Y')) }}"
                     required

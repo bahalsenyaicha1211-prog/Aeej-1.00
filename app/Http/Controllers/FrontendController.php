@@ -160,7 +160,7 @@ class FrontendController extends Controller
         if ($status === Password::RESET_LINK_SENT) {
             return view('auth.messagepourmail', [
                 'email' => $validated['email'],
-                'prenom' => $validated['prenom'].' '. $validated['nom']
+                'nom' => $validated['prenom'].' '. $validated['nom']
             ]);
         }
 
