@@ -36,38 +36,6 @@ Route::get('/check-lang', function() {
 });
 
 
-/* Cette route va forcer le nettoyage du cache de l'intérieur
-Route::get('/force-clear', function () {
-    Artisan::call('route:clear');
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    return "Le cache Laravel a été vidé de force ! Réessaye maintenant de t'inscrire ou de tester le mail.";
-});
-
-Route::get('/check-config', function () {
-    return [
-        'mailer' => config('mail.default'),
-        'host' => config('mail.mailers.smtp.host'),
-        'from' => config('mail.from.address'),
-    ];
-});
-
-
-Route::get('/hello', function () {
-    return "Le routage fonctionne !";
-});
-
-Route::get('/debug-mail', function () {
-    try {
-        Mail::raw('Test SMTP Brevo', function ($message) {
-            $message->to('bahalseny.aicha1211@gmail.com')->subject('Test direct');
-        });
-        return "Succès ! L'email a été envoyé.";
-    } catch (\Exception $e) {
-        return "Erreur : " . $e->getMessage();
-    }
-});
-*/
 
 /*
 |--------------------------------------------------------------------------
@@ -181,17 +149,5 @@ Route::prefix('admin')
 
 Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
     ->name('galerie.toggle');
-
-//test
- /*Route::get('/check-config', function () {
-    return [
-        'mailer' => config('mail.default'),
-        'host' => config('mail.mailers.smtp.host'),
-        'from' => config('mail.from.address'),
-        'env_mailer' => env('MAIL_MAILER'),
-    ];
-});*/
-
-
 
     });
