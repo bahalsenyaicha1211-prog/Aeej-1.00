@@ -117,7 +117,7 @@ class FrontendController extends Controller
             'iddep'          => ['required', 'exists:departements,iddep'],
             'idpays'         => ['required', 'exists:pays,idpays'],
 
-            'annee_adhesion' => ['required', 'integer', 'min:2020', 'max:' . (date('Y') + 1)],
+            'annee_adhesion' => ['required', 'integer', 'min:2010', 'max:' . (date('Y') + 1)],
             'telephone'      => ['nullable', 'string', 'max:20'],
             'email'          => ['required', 'email', 'max:255', 'unique:membres,email', 'unique:users,email'],
             'adresse'        => ['nullable', 'string', 'max:500'],
@@ -158,8 +158,10 @@ class FrontendController extends Controller
         $status = Password::sendResetLink(['email' => $validated['email']]);
 
         if ($status === Password::RESET_LINK_SENT) {
-            return redirect()->route('accueil')
-                ->with('success', 'Inscription réussie. Un email vous a été envoyé pour définir votre mot de passe.');
+            return view('auth.messagepourmail', [
+                'email' => $validated['email'],
+                'prenom' => $validated['prenom'].' '. $validated['nom']
+            ]);
         }
 
         // Si l’envoi échoue, le compte existe quand même. Tu affiches un message clair.
