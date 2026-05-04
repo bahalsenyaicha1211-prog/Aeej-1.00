@@ -86,9 +86,10 @@
                 <li><img src="{{ asset('images/drapeau/Tchad.png') }}" alt="Tchad"> Tchad</li>
                 <li><img src="{{ asset('images/drapeau/Congo.png') }}" alt="Congo"> Congo</li>
                 <li><img src="{{ asset('images/drapeau/cote.png') }}" alt="Côte d’Ivoire"> Côte d’Ivoire</li>
+                <li><img src="{{ asset('images/drapeau/Mauritanie.png') }}" alt="Mauritanie"> Mauritanie</li>
                 <li><img src="{{ asset('images/drapeau/niger.png') }}" alt="Niger"> Niger</li>
 </li>
-
+ss
                 
             </ul>
         </div>
