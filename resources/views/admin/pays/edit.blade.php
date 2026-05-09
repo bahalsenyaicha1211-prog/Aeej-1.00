@@ -27,6 +27,14 @@
                             <div style="color:#fb7185; font-size: 12px; margin-top: 8px; font-weight: 600;">⚠️ {{ $message }}</div> 
                         @enderror
                     </div>
+                    <!-- signature -->
+                    <div class="field" style="margin-top: 20px;">
+                        <label class="admKpi__label text-white" style="display: block; margin-bottom: 10px;">Signature du matricule</label>
+                        <input class="input" name="signature" value="{{ old('signature', $pays->signature) }}" required maxlength="2" style="width: 100px; text-transform: uppercase;">
+                        @error('signature') 
+                            <div style="color:#fb7185; font-size: 12px; margin-top: 8px; font-weight: 600;">⚠️ {{ $message }}</div> 
+                        @enderror
+                    </div>
 
                     <div style="margin-top: 30px; display: flex; gap: 12px; align-items: center;">
                         <button class="btn" style="background: #3b82f6; color: #fff; border-radius: 12px; padding: 12px 35px; font-weight: 800; cursor: pointer; border: none;" type="submit">

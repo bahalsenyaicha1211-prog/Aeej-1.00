@@ -41,6 +41,13 @@
                                     🌍 {{ $p->nom }}
                                 </div>
                             </td>
+                            {{-- AFFICHAGE DE LA SIGNATURE --}}
+                            <td style="padding: 18px;">
+                                <span style="color: #22c55e; font-weight: 800; background: rgba(34, 197, 94, 0.1); padding: 4px 8px; border-radius: 6px;">
+                                    {{ $p->signature ?? '??' }}
+                                </span>
+                            </td>
+                      
                             <td style="padding: 18px; text-align: right;">
                                 <div style="display: flex; gap: 8px; justify-content: flex-end;">
                                     <a class="admQuick__btn" href="{{ route('admin.pays.edit', $p) }}" style="padding: 6px 15px; font-size: 12px; text-decoration: none; border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">

@@ -89,7 +89,7 @@
                 <li><img src="{{ asset('images/drapeau/Mauritanie.png') }}" alt="Mauritanie"> Mauritanie</li>
                 <li><img src="{{ asset('images/drapeau/niger.png') }}" alt="Niger"> Niger</li>
 </li>
-ss
+
                 
             </ul>
         </div>

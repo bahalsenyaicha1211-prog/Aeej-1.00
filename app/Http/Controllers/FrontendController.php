@@ -109,13 +109,19 @@ class FrontendController extends Controller
     public function inscriptionStore(Request $request)
     {
         $validated = $request->validate([
-            'matricule'      => ['required', 'string', 'max:50', 'unique:membres,matricule', 'unique:users,matricule'],
+            'matricule'      => ['required', 
+                                'string', 'max:50', 
+                                'unique:membres,matricule', 
+                                'unique:users,matricule', 
+                                new MatriculePaysMatch($request->idpays)],
+            'idpays'         => ['required', 'exists:pays,idpays'], // pour la règle MatriculePaysMatch
+
             'nom'            => ['required', 'string', 'max:255'],
             'prenom'         => ['required', 'string', 'max:255'],
             'sexe'           => ['required', 'in:M,F'],
 
             'iddep'          => ['required', 'exists:departements,iddep'],
-            'idpays'         => ['required', 'exists:pays,idpays'],
+       
 
             'annee_adhesion' => ['required', 'integer', 'min:2010', 'max:' . (date('Y') + 1)],
             'telephone'      => ['nullable', 'string', 'max:20'],
@@ -127,7 +133,7 @@ class FrontendController extends Controller
 
             // 1) créer le membre
             $membre = Membre::create([
-                'matricule'      => $validated['matricule'],
+                'matricule'      => strtoupper($validated['matricule']),
                 'nom'            => $validated['nom'],
                 'prenom'         => $validated['prenom'],
                 'sexe'           => $validated['sexe'],
@@ -146,7 +152,7 @@ class FrontendController extends Controller
             User::create([
                 'name'      => $membre->prenom . ' ' . $membre->nom,
                 'email'     => $membre->email,
-                'matricule' => $membre->matricule,
+                'matricule' => strtoupper($membre->matricule),
                 'role'      => null,
                 'is_admin'  => false,
                 'password'  => Hash::make($randomPassword),

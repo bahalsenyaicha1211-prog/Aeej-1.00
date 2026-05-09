@@ -14,7 +14,7 @@ class Pays extends Model
     public $incrementing = true;
     protected $keyType = 'int';
 
-    protected $fillable = ['nom'];
+    protected $fillable = ['idpays', 'nom', 'signature'];
 
     public function membres()
     {

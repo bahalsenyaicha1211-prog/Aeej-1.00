@@ -22,13 +22,18 @@ class PaysController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nom' => ['required','string','max:255','unique:pays,nom'],
+            'nom'       => ['required', 'string', 'max:255', 'unique:pays,nom'],
+            // Validation de la signature : 2 lettres exactes et unique
+            'signature' => ['required', 'string', 'size:2', 'unique:pays,signature'],
         ]);
+
+        // On force la signature en majuscules avant de créer
+        $data['signature'] = strtoupper($data['signature']);
 
         Pays::create($data);
 
         return redirect()->route('admin.pays.index')
-            ->with('success', 'Pays ajouté.');
+            ->with('success', 'Pays ajouté avec sa signature de matricule.');
     }
 
     public function edit(Pays $pays)
@@ -39,16 +44,20 @@ class PaysController extends Controller
     public function update(Request $request, Pays $pays)
     {
         $data = $request->validate([
-            'nom' => ['required','string','max:255','unique:pays,nom,' . $pays->idpays . ',idpays'],
+            // On ignore l'ID actuel pour la règle unique lors de la modification
+            'nom'       => ['required', 'string', 'max:255', 'unique:pays,nom,' . $pays->idpays . ',idpays'],
+            'signature' => ['required', 'string', 'size:2', 'unique:pays,signature,' . $pays->idpays . ',idpays'],
         ]);
+
+        // On force la signature en majuscules avant la mise à jour
+        $data['signature'] = strtoupper($data['signature']);
 
         $pays->update($data);
 
         return redirect()->route('admin.pays.index')
-            ->with('success', 'Pays mis à jour.');
+            ->with('success', 'Pays et signature mis à jour.');
     }
 
- 
     public function destroy(Pays $pays)
     {
         $pays->delete();

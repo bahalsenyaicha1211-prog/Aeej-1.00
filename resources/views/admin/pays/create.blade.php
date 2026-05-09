@@ -25,6 +25,15 @@
                             <div style="color:#fb7185; font-size: 12px; margin-top: 8px; font-weight: 600;">⚠️ {{ $message }}</div> 
                         @enderror
                     </div>
+                    <!-- signature -->
+                    <div class="field" style="margin-top: 20px;">
+                        <label class="admKpi__label text-white" style="display: block; margin-bottom: 10px;">Signature du matricule (2 lettres)</label>
+                        <input class="input" name="signature" value="{{ old('signature') }}" required maxlength="2" placeholder="ex: GN, ML, CD..." style="width: 100px; text-transform: uppercase;">
+                        <p style="color: #64748b; font-size: 11px; margin-top: 5px;">Ces 2 lettres seront exigées au début du matricule des membres de ce pays.</p>
+                        @error('signature') 
+                            <div style="color:#fb7185; font-size: 12px; margin-top: 8px; font-weight: 600;">⚠️ {{ $message }}</div> 
+                        @enderror
+                    </div>
 
                     <div style="margin-top: 30px; display: flex; gap: 12px; align-items: center;">
                         <button class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 12px 35px; font-weight: 800; cursor: pointer; border: none;" type="submit">

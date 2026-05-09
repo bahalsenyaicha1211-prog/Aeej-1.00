@@ -82,6 +82,7 @@
                             placeholder="Votre identifiant universitaire"
                             required
                             autocomplete="off"
+                            style="text-transform: uppercase;"
                         >
                     </div>
                     @error('matricule') <small class="msg error">{{ $message }}</small> @enderror
