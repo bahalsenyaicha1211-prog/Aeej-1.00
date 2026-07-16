@@ -33,7 +33,7 @@
                         <tr class="admRow" style="display: table-row; background: transparent; border-bottom: 1px solid rgba(255,255,255,0.05);">
                             <td style="padding: 15px;">
                                 <div style="display: flex; align-items: center; gap: 12px;">
-                                    <img src="{{ $b->photo ? asset('storage/'.$b->photo) : asset('images/image1.JPG') }}" 
+                                    <img src="{{ $b->photo ? (str_starts_with($b->photo, 'http') ? $b->photo : asset('storage/'.$b->photo)) : asset('images/image1.JPG') }}"
                                          style="width: 45px; height: 45px; border-radius: 12px; object-fit: cover; border: 2px solid rgba(255,255,255,0.1);">
                                     <div>
                                         <div style="font-weight: 800; color: #fff;">{{ $b->membre?->prenom }} {{ $b->membre?->nom }}</div>
@@ -70,6 +70,6 @@
             </div>
         </div>
     </div>
-    <div style="margin-top: 15px;">{{ $bureau->links() }}</div>
+    <div style="margin-top: 15px;">{{ $bureau->links('vendor.pagination.admin') }}</div>
 </div>
 @endsection

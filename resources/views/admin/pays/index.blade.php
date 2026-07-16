@@ -77,7 +77,7 @@
 
     {{-- Pagination --}}
     <div style="margin-top: 20px;">
-        {{ $pays->links() ?? '' }}
+        {{ $pays->links('vendor.pagination.admin') ?? '' }}
     </div>
 </div>
 @endsection

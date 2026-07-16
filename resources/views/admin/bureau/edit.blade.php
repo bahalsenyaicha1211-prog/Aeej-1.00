@@ -50,7 +50,7 @@
                             <label class="admKpi__label text-white">Photo de fonction (optionnel)</label>
                             <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
                                 @if($bureau->photo)
-                                    <img src="{{ asset('storage/'.$bureau->photo) }}" style="width: 80px; height: 60px; border-radius: 10px; object-fit: cover;">
+                                    <img src="{{ str_starts_with($bureau->photo, 'http') ? $bureau->photo : asset('storage/'.$bureau->photo) }}" style="width: 80px; height: 60px; border-radius: 10px; object-fit: cover;">
                                 @endif
                                 <input class="input" type="file" name="photo" style="font-size: 12px;">
                             </div>

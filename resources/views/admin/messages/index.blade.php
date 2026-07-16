@@ -57,7 +57,7 @@
     </div>
 
     <div style="margin-top: 20px;">
-        {{ $messages->links() }}
+        {{ $messages->links('vendor.pagination.admin') }}
     </div>
 </div>
 @endsection

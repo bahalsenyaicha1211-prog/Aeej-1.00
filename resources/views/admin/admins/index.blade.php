@@ -78,6 +78,6 @@
             </div>
         </div>
     </div>
-    <div style="margin-top: 20px;">{{ $admins->links() }}</div>
+    <div style="margin-top: 20px;">{{ $admins->links('vendor.pagination.admin') }}</div>
 </div>
 @endsection

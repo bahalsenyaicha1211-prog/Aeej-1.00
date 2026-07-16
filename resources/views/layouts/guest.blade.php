@@ -181,6 +181,22 @@
             text-align: center;
             margin-bottom: 20px;
         }
+
+        /* Erreurs de validation (par champ) */
+        input.field-invalid { border-color: #f87171 !important; box-shadow: 0 0 12px rgba(248, 113, 113, 0.15) !important; }
+
+        ul[class*="text-red"], .field-error {
+            list-style: none;
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.25);
+            color: #fca5a5 !important;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-top: 8px;
+        }
+        ul[class*="text-red"] li, .field-error li { margin: 0; }
     </style>
 </head>
 <body>

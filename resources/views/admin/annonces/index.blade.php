@@ -80,7 +80,7 @@
     </div>
 
     <div style="margin-top: 20px;">
-        {{ $annonces->links() }}
+        {{ $annonces->links('vendor.pagination.admin') }}
     </div>
 </div>
 @endsection
