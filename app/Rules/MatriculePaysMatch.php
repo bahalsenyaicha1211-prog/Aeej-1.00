@@ -20,14 +20,21 @@ class MatriculePaysMatch implements ValidationRule
         // 1. Trouver le pays sélectionné dans le formulaire
         $pays = Pays::where('idpays', $this->idPays)->first();
 
-        if (!$pays || !$pays->signature) {
-            // Si le pays n'a pas de signature définie en admin, on ignore ou on bloque
-            return; 
+        if (!$pays) {
+            $fail("Pays sélectionné introuvable.");
+            return;
+        }
+
+        // Sécurité : un pays sans signature configurée ne peut pas être vérifié,
+        // on refuse l'inscription plutôt que de laisser passer n'importe quel matricule.
+        if (!$pays->signature) {
+            $fail("Aucun préfixe de matricule n'est encore configuré pour '{$pays->nom}'. Contactez un administrateur.");
+            return;
         }
 
         // 2. Extraire la signature attendue (ex: GN)
         $signatureAttendue = strtoupper($pays->signature);
-        
+
         // 3. Extraire le début du matricule saisi (2 premières lettres)
         $debutMatricule = strtoupper(substr($value, 0, 2));
 

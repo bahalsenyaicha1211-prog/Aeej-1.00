@@ -61,6 +61,6 @@
         </div>
     </div>
 
-    <div style="margin-top: 20px;">{{ $membres->links() }}</div>
+    <div style="margin-top: 20px;">{{ $membres->links('vendor.pagination.admin') }}</div>
 </div>
 @endsection

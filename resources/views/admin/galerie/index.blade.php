@@ -97,7 +97,7 @@
         {{-- Pagination --}}
             
     <div class="custom-pagination">
-        {{ $photos->links('pagination::bootstrap-4') }} 
+        {{ $photos->links('vendor.pagination.admin') }} 
     </div>
     @endif
 </div>
