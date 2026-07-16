@@ -86,6 +86,57 @@
                 </div>
             </div>
         </aside>
+
+        <section class="contact-form-section">
+            <h3>Envoyez-nous un message</h3>
+            <p>Une question, une suggestion ? Écrivez-nous, nous vous répondrons rapidement.</p>
+
+            @if(session('success'))
+                <div class="cf-alert cf-alert--success">{{ session('success') }}</div>
+            @endif
+
+            @if($errors->any())
+                <div class="cf-alert cf-alert--error">
+                    <strong>Veuillez corriger les erreurs :</strong>
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form class="cf-form" action="{{ route('contact.store') }}" method="POST" novalidate>
+                @csrf
+
+                <div class="cf-field">
+                    <label for="cf-prenom">Prénom *</label>
+                    <input id="cf-prenom" name="prenom" type="text" value="{{ old('prenom') }}" required>
+                </div>
+
+                <div class="cf-field">
+                    <label for="cf-nom">Nom *</label>
+                    <input id="cf-nom" name="nom" type="text" value="{{ old('nom') }}" required>
+                </div>
+
+                <div class="cf-field">
+                    <label for="cf-email">Email *</label>
+                    <input id="cf-email" name="email" type="email" value="{{ old('email') }}" required>
+                </div>
+
+                <div class="cf-field">
+                    <label for="cf-telephone">Téléphone</label>
+                    <input id="cf-telephone" name="telephone" type="text" value="{{ old('telephone') }}">
+                </div>
+
+                <div class="cf-field cf-field--full">
+                    <label for="cf-message">Message *</label>
+                    <textarea id="cf-message" name="message" rows="5" required>{{ old('message') }}</textarea>
+                </div>
+
+                <button type="submit" class="cf-submit">Envoyer</button>
+            </form>
+        </section>
     </div>
 </main>
 @endsection

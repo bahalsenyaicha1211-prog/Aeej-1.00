@@ -24,6 +24,7 @@ use App\Http\Controllers\Membre\AnnonceMembreController;
 use App\Http\Controllers\Membre\NotificationController;
 use App\Http\Controllers\Admin\GalerieController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\ContactMessageController;
 
 use Illuminate\Support\Facades\Mail;
 
@@ -149,5 +150,8 @@ Route::prefix('admin')
 
 Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
     ->name('galerie.toggle');
+
+        Route::resource('messages', ContactMessageController::class)
+    ->only(['index', 'show', 'destroy']);
 
     });

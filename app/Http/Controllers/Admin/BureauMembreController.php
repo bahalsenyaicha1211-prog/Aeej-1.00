@@ -120,7 +120,7 @@ class BureauMembreController extends Controller
 
     public function destroy(BureauMembre $bureau)
     {
-        if ($bureau->photo) {
+        if ($bureau->photo && !str_starts_with($bureau->photo, 'http')) {
             Storage::disk('public')->delete($bureau->photo);
         }
 

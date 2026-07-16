@@ -67,7 +67,7 @@ class MembreController extends Controller
         // + supprimer la photo bureau si tu stockes un chemin
         $bureauItems = \App\Models\BureauMembre::where('matricule', $membre->matricule)->get();
         foreach ($bureauItems as $b) {
-            if ($b->photo) {
+            if ($b->photo && !str_starts_with($b->photo, 'http')) {
                 Storage::disk('public')->delete($b->photo);
             }
             $b->delete();
@@ -76,7 +76,7 @@ class MembreController extends Controller
         // 2) Supprimer le user lié (si existant) + sa photo de profil
         $user = \App\Models\User::where('matricule', $membre->matricule)->first();
         if ($user) {
-            if ($user->profile_photo_path) {
+            if ($user->profile_photo_path && !str_starts_with($user->profile_photo_path, 'http')) {
                 Storage::disk('public')->delete($user->profile_photo_path);
             }
 

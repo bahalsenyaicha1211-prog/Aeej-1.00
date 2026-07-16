@@ -114,7 +114,9 @@ class GalerieController extends Controller
         $data['is_published'] = $request->boolean('is_published');
 
         if ($request->boolean('remove_image') && $photo->image_path) {
-            Storage::disk('public')->delete($photo->image_path);
+            if (!str_starts_with($photo->image_path, 'http')) {
+                Storage::disk('public')->delete($photo->image_path);
+            }
             $data['image_path'] = '';
         }
 

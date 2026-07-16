@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Membre;
 
 use App\Http\Controllers\Controller;
 use App\Models\Annonce;
-use App\Notifications\AnnoncePublished;
+use App\Notifications\NewAnnoncePublished;
 
 class AnnonceMembreController extends Controller
 {
@@ -28,7 +28,7 @@ class AnnonceMembreController extends Controller
         $user = auth()->user();
 
         $user->unreadNotifications()
-            ->where('type', AnnoncePublished::class)
+            ->where('type', NewAnnoncePublished::class)
             ->where('data->annonce_id', $annonce->id)
             ->update(['read_at' => now()]);
 

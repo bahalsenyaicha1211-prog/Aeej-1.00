@@ -8,6 +8,8 @@ use App\Models\Membre;
 use App\Models\Pays;
 use App\Models\BureauMembre;
 use App\Models\GaleriePhoto;
+use App\Models\ContactMessage;
+use App\Rules\MatriculePaysMatch;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -53,14 +55,6 @@ class FrontendController extends Controller
         return view('guideEtudiant');
     }
 
-    public function bureau()
-    {
-        // Version simple v1 : page statique
-        // Plus tard tu mettras la logique bureau_affectations / mandat.
-        return view('bureau');
-    }
-
-
     public function activites()
     {
         $activites = Activite::orderByDesc('date')->get();
@@ -82,8 +76,8 @@ class FrontendController extends Controller
             'message'   => ['required','string','max:2000'],
         ]);
 
-        // V1 simple : on ne stocke pas, on confirme juste.
-        // Plus tard : Mail::to(...) ou table contact_messages.
+        ContactMessage::create($validated);
+
         return back()->with('success', 'Message envoyé. Nous vous répondrons bientôt.');
     }
 

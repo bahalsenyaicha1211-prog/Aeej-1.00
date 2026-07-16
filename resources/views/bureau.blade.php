@@ -43,9 +43,11 @@
                         <p><strong>Matricule : {{ $item->matricule }}</strong></p>
                     @endif
 
+                    @if($m)
                     <div class="carte-info">
-                        <p>{{$item->membre->nom}} {{$item->membre->prenom}}</p>
+                        <p>{{ $m->nom }} {{ $m->prenom }}</p>
                     </div>
+                    @endif
                 </li>
             @empty
                 <li>
