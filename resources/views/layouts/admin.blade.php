@@ -11,6 +11,7 @@
     $isMembres   = request()->routeIs('admin.membres.*');
     $isPays      = request()->routeIs('admin.pays.*');
     $isDeps      = request()->routeIs('admin.departements.*');
+    $isMessages  = request()->routeIs('admin.messages.*');
 
     $initials = $user
         ? strtoupper(substr($user->name, 0, 1) . (explode(' ', $user->name)[1][0] ?? ''))
@@ -63,6 +64,8 @@
             <a class="nav__item {{ request()->routeIs('admin.galerie.*') ? 'is-active' : '' }}"
    href="{{ route('admin.galerie.index') }}"><span class="nav__icon">🖼</span>Galerie</a>
 
+            <a class="nav__item {{ $isMessages ? 'is-active' : '' }}"
+   href="{{ route('admin.messages.index') }}"><span class="nav__icon">✉️</span>Messages</a>
 
             <div class="nav__sep"></div>
 
@@ -153,6 +156,9 @@
 
     <a class="nav__item {{ request()->routeIs('admin.galerie.*') ? 'is-active' : '' }}"
        href="{{ route('admin.galerie.index') }}"><span class="nav__icon">🖼</span>Galerie</a>
+
+    <a class="nav__item {{ $isMessages ? 'is-active' : '' }}"
+       href="{{ route('admin.messages.index') }}"><span class="nav__icon">✉️</span>Messages</a>
 
     <div class="nav__sep"></div>
 
