@@ -3,8 +3,12 @@
         {{ __('Mot de passe oublié ? Pas de souci. Indiquez-nous simplement votre adresse e-mail et nous vous enverrons un lien de réinitialisation de mot de passe qui vous permettra d’en choisir un nouveau.') }}
     </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    @if (session('status'))
+        <div class="status-success">
+            📩 {{ session('status') }}<br>
+            Vérifiez votre boîte de réception (et vos spams) puis cliquez sur le lien reçu pour définir votre nouveau mot de passe.
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
