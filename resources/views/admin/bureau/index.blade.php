@@ -15,6 +15,14 @@
         </a>
     </div>
 
+    <form method="GET" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center;">
+        <input class="input" type="text" name="q" value="{{ $q }}" placeholder="Rechercher par nom, matricule ou poste..." style="max-width:320px; width:100%;">
+        <button class="admQuick__btn" type="submit">Rechercher</button>
+        @if($q !== '')
+            <a class="admQuick__btn" href="{{ route('admin.bureau.index') }}" style="text-decoration:none;">Réinitialiser</a>
+        @endif
+    </form>
+
     <div class="admPanel admPanel--full">
         <div class="admPanel__body" style="padding: 0;">
             <div class="table-wrap">
@@ -63,7 +71,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="5" style="padding: 40px; text-align: center; color: #64748b;">Aucun membre dans le bureau.</td></tr>
+                        <tr><td colspan="5" style="padding: 40px; text-align: center; color: #64748b;">{{ $q !== '' ? 'Aucun membre du bureau ne correspond à « '.$q.' ».' : 'Aucun membre dans le bureau.' }}</td></tr>
                         @endforelse
                     </tbody>
                 </table>

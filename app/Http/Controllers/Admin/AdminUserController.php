@@ -9,15 +9,24 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $q = trim((string) $request->query('q', ''));
+
         $admins = User::query()
             ->where('is_admin', true)
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('name', 'like', "%{$q}%")
+                        ->orWhere('email', 'like', "%{$q}%");
+                });
+            })
             ->orderByDesc('is_super_admin')
             ->orderBy('name')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
-        return view('admin.admins.index', compact('admins'));
+        return view('admin.admins.index', compact('admins', 'q'));
     }
 
     public function create()

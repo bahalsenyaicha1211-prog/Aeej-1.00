@@ -13,19 +13,28 @@ class GalerieController extends Controller
 {
     public function index(Request $request)
     {
-        $q = GaleriePhoto::query()->orderByDesc('event_date')->orderByDesc('id');
+        $search = trim((string) $request->query('q', ''));
+
+        $query = GaleriePhoto::query()->orderByDesc('event_date')->orderByDesc('id');
 
         if ($request->filled('category')) {
-            $q->where('category', (string) $request->input('category'));
+            $query->where('category', (string) $request->input('category'));
 
         }
 
         if ($request->filled('status')) {
-            if ($request->status === 'published') $q->where('is_published', true);
-            if ($request->status === 'draft')     $q->where('is_published', false);
+            if ($request->status === 'published') $query->where('is_published', true);
+            if ($request->status === 'draft')     $query->where('is_published', false);
         }
 
-        $photos = $q->paginate(18)->withQueryString();
+        if ($search !== '') {
+            $query->where(function ($sub) use ($search) {
+                $sub->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $photos = $query->paginate(18)->withQueryString();
 
         $categories = GaleriePhoto::query()
             ->select('category')
@@ -33,7 +42,7 @@ class GalerieController extends Controller
             ->orderBy('category')
             ->pluck('category');
 
-        return view('admin.galerie.index', compact('photos', 'categories'));
+        return view('admin.galerie.index', ['photos' => $photos, 'categories' => $categories, 'q' => $search]);
     }
 
     public function create()

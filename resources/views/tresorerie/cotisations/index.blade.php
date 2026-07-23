@@ -16,10 +16,11 @@
         </a>
     </div>
 
-    <form method="GET" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center;">
+    <form method="GET" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <input class="input" type="text" name="q" value="{{ $q }}" placeholder="Rechercher par nom ou matricule..." style="max-width:280px; width:100%;">
         <input class="input" type="number" name="annee" value="{{ request('annee') }}" placeholder="Filtrer par année" style="max-width:180px;">
         <button class="admQuick__btn" type="submit">Filtrer</button>
-        @if(request('annee'))
+        @if(request('annee') || $q !== '')
             <a class="admQuick__btn" href="{{ route('tresorerie.cotisations.index') }}" style="text-decoration:none;">Réinitialiser</a>
         @endif
     </form>
@@ -74,7 +75,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="9" style="padding: 40px; text-align: center; color: #64748b;">Aucune cotisation enregistrée.</td></tr>
+                        <tr><td colspan="9" style="padding: 40px; text-align: center; color: #64748b;">{{ $q !== '' ? 'Aucune cotisation ne correspond à « '.$q.' ».' : 'Aucune cotisation enregistrée.' }}</td></tr>
                         @endforelse
                     </tbody>
                 </table>

@@ -13,6 +13,7 @@ class CotisationController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $q = trim((string) $request->query('q', ''));
 
         $query = Cotisation::with(['membre', 'tresorier'])
             ->orderByDesc('annee')
@@ -26,9 +27,21 @@ class CotisationController extends Controller
             $query->where('annee', (int) $request->input('annee'));
         }
 
+        if ($q !== '') {
+            $query->where(function ($sub) use ($q) {
+                $sub->where('matricule', 'like', "%{$q}%")
+                    ->orWhereHas('membre', function ($m) use ($q) {
+                        $m->where('nom', 'like', "%{$q}%")
+                          ->orWhere('prenom', 'like', "%{$q}%")
+                          ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"])
+                          ->orWhereRaw("CONCAT(nom, ' ', prenom) like ?", ["%{$q}%"]);
+                    });
+            });
+        }
+
         $cotisations = $query->paginate(20)->withQueryString();
 
-        return view('tresorerie.cotisations.index', compact('cotisations'));
+        return view('tresorerie.cotisations.index', compact('cotisations', 'q'));
     }
 
     public function create(Request $request)

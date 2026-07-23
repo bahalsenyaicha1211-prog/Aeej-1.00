@@ -11,13 +11,17 @@ use Illuminate\Support\Facades\DB;
 
 class DepenseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $depenses = Depense::with('commissaire')
-            ->orderByDesc('date_depense')
-            ->paginate(15);
+        $q = trim((string) $request->query('q', ''));
 
-        return view('tresorerie.depenses.index', compact('depenses'));
+        $depenses = Depense::with('commissaire')
+            ->when($q !== '', fn ($query) => $query->where('nom_evenement', 'like', "%{$q}%"))
+            ->orderByDesc('date_depense')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('tresorerie.depenses.index', compact('depenses', 'q'));
     }
 
     public function create()

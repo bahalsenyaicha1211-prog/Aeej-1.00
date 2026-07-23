@@ -8,10 +8,16 @@ use Illuminate\Http\Request;
 
 class PaysController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pays = Pays::orderBy('nom')->paginate(20);
-        return view('admin.pays.index', compact('pays'));
+        $q = trim((string) $request->query('q', ''));
+
+        $pays = Pays::when($q !== '', fn ($query) => $query->where('nom', 'like', "%{$q}%"))
+            ->orderBy('nom')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('admin.pays.index', compact('pays', 'q'));
     }
 
     public function create()

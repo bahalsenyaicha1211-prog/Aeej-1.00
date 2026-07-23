@@ -16,6 +16,14 @@
         </a>
     </div>
 
+    <form method="GET" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center;">
+        <input class="input" type="text" name="q" value="{{ $q }}" placeholder="Rechercher dans le contenu des annonces..." style="max-width:320px; width:100%;">
+        <button class="admQuick__btn" type="submit">Rechercher</button>
+        @if($q !== '')
+            <a class="admQuick__btn" href="{{ route('admin.annonces.index') }}" style="text-decoration:none;">Réinitialiser</a>
+        @endif
+    </form>
+
     {{-- Table --}}
     <div class="admPanel admPanel--full">
         <div class="admPanel__body" style="padding: 0;">
@@ -71,7 +79,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="4" style="padding: 60px; text-align: center; color: #64748b;">Aucune annonce diffusée pour le moment.</td></tr>
+                        <tr><td colspan="4" style="padding: 60px; text-align: center; color: #64748b;">{{ $q !== '' ? 'Aucune annonce ne correspond à « '.$q.' ».' : 'Aucune annonce diffusée pour le moment.' }}</td></tr>
                         @endforelse
                     </tbody>
                 </table>
