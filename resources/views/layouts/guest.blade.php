@@ -8,6 +8,7 @@
     <title>{{ config('app.name', 'AEEJ') }}</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="{{ asset('js/password-toggle.js') }}" defer></script>
 
     <style>
         :root {
@@ -23,15 +24,18 @@
         /* Reset & Base */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
 
+        html, body { height: auto; }
+
         body {
-            height: 100vh;
+            min-height: 100vh;
             background-color: var(--bg-dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
             color: var(--text-main);
+            padding: 24px 0;
         }
 
         /* Orbes magiques en arrière-plan */
@@ -54,7 +58,6 @@
         .container {
             width: 92%;
             max-width: 440px;
-            max-height: 95vh;
             background: var(--glass);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
@@ -63,10 +66,8 @@
             border: 1px solid var(--glass-border);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
             z-index: 10;
-            overflow-y: auto;
-            scrollbar-width: none; /* Firefox */
+            margin: auto;
         }
-        .container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
         /* Header Styles */
         .header { text-align: center; margin-bottom: 25px; }
