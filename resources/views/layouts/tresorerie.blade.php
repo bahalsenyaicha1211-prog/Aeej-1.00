@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     @yield('styles')
     <script src="{{ asset('js/admin.js') }}" defer></script>
+    <script src="{{ asset('js/password-toggle.js') }}" defer></script>
 </head>
 <body class="page">
 
