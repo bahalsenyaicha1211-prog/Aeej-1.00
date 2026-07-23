@@ -16,6 +16,14 @@
         </a>
     </div>
 
+    <form method="GET" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center;">
+        <input class="input" type="text" name="q" value="{{ $q }}" placeholder="Rechercher un pays..." style="max-width:320px; width:100%;">
+        <button class="admQuick__btn" type="submit">Rechercher</button>
+        @if($q !== '')
+            <a class="admQuick__btn" href="{{ route('admin.pays.index') }}" style="text-decoration:none;">Réinitialiser</a>
+        @endif
+    </form>
+
     {{-- Table --}}
     <div class="admPanel admPanel--full">
         <div class="admPanel__body" style="padding: 0;">
@@ -65,7 +73,7 @@
                         @empty
                         <tr>
                             <td colspan="3" style="padding: 60px; text-align: center; color: #64748b;">
-                                Aucun pays dans la base de données.
+                                {{ $q !== '' ? 'Aucun pays ne correspond à « '.$q.' ».' : 'Aucun pays dans la base de données.' }}
                             </td>
                         </tr>
                         @endforelse

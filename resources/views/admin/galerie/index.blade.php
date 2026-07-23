@@ -21,6 +21,10 @@
         <div class="admPanel__body">
             <form method="GET" style="display:flex; gap:15px; flex-wrap:wrap; align-items: flex-end;">
                 <div style="flex:1; min-width:200px;">
+                    <label class="admKpi__label text-white" style="margin-bottom:8px; display:block;">Rechercher</label>
+                    <input class="input" type="text" name="q" value="{{ $q }}" placeholder="Titre ou description..." style="background: rgba(0,0,0,0.3); color:#fff; width:100%;">
+                </div>
+                <div style="flex:1; min-width:200px;">
                     <label class="admKpi__label text-white" style="margin-bottom:8px; display:block;">Catégorie</label>
                     <select name="category" class="input" style="background: rgba(0,0,0,0.3); color:#fff;">
                         <option value="">Toutes les catégories</option>

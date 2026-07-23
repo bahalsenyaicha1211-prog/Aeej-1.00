@@ -15,6 +15,14 @@
         </a>
     </div>
 
+    <form method="GET" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center;">
+        <input class="input" type="text" name="q" value="{{ $q }}" placeholder="Rechercher un département..." style="max-width:320px; width:100%;">
+        <button class="admQuick__btn" type="submit">Rechercher</button>
+        @if($q !== '')
+            <a class="admQuick__btn" href="{{ route('admin.departements.index') }}" style="text-decoration:none;">Réinitialiser</a>
+        @endif
+    </form>
+
     <div class="admPanel admPanel--full">
         <div class="admPanel__body" style="padding: 0;">
             <div class="table-wrap">
@@ -55,7 +63,7 @@
                         <tr>
                             <td colspan="3" style="padding: 60px; text-align: center; color: #64748b;">
                                 <div style="font-size: 40px; margin-bottom: 10px;">📂</div>
-                                Aucun département enregistré pour le moment.
+                                {{ $q !== '' ? 'Aucun département ne correspond à « '.$q.' ».' : 'Aucun département enregistré pour le moment.' }}
                             </td>
                         </tr>
                         @endforelse

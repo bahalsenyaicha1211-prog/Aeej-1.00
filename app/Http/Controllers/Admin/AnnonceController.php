@@ -14,10 +14,16 @@ use Illuminate\Support\Facades\Storage;
 
 class AnnonceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $annonces = Annonce::orderByDesc('created_at')->paginate(15);
-        return view('admin.annonces.index', compact('annonces'));
+        $q = trim((string) $request->query('q', ''));
+
+        $annonces = Annonce::when($q !== '', fn ($query) => $query->where('contenu', 'like', "%{$q}%"))
+            ->orderByDesc('created_at')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('admin.annonces.index', compact('annonces', 'q'));
     }
 
     public function create()

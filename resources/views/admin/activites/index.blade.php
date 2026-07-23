@@ -15,6 +15,14 @@
         </a>
     </div>
 
+    <form method="GET" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center;">
+        <input class="input" type="text" name="q" value="{{ $q }}" placeholder="Rechercher une activité..." style="max-width:320px; width:100%;">
+        <button class="admQuick__btn" type="submit">Rechercher</button>
+        @if($q !== '')
+            <a class="admQuick__btn" href="{{ route('admin.activites.index') }}" style="text-decoration:none;">Réinitialiser</a>
+        @endif
+    </form>
+
     <div class="admPanel admPanel--full">
         <div class="admPanel__body" style="padding: 0;">
             <div class="table-wrap">
@@ -61,7 +69,7 @@
                         <tr>
                             <td colspan="4" style="padding: 60px; text-align: center; color: #64748b;">
                                 <div style="font-size: 40px; margin-bottom: 10px;">📅</div>
-                                Aucune activité enregistrée.
+                                {{ $q !== '' ? 'Aucune activité ne correspond à « '.$q.' ».' : 'Aucune activité enregistrée.' }}
                             </td>
                         </tr>
                         @endforelse

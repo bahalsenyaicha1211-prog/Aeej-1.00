@@ -16,13 +16,25 @@ use Illuminate\Http\Request;
 
 class MembreController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $membres = Membre::with(['departement','pays'])
-            ->orderBy('created_at','desc')
-            ->paginate(15);
+        $q = trim((string) $request->query('q', ''));
 
-        return view('admin.membres.index', compact('membres'));
+        $membres = Membre::with(['departement','pays'])
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('matricule', 'like', "%{$q}%")
+                        ->orWhere('nom', 'like', "%{$q}%")
+                        ->orWhere('prenom', 'like', "%{$q}%")
+                        ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"])
+                        ->orWhereRaw("CONCAT(nom, ' ', prenom) like ?", ["%{$q}%"]);
+                });
+            })
+            ->orderBy('created_at','desc')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('admin.membres.index', compact('membres', 'q'));
     }
 
     public function show(Membre $membre)

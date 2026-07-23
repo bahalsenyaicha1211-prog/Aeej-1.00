@@ -11,14 +11,29 @@ use Illuminate\Support\Facades\Http;
 
 class BureauMembreController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $q = trim((string) $request->query('q', ''));
+
         $bureau = BureauMembre::with('membre')
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('matricule', 'like', "%{$q}%")
+                        ->orWhere('poste', 'like', "%{$q}%")
+                        ->orWhereHas('membre', function ($m) use ($q) {
+                            $m->where('nom', 'like', "%{$q}%")
+                              ->orWhere('prenom', 'like', "%{$q}%")
+                              ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"])
+                              ->orWhereRaw("CONCAT(nom, ' ', prenom) like ?", ["%{$q}%"]);
+                        });
+                });
+            })
             ->orderByDesc('is_actif')
             ->orderBy('ordre')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
-        return view('admin.bureau.index', compact('bureau'));
+        return view('admin.bureau.index', compact('bureau', 'q'));
     }
 
     public function create()

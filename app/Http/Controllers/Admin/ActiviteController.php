@@ -8,10 +8,19 @@ use Illuminate\Http\Request;
 
 class ActiviteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $activites = Activite::orderBy('date','desc')->paginate(12);
-        return view('admin.activites.index', compact('activites'));
+        $q = trim((string) $request->query('q', ''));
+
+        $activites = Activite::when($q !== '', function ($query) use ($q) {
+                $query->where('libelle', 'like', "%{$q}%")
+                      ->orWhere('categorie', 'like', "%{$q}%");
+            })
+            ->orderBy('date','desc')
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('admin.activites.index', compact('activites', 'q'));
     }
 
     public function create()

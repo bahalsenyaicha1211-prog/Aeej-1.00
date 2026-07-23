@@ -8,10 +8,16 @@ use Illuminate\Http\Request;
 
 class DepartementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $departements = Departement::orderBy('nom')->paginate(15);
-        return view('admin.departements.index', compact('departements'));
+        $q = trim((string) $request->query('q', ''));
+
+        $departements = Departement::when($q !== '', fn ($query) => $query->where('nom', 'like', "%{$q}%"))
+            ->orderBy('nom')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('admin.departements.index', compact('departements', 'q'));
     }
 
     public function create()

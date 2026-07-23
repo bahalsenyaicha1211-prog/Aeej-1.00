@@ -10,19 +10,28 @@ use Illuminate\Support\Facades\Hash;
 
 class TresorerieCompteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $q = trim((string) $request->query('q', ''));
+
         $comptes = User::query()
-            ->where(function ($q) {
-                $q->where('is_tresorier', true)
+            ->where(function ($sub) {
+                $sub->where('is_tresorier', true)
                   ->orWhere('is_chef_tresorier', true)
                   ->orWhere('is_commissaire_comptes', true);
             })
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('name', 'like', "%{$q}%")
+                        ->orWhere('email', 'like', "%{$q}%");
+                });
+            })
             ->orderByDesc('is_chef_tresorier')
             ->orderBy('name')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
-        return view('admin.tresorerie-comptes.index', compact('comptes'));
+        return view('admin.tresorerie-comptes.index', compact('comptes', 'q'));
     }
 
     public function create()
