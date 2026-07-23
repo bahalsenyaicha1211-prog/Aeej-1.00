@@ -1,105 +1,88 @@
-@extends('layouts.tresorerie')
+<x-member-layout>
+    <x-slot name="header">Enregistrer un paiement de cotisation</x-slot>
 
-@section('title', 'Trésorerie • Nouveau paiement')
-@section('header', 'Enregistrer un paiement de cotisation')
-
-@section('content')
-<div class="admDash">
-    <div class="admDash__head">
-        <div>
-            <h1 class="admDash__title text-white">Nouveau paiement</h1>
-            <p class="admDash__sub">Sélectionnez le membre, le montant dû s'affiche automatiquement.</p>
+    <div class="card">
+        <div class="section__head">
+            <div class="section__title">Nouveau paiement</div>
+            <a class="section__link" href="{{ route('tresorerie.cotisations.index') }}">← Retour</a>
         </div>
-        <a class="admQuick__btn" href="{{ route('tresorerie.cotisations.index') }}" style="text-decoration: none;">← Retour</a>
-    </div>
+        <p style="color:var(--muted); font-size:13px; margin-top:-6px; margin-bottom:16px;">Sélectionnez le membre, le montant dû s'affiche automatiquement.</p>
 
-    @if($errors->any())
-        <div class="admPanel admPanel--full" style="border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); margin-bottom: 16px;">
-            <div class="admPanel__body">
+        @if($errors->any())
+            <div class="alert alert--danger">
                 @foreach($errors->all() as $error)
-                    <div style="color:#fb7185; font-size: 13px; font-weight: 600;">⚠️ {{ $error }}</div>
+                    <div>⚠️ {{ $error }}</div>
                 @endforeach
             </div>
-        </div>
-    @endif
+        @endif
 
-    @if($configs->isEmpty())
-        <div class="admPanel admPanel--full" style="border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.05); margin-bottom: 16px;">
-            <div class="admPanel__body">
-                <div style="color:#fbbf24; font-size: 13px; font-weight: 600;">⚠️ Aucun montant de cotisation n'a encore été configuré. Demandez au chef trésorier de le faire avant d'enregistrer un paiement.</div>
+        @if($configs->isEmpty())
+            <div class="alert alert--warning">
+                ⚠️ Aucun montant de cotisation n'a encore été configuré. Demandez au chef trésorier de le faire avant d'enregistrer un paiement.
             </div>
-        </div>
-    @endif
+        @endif
 
-    <div class="admGrid">
-        <div class="admPanel admPanel--full">
-            <div class="admPanel__body">
-                <form class="admRows" method="POST" action="{{ route('tresorerie.cotisations.store') }}" id="cotisation-form">
-                    @csrf
+        <form method="POST" action="{{ route('tresorerie.cotisations.store') }}" id="cotisation-form">
+            @csrf
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="field">
-                            <label class="admKpi__label text-white">Membre *</label>
-                            <select class="input" name="matricule" id="matricule" required style="width:100%;">
-                                <option value="">— Sélectionner un membre —</option>
-                                @foreach($membres as $m)
-                                    <option value="{{ $m->matricule }}"
-                                        data-pays="{{ $m->pays->nom ?? '—' }}"
-                                        data-categorie="{{ in_array($m->matricule, $membresBureau) ? 'bureau' : 'membre' }}"
-                                        {{ old('matricule') === $m->matricule ? 'selected' : '' }}>
-                                        {{ $m->prenom }} {{ $m->nom }} — {{ $m->matricule }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+            <div class="grid grid-2">
+                <div class="field">
+                    <label>Membre *</label>
+                    <select class="input" name="matricule" id="matricule" required>
+                        <option value="">— Sélectionner un membre —</option>
+                        @foreach($membres as $m)
+                            <option value="{{ $m->matricule }}"
+                                data-pays="{{ $m->pays->nom ?? '—' }}"
+                                data-categorie="{{ in_array($m->matricule, $membresBureau) ? 'bureau' : 'membre' }}"
+                                {{ old('matricule') === $m->matricule ? 'selected' : '' }}>
+                                {{ $m->prenom }} {{ $m->nom }} — {{ $m->matricule }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-                        <div class="field">
-                            <label class="admKpi__label text-white">Année *</label>
-                            <input class="input" type="number" name="annee" id="annee" value="{{ old('annee', now()->year) }}" min="2010" max="{{ now()->year + 1 }}" required style="width:100%;">
-                        </div>
+                <div class="field">
+                    <label>Année *</label>
+                    <input class="input" type="number" name="annee" id="annee" value="{{ old('annee', now()->year) }}" min="2010" max="{{ now()->year + 1 }}" required>
+                </div>
 
-                        <div class="field">
-                            <label class="admKpi__label text-white">Pays</label>
-                            <input class="input" id="pays-affiche" value="—" disabled style="width:100%; opacity:0.7;">
-                        </div>
+                <div class="field">
+                    <label>Pays</label>
+                    <input class="input" id="pays-affiche" value="—" disabled>
+                </div>
 
-                        <div class="field">
-                            <label class="admKpi__label text-white">Catégorie</label>
-                            <input class="input" id="categorie-affiche" value="—" disabled style="width:100%; opacity:0.7;">
-                        </div>
+                <div class="field">
+                    <label>Catégorie</label>
+                    <input class="input" id="categorie-affiche" value="—" disabled>
+                </div>
 
-                        <div class="field">
-                            <label class="admKpi__label text-white">Montant à payer (TND)</label>
-                            <input class="input" id="montant-du-affiche" value="—" disabled style="width:100%; opacity:0.7;">
-                        </div>
+                <div class="field">
+                    <label>Montant à payer (TND)</label>
+                    <input class="input" id="montant-du-affiche" value="—" disabled>
+                </div>
 
-                        <div class="field">
-                            <label class="admKpi__label text-white">Montant payé (TND) *</label>
-                            <input class="input" type="number" step="0.01" min="0" name="montant_paye" id="montant_paye" value="{{ old('montant_paye') }}" required style="width:100%;">
-                        </div>
+                <div class="field">
+                    <label>Montant payé (TND) *</label>
+                    <input class="input" type="number" step="0.01" min="0" name="montant_paye" id="montant_paye" value="{{ old('montant_paye') }}" required>
+                </div>
 
-                        <div class="field">
-                            <label class="admKpi__label text-white">Reste à payer (TND)</label>
-                            <input class="input" id="reste-affiche" value="—" disabled style="width:100%; opacity:0.7; font-weight:800; color:#fbbf24;">
-                        </div>
+                <div class="field">
+                    <label>Reste à payer (TND)</label>
+                    <input class="input" id="reste-affiche" value="—" disabled style="font-weight:800; color:#d97706;">
+                </div>
 
-                        <div class="field">
-                            <label class="admKpi__label text-white">Date du paiement *</label>
-                            <input class="input" type="date" name="date_paiement" value="{{ old('date_paiement', now()->toDateString()) }}" max="{{ now()->toDateString() }}" required style="width:100%;">
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 30px; display: flex; gap: 12px; align-items: center;">
-                        <button class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 12px 30px; font-weight: 800; border: none; cursor: pointer;" type="submit">
-                            Enregistrer le paiement
-                        </button>
-                        <a href="{{ route('tresorerie.cotisations.index') }}" style="color: #64748b; font-size: 14px; text-decoration: none; font-weight: 600;">Annuler</a>
-                    </div>
-                </form>
+                <div class="field">
+                    <label>Date du paiement *</label>
+                    <input class="input" type="date" name="date_paiement" value="{{ old('date_paiement', now()->toDateString()) }}" max="{{ now()->toDateString() }}" required>
+                </div>
             </div>
-        </div>
+
+            <div style="margin-top:24px; display:flex; gap:12px; align-items:center;">
+                <button class="btn btn--primary" type="submit">Enregistrer le paiement</button>
+                <a href="{{ route('tresorerie.cotisations.index') }}" style="color:var(--muted); font-size:14px; font-weight:600;">Annuler</a>
+            </div>
+        </form>
     </div>
-</div>
 
 <script>
 (() => {
@@ -159,4 +142,4 @@
     maj();
 })();
 </script>
-@endsection
+</x-member-layout>

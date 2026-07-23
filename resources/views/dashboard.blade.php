@@ -2,6 +2,40 @@
 <x-member-layout :unreadAnnoncesCount="$unreadAnnoncesCount ?? 0">
     <x-slot name="header">Tableau de bord</x-slot>
 
+    @if($caisseSolde !== null || $mesCotisationsCount !== null)
+    <div class="grid grid-3" style="margin-bottom:16px;">
+        @if($caisseSolde !== null)
+        <div class="card" style="background:#f0fdf4; border-color:#bbf7d0;">
+            <div class="kpi__label">Solde de la caisse</div>
+            <div class="kpi__value" style="color:#16a34a;">{{ number_format($caisseSolde, 2, ',', ' ') }} TND</div>
+            <a class="section__link" href="{{ route('tresorerie.caisse.index') }}">Voir le détail →</a>
+        </div>
+        @endif
+
+        @if($mesCotisationsCount !== null)
+        <div class="card">
+            <div class="kpi__label">Mes cotisations enregistrées ({{ now()->year }})</div>
+            <div class="kpi__value">{{ $mesCotisationsCount }}</div>
+            <a class="section__link" href="{{ route('tresorerie.cotisations.index') }}">Voir la liste →</a>
+        </div>
+        @endif
+
+        @if($user->isTresorier())
+        <div class="card">
+            <div class="kpi__label">Cotisations</div>
+            <a class="btn btn--primary" href="{{ route('tresorerie.cotisations.create') }}" style="display:inline-block; margin-top:10px;">+ Enregistrer un paiement</a>
+        </div>
+        @endif
+
+        @if($user->isCommissaireComptes())
+        <div class="card">
+            <div class="kpi__label">Dépenses</div>
+            <a class="btn btn--primary" href="{{ route('tresorerie.depenses.create') }}" style="display:inline-block; margin-top:10px;">+ Enregistrer une dépense</a>
+        </div>
+        @endif
+    </div>
+    @endif
+
     {{-- KPIs --}}
     <div class="grid grid-4" style="margin-bottom:16px;">
         <div class="card">
