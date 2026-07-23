@@ -79,8 +79,12 @@
 
             <div class="nav__sep"></div>
 
+            @if($user->matricule)
+                <a class="nav__item" href="{{ route('dashboard') }}"><span class="nav__icon">↩</span>Espace membre</a>
+            @endif
+
             @if($user->is_admin)
-                <a class="nav__item" href="{{ route('admin.dashboard') }}"><span class="nav__icon">↩</span>Espace admin</a>
+                <a class="nav__item" href="{{ route('admin.dashboard') }}"><span class="nav__icon">⚙</span>Espace admin</a>
             @endif
         </nav>
 
