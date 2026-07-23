@@ -39,8 +39,10 @@ class MatriculePaysMatch implements ValidationRule
         $debutMatricule = strtoupper(substr($value, 0, 2));
 
         // 4. Comparaison
+        // Ne jamais révéler le préfixe attendu dans le message : cela permettrait
+        // à quiconque de deviner/forger un matricule valide pour n'importe quel pays.
         if ($debutMatricule !== $signatureAttendue) {
-            $fail("Le matricule doit obligatoirement commencer par '{$signatureAttendue}' pour correspondre au pays choisi.");
+            $fail("Le préfixe du matricule ne correspond pas au pays sélectionné.");
         }
     }
 }

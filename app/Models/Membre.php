@@ -34,9 +34,21 @@ class Membre extends Model
     {
         return $this->hasOne(BureauMembre::class, 'matricule', 'matricule');
     }
+
+    public function estMembreDuBureau(): bool
+    {
+        return BureauMembre::where('matricule', $this->matricule)
+            ->where('is_actif', true)
+            ->exists();
+    }
     
     public function user()
     {
         return $this->hasOne(User::class, 'matricule', 'matricule');
+    }
+
+    public function cotisations()
+    {
+        return $this->hasMany(Cotisation::class, 'matricule', 'matricule');
     }
 }

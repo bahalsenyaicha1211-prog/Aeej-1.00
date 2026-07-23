@@ -22,9 +22,16 @@ use App\Http\Controllers\BureauPublicController;
 use App\Http\Controllers\Admin\ActiviteController;
 use App\Http\Controllers\Membre\AnnonceMembreController;
 use App\Http\Controllers\Membre\NotificationController;
+use App\Http\Controllers\Membre\CotisationMembreController;
 use App\Http\Controllers\Admin\GalerieController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\TresorerieCompteController;
+use App\Http\Controllers\Tresorerie\DashboardController as TresorerieDashboardController;
+use App\Http\Controllers\Tresorerie\CotisationController;
+use App\Http\Controllers\Tresorerie\CotisationConfigController;
+use App\Http\Controllers\Tresorerie\CaisseController;
+use App\Http\Controllers\Tresorerie\DepenseController;
 
 use Illuminate\Support\Facades\Mail;
 
@@ -107,6 +114,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/annonces/{annonce}', [AnnonceMembreController::class, 'show'])->name('membre.annonces.show');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('membre.notifications.index');
+
+    Route::get('/ma-cotisation', [CotisationMembreController::class, 'index'])->name('membre.cotisations.index');
 });
 
 /*
@@ -154,4 +163,47 @@ Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
         Route::resource('messages', ContactMessageController::class)
     ->only(['index', 'show', 'destroy']);
 
+        Route::resource('tresorerie-comptes', TresorerieCompteController::class)
+    ->parameters(['tresorerie-comptes' => 'tresorerie_compte'])
+    ->except(['show'])
+    ->middleware('super_admin');
+
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Trésorerie (trésoriers / chef trésorier / commissaire aux comptes)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('tresorerie')
+    ->middleware(['auth', 'tresorerie_area'])
+    ->name('tresorerie.')
+    ->group(function () {
+
+        Route::get('/', [TresorerieDashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('cotisations', CotisationController::class)
+            ->middleware('tresorier')
+            ->except(['show', 'destroy']);
+        Route::delete('cotisations/{cotisation}', [CotisationController::class, 'destroy'])
+            ->middleware('tresorier')
+            ->name('cotisations.destroy');
+
+        Route::get('config-montants', [CotisationConfigController::class, 'edit'])
+            ->middleware('chef_tresorier')
+            ->name('config.edit');
+        Route::post('config-montants', [CotisationConfigController::class, 'update'])
+            ->middleware('chef_tresorier')
+            ->name('config.update');
+
+        Route::get('caisse', [CaisseController::class, 'index'])
+            ->middleware('caisse_access')
+            ->name('caisse.index');
+
+        Route::resource('depenses', DepenseController::class)
+            ->middleware('commissaire')
+            ->except(['show']);
+        Route::get('depenses-rapport/pdf', [DepenseController::class, 'rapportPdf'])
+            ->middleware('commissaire')
+            ->name('depenses.rapport-pdf');
     });
