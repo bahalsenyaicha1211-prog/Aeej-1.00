@@ -95,6 +95,13 @@
                     <span>Espace admin</span>
                 </a>
             @endif
+
+            @if($user->isTresorier() || $user->isCommissaireComptes())
+                <a class="nav__item" href="{{ route('tresorerie.dashboard') }}">
+                    <span class="nav__icon">🏦</span>
+                    <span>Trésorerie</span>
+                </a>
+            @endif
         </nav>
 
         <div class="sidebar__bottom">

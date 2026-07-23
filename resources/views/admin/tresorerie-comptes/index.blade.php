@@ -8,10 +8,10 @@
     <div class="admDash__head">
         <div>
             <h1 class="admDash__title text-white">Comptes trésorerie</h1>
-            <p class="admDash__sub">Trésoriers, chef trésorier et commissaire aux comptes.</p>
+            <p class="admDash__sub">Membres ayant un rôle trésorier, chef trésorier ou commissaire aux comptes.</p>
         </div>
         <a class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 10px 20px; font-weight: 800; text-decoration: none;" href="{{ route('admin.tresorerie-comptes.create') }}">
-            + Ajouter un compte
+            + Attribuer un rôle
         </a>
     </div>
 
@@ -40,6 +40,9 @@
                         <tr class="admRow" style="display: table-row; background: transparent; border-bottom: 1px solid rgba(255,255,255,0.05);">
                             <td style="padding: 18px;">
                                 <div style="font-weight: 800; color: #fff;">{{ $c->name }}</div>
+                                @if($c->matricule)
+                                    <div style="font-size: 11px; color: #64748b; font-family: monospace;">{{ $c->matricule }}</div>
+                                @endif
                             </td>
                             <td style="padding: 18px;">
                                 <span style="color: #e2e8f0; font-family: monospace; font-size: 13px;">{{ $c->email }}</span>
@@ -56,9 +59,9 @@
                             <td style="padding: 18px; text-align: right;">
                                 <div style="display: flex; gap: 8px; justify-content: flex-end;">
                                     <a class="admQuick__btn" href="{{ route('admin.tresorerie-comptes.edit', $c) }}" style="padding: 6px 12px; font-size: 12px; text-decoration: none;">Modifier</a>
-                                    <form method="POST" action="{{ route('admin.tresorerie-comptes.destroy', $c) }}" onsubmit="return confirm('Supprimer ce compte ?');">
+                                    <form method="POST" action="{{ route('admin.tresorerie-comptes.destroy', $c) }}" onsubmit="return confirm('Retirer ce rôle trésorerie ? Le compte membre de la personne restera actif.');">
                                         @csrf @method('DELETE')
-                                        <button class="admQuick__btn" style="border-color: rgba(239,68,68,0.3); color: #f87171; background: rgba(239,68,68,0.05); padding: 6px 12px; font-size: 12px;">Supprimer</button>
+                                        <button class="admQuick__btn" style="border-color: rgba(239,68,68,0.3); color: #f87171; background: rgba(239,68,68,0.05); padding: 6px 12px; font-size: 12px;">Retirer le rôle</button>
                                     </form>
                                 </div>
                             </td>

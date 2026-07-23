@@ -23,6 +23,15 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Laravel convertit TokenMismatchException en HttpException(419) avant
+        // d'appeler les callbacks render() : on intercepte donc ce statut ici.
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, \Illuminate\Http\Request $request) {
+            if ($e->getStatusCode() === 419 && !$request->expectsJson()) {
+                return redirect()->route('login')
+                    ->with('status', 'Votre session a expiré. Veuillez vous reconnecter.');
+            }
+
+            return null;
+        });
     })
     ->create();

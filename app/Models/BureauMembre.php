@@ -29,6 +29,14 @@ class BureauMembre extends Model
         return $this->belongsTo(Membre::class, 'matricule', 'matricule');
     }
 
+    public function scopeTresoriers($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('poste', 'like', '%trésor%')
+              ->orWhere('poste', 'like', '%tresor%');
+        });
+    }
+
    public function getPhotoUrlAttribute(): string
 {
     // 1. Si aucune photo n'est définie
