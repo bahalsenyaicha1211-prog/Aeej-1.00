@@ -47,7 +47,6 @@ class TresorerieCompteController extends Controller
             ->all();
 
         $tresoriersDisponibles = BureauMembre::tresoriers()
-            ->where('is_actif', true)
             ->with('membre')
             ->whereNotIn('matricule', $dejaAssignes)
             ->get()
@@ -68,7 +67,7 @@ class TresorerieCompteController extends Controller
         ]);
 
         if (in_array($data['role_tresorier'], ['tresorier', 'chef_tresorier'])) {
-            $estTresorierBureau = BureauMembre::tresoriers()->where('is_actif', true)->where('matricule', $data['matricule'])->exists();
+            $estTresorierBureau = BureauMembre::tresoriers()->where('matricule', $data['matricule'])->exists();
             if (!$estTresorierBureau) {
                 return back()->withInput()->withErrors([
                     'matricule' => "Ce membre n'a pas le poste Trésorier/Trésorière dans le bureau.",
@@ -115,7 +114,7 @@ class TresorerieCompteController extends Controller
         ]);
 
         if (in_array($data['role_tresorier'], ['tresorier', 'chef_tresorier']) && $tresorerie_compte->matricule) {
-            $estTresorierBureau = BureauMembre::tresoriers()->where('is_actif', true)->where('matricule', $tresorerie_compte->matricule)->exists();
+            $estTresorierBureau = BureauMembre::tresoriers()->where('matricule', $tresorerie_compte->matricule)->exists();
             if (!$estTresorierBureau) {
                 return back()->withErrors([
                     'role_tresorier' => "Ce membre n'a pas le poste Trésorier/Trésorière dans le bureau, il ne peut pas être trésorier ou chef trésorier.",
