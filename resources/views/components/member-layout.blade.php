@@ -14,6 +14,7 @@
 
     $isDashboard = request()->routeIs('dashboard');
     $isAnnonces  = request()->routeIs('membre.annonces.*');
+    $isCotisation = request()->routeIs('membre.cotisations.*');
     $isProfile   = request()->routeIs('profile.edit');
 @endphp
 
@@ -75,6 +76,11 @@
                 @if($unreadAnnoncesCount > 0)
                     <span class="badge">{{ $unreadAnnoncesCount }}</span>
                 @endif
+            </a>
+
+            <a class="nav__item {{ $isCotisation ? 'is-active' : '' }}" href="{{ route('membre.cotisations.index') }}">
+                <span class="nav__icon">💰</span>
+                <span>Ma cotisation</span>
             </a>
 
             <a class="nav__item {{ $isProfile ? 'is-active' : '' }}" href="{{ route('profile.edit') }}">
@@ -150,6 +156,7 @@
         <nav class="nav">
             <a class="nav__item {{ $isDashboard ? 'is-active' : '' }}" href="{{ route('dashboard') }}">🏠 Tableau de bord</a>
             <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('membre.annonces.index') }}">📢 Annonces</a>
+            <a class="nav__item {{ $isCotisation ? 'is-active' : '' }}" href="{{ route('membre.cotisations.index') }}">💰 Ma cotisation</a>
             <a class="nav__item {{ $isProfile ? 'is-active' : '' }}" href="{{ route('profile.edit') }}">👤 Mon profil</a>
         </nav>
     </div>

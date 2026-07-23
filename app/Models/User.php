@@ -24,6 +24,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
         'is_admin',
         'profile_photo_path',
+        'is_tresorier',
+        'is_chef_tresorier',
+        'is_commissaire_comptes',
+        'email_verified_at',
     ];
 
     protected $hidden = [
@@ -35,6 +39,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
         'is_admin'          => 'boolean',
+        'is_tresorier'          => 'boolean',
+        'is_chef_tresorier'     => 'boolean',
+        'is_commissaire_comptes' => 'boolean',
     ];
 
 
@@ -52,6 +59,21 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     return (bool) ($this->is_super_admin ?? false);
 }
+
+    public function isTresorier(): bool
+    {
+        return (bool) $this->is_tresorier || $this->isChefTresorier();
+    }
+
+    public function isChefTresorier(): bool
+    {
+        return (bool) $this->is_chef_tresorier;
+    }
+
+    public function isCommissaireComptes(): bool
+    {
+        return (bool) $this->is_commissaire_comptes;
+    }
 
     /**
      * URL avatar prêt à l’emploi : auth()->user()->profile_photo_url

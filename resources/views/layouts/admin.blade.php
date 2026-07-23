@@ -78,6 +78,10 @@
              href="{{ route('admin.admins.index') }}">
             <span class="nav__icon">🛡</span>Admins
              </a>
+            <a class="nav__item {{ request()->routeIs('admin.tresorerie-comptes.*') ? 'is-active' : '' }}"
+             href="{{ route('admin.tresorerie-comptes.index') }}">
+            <span class="nav__icon">💰</span>Trésorerie
+             </a>
         @endif
 
             <div class="nav__sep"></div>
@@ -169,6 +173,8 @@
     @if($user && $user->is_super_admin)
         <a class="nav__item {{ request()->routeIs('admin.admins.*') ? 'is-active' : '' }}"
            href="{{ route('admin.admins.index') }}"><span class="nav__icon">🛡</span>Admins</a>
+        <a class="nav__item {{ request()->routeIs('admin.tresorerie-comptes.*') ? 'is-active' : '' }}"
+           href="{{ route('admin.tresorerie-comptes.index') }}"><span class="nav__icon">💰</span>Trésorerie</a>
     @endif
 
     <div class="nav__sep"></div>
