@@ -16,6 +16,11 @@
     $isAnnonces  = request()->routeIs('membre.annonces.*');
     $isCotisation = request()->routeIs('membre.cotisations.*');
     $isProfile   = request()->routeIs('profile.edit');
+
+    $isTresCotisations = request()->routeIs('tresorerie.cotisations.*');
+    $isTresConfig      = request()->routeIs('tresorerie.config.*');
+    $isTresCaisse      = request()->routeIs('tresorerie.caisse.*');
+    $isTresDepenses    = request()->routeIs('tresorerie.depenses.*');
 @endphp
 
 <!doctype html>
@@ -89,17 +94,38 @@
                 <span>Mon profil</span>
             </a>
 
+            @if($user->isTresorier())
+                <a class="nav__item {{ $isTresCotisations ? 'is-active' : '' }}" href="{{ route('tresorerie.cotisations.index') }}">
+                    <span class="nav__icon">🧾</span>
+                    <span>Cotisations</span>
+                </a>
+            @endif
+
+            @if($user->isChefTresorier())
+                <a class="nav__item {{ $isTresConfig ? 'is-active' : '' }}" href="{{ route('tresorerie.config.edit') }}">
+                    <span class="nav__icon">⚙</span>
+                    <span>Montants cotisation</span>
+                </a>
+            @endif
+
+            @if($user->isChefTresorier() || $user->isCommissaireComptes())
+                <a class="nav__item {{ $isTresCaisse ? 'is-active' : '' }}" href="{{ route('tresorerie.caisse.index') }}">
+                    <span class="nav__icon">🏦</span>
+                    <span>Caisse</span>
+                </a>
+            @endif
+
+            @if($user->isCommissaireComptes())
+                <a class="nav__item {{ $isTresDepenses ? 'is-active' : '' }}" href="{{ route('tresorerie.depenses.index') }}">
+                    <span class="nav__icon">💸</span>
+                    <span>Dépenses</span>
+                </a>
+            @endif
+
             @if($user->is_admin)
                 <a class="nav__item" href="{{ route('admin.dashboard') }}">
                     <span class="nav__icon">⚙️</span>
                     <span>Espace admin</span>
-                </a>
-            @endif
-
-            @if($user->isTresorier() || $user->isCommissaireComptes())
-                <a class="nav__item" href="{{ route('tresorerie.dashboard') }}">
-                    <span class="nav__icon">🏦</span>
-                    <span>Trésorerie</span>
                 </a>
             @endif
         </nav>
@@ -166,6 +192,22 @@
             <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('membre.annonces.index') }}">📢 Annonces</a>
             <a class="nav__item {{ $isCotisation ? 'is-active' : '' }}" href="{{ route('membre.cotisations.index') }}">💰 Ma cotisation</a>
             <a class="nav__item {{ $isProfile ? 'is-active' : '' }}" href="{{ route('profile.edit') }}">👤 Mon profil</a>
+
+            @if($user->isTresorier())
+                <a class="nav__item {{ $isTresCotisations ? 'is-active' : '' }}" href="{{ route('tresorerie.cotisations.index') }}">🧾 Cotisations</a>
+            @endif
+            @if($user->isChefTresorier())
+                <a class="nav__item {{ $isTresConfig ? 'is-active' : '' }}" href="{{ route('tresorerie.config.edit') }}">⚙ Montants cotisation</a>
+            @endif
+            @if($user->isChefTresorier() || $user->isCommissaireComptes())
+                <a class="nav__item {{ $isTresCaisse ? 'is-active' : '' }}" href="{{ route('tresorerie.caisse.index') }}">🏦 Caisse</a>
+            @endif
+            @if($user->isCommissaireComptes())
+                <a class="nav__item {{ $isTresDepenses ? 'is-active' : '' }}" href="{{ route('tresorerie.depenses.index') }}">💸 Dépenses</a>
+            @endif
+            @if($user->is_admin)
+                <a class="nav__item" href="{{ route('admin.dashboard') }}">⚙️ Espace admin</a>
+            @endif
         </nav>
     </div>
 </div>

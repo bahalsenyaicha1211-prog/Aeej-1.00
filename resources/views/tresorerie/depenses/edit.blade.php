@@ -1,74 +1,59 @@
-@extends('layouts.tresorerie')
+<x-member-layout>
+    <x-slot name="header">Modifier une dépense</x-slot>
 
-@section('title', 'Trésorerie • Modifier dépense')
-@section('header', 'Modifier une dépense')
-
-@section('content')
-<div class="admDash">
-    <div class="admDash__head">
-        <div>
-            <h1 class="admDash__title text-white">{{ $depense->nom_evenement }}</h1>
-            <p class="admDash__sub">Modifiez les informations et les lignes de dépense.</p>
+    <div class="card">
+        <div class="section__head">
+            <div class="section__title">{{ $depense->nom_evenement }}</div>
+            <a class="section__link" href="{{ route('tresorerie.depenses.index') }}">← Retour</a>
         </div>
-        <a class="admQuick__btn" href="{{ route('tresorerie.depenses.index') }}" style="text-decoration: none;">← Retour</a>
-    </div>
+        <p style="color:var(--muted); font-size:13px; margin-top:-6px; margin-bottom:16px;">Modifiez les informations et les lignes de dépense.</p>
 
-    @if($errors->any())
-        <div class="admPanel admPanel--full" style="border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); margin-bottom: 16px;">
-            <div class="admPanel__body">
+        @if($errors->any())
+            <div class="alert alert--danger">
                 @foreach($errors->all() as $error)
-                    <div style="color:#fb7185; font-size: 13px; font-weight: 600;">⚠️ {{ $error }}</div>
+                    <div>⚠️ {{ $error }}</div>
                 @endforeach
             </div>
-        </div>
-    @endif
+        @endif
 
-    <div class="admGrid">
-        <div class="admPanel admPanel--full">
-            <div class="admPanel__body">
-                <form method="POST" action="{{ route('tresorerie.depenses.update', $depense) }}" id="depense-form">
-                    @csrf
-                    @method('PUT')
+        <form method="POST" action="{{ route('tresorerie.depenses.update', $depense) }}" id="depense-form">
+            @csrf
+            @method('PUT')
 
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
-                        <div class="field">
-                            <label class="admKpi__label text-white">Nom de l'événement *</label>
-                            <input class="input" name="nom_evenement" value="{{ old('nom_evenement', $depense->nom_evenement) }}" required style="width:100%;">
-                        </div>
-                        <div class="field">
-                            <label class="admKpi__label text-white">Date de la dépense *</label>
-                            <input class="input" type="date" name="date_depense" value="{{ old('date_depense', $depense->date_depense->toDateString()) }}" max="{{ now()->toDateString() }}" required style="width:100%;">
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 24px;">
-                        <label class="admKpi__label text-white" style="display:block; margin-bottom:10px;">Lignes de dépense *</label>
-                        <div id="lignes-container"></div>
-                        <button type="button" id="ajouter-ligne" class="admQuick__btn" style="margin-top:10px;">+ Ajouter une ligne</button>
-                    </div>
-
-                    <div style="margin-top: 24px; text-align:right;">
-                        <span style="color:#64748b; font-size:13px; font-weight:700; text-transform:uppercase;">Total : </span>
-                        <span id="total-affiche" style="font-size:24px; font-weight:900; color:#f87171;">0.00 TND</span>
-                    </div>
-
-                    <div style="margin-top: 30px; display: flex; gap: 12px; align-items: center;">
-                        <button class="btn" style="background: #3b82f6; color: #fff; border-radius: 12px; padding: 12px 30px; font-weight: 800; border: none; cursor: pointer;" type="submit">
-                            Mettre à jour
-                        </button>
-                        <a href="{{ route('tresorerie.depenses.index') }}" style="color: #64748b; font-size: 14px; text-decoration: none; font-weight: 600;">Annuler</a>
-                    </div>
-                </form>
+            <div class="grid grid-2">
+                <div class="field">
+                    <label>Nom de l'événement *</label>
+                    <input class="input" name="nom_evenement" value="{{ old('nom_evenement', $depense->nom_evenement) }}" required>
+                </div>
+                <div class="field">
+                    <label>Date de la dépense *</label>
+                    <input class="input" type="date" name="date_depense" value="{{ old('date_depense', $depense->date_depense->toDateString()) }}" max="{{ now()->toDateString() }}" required>
+                </div>
             </div>
-        </div>
+
+            <div style="margin-top:20px;">
+                <label style="display:block; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:10px;">Lignes de dépense *</label>
+                <div id="lignes-container"></div>
+                <button type="button" id="ajouter-ligne" class="btn btn--ghost" style="margin-top:10px;">+ Ajouter une ligne</button>
+            </div>
+
+            <div style="margin-top:20px; text-align:right;">
+                <span style="color:var(--muted); font-size:13px; font-weight:700; text-transform:uppercase;">Total : </span>
+                <span id="total-affiche" style="font-size:22px; font-weight:900; color:#dc2626;">0.00 TND</span>
+            </div>
+
+            <div style="margin-top:24px; display:flex; gap:12px; align-items:center;">
+                <button class="btn btn--primary" type="submit">Mettre à jour</button>
+                <a href="{{ route('tresorerie.depenses.index') }}" style="color:var(--muted); font-size:14px; font-weight:600;">Annuler</a>
+            </div>
+        </form>
     </div>
-</div>
 
 <template id="ligne-template">
     <div class="ligne-depense" style="display:grid; grid-template-columns: 2fr 1fr auto; gap:12px; margin-bottom:10px; align-items:center;">
-        <input class="input" type="text" placeholder="Désignation (ex: Location salle)" data-role="designation" required style="width:100%;">
-        <input class="input" type="number" step="0.01" min="0.01" placeholder="Montant" data-role="montant" required style="width:100%;">
-        <button type="button" class="admQuick__btn supprimer-ligne" style="border-color: rgba(239,68,68,0.3); color: #f87171;">✕</button>
+        <input class="input" type="text" placeholder="Désignation (ex: Location salle)" data-role="designation" required>
+        <input class="input" type="number" step="0.01" min="0.01" placeholder="Montant" data-role="montant" required>
+        <button type="button" class="btn supprimer-ligne" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:10px 14px;">✕</button>
     </div>
 </template>
 
@@ -132,4 +117,4 @@
     recalculerTotal();
 })();
 </script>
-@endsection
+</x-member-layout>

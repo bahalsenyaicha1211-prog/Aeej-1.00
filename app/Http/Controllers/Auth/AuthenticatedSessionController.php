@@ -29,12 +29,8 @@ class AuthenticatedSessionController extends Controller
 
     $user = Auth::user();
 
-    if ($user->is_admin) {
+    if ($user->is_admin && !$user->matricule) {
         return redirect()->intended(route('admin.dashboard'));
-    }
-
-    if ($user->isTresorier() || $user->isCommissaireComptes()) {
-        return redirect()->intended(route('tresorerie.dashboard'));
     }
 
     return redirect()->intended(route('dashboard'));

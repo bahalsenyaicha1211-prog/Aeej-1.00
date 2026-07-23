@@ -27,7 +27,6 @@ use App\Http\Controllers\Admin\GalerieController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\TresorerieCompteController;
-use App\Http\Controllers\Tresorerie\DashboardController as TresorerieDashboardController;
 use App\Http\Controllers\Tresorerie\CotisationController;
 use App\Http\Controllers\Tresorerie\CotisationConfigController;
 use App\Http\Controllers\Tresorerie\CaisseController;
@@ -180,7 +179,10 @@ Route::prefix('tresorerie')
     ->name('tresorerie.')
     ->group(function () {
 
-        Route::get('/', [TresorerieDashboardController::class, 'index'])->name('dashboard');
+        // Historique : les fonctionnalités trésorerie sont désormais accessibles
+        // directement depuis l'espace membre (/dashboard). On garde ce nom de
+        // route pour ne pas casser d'éventuels liens déjà enregistrés.
+        Route::get('/', fn () => redirect()->route('dashboard'))->name('dashboard');
 
         Route::resource('cotisations', CotisationController::class)
             ->middleware('tresorier')

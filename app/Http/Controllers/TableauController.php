@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Membre;
 use App\Models\Annonce;
+use App\Models\Cotisation;
+use App\Models\Depense;
 use Illuminate\Support\Facades\DB;
 
 class TableauController extends Controller
@@ -11,6 +13,19 @@ class TableauController extends Controller
     public function index()
     {
         $user = auth()->user();
+
+        $caisseSolde = null;
+        $mesCotisationsCount = null;
+
+        if ($user->isChefTresorier() || $user->isCommissaireComptes()) {
+            $caisseSolde = (float) Cotisation::sum('montant_paye') - (float) Depense::sum('montant_total');
+        }
+
+        if ($user->isTresorier() && !$user->isChefTresorier()) {
+            $mesCotisationsCount = Cotisation::where('created_by', $user->id)
+                ->where('annee', now()->year)
+                ->count();
+        }
 
         $membre = $user->membre()->with(['departement', 'pays'])->first();
 
@@ -47,7 +62,9 @@ class TableauController extends Controller
             'parSexe',
             'annonces',
             'parPays',
-            'unreadAnnoncesCount'
+            'unreadAnnoncesCount',
+            'caisseSolde',
+            'mesCotisationsCount'
         ));
     }
 }
