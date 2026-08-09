@@ -7,9 +7,28 @@
         @if($caisseSolde !== null)
         <div class="card" style="background:#f0fdf4; border-color:#bbf7d0;">
             <div class="kpi__label">Solde de la caisse</div>
-            <div class="kpi__value" style="color:#16a34a;">{{ number_format($caisseSolde, 2, ',', ' ') }} TND</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="kpi__value" id="caisse-valeur" data-valeur="{{ number_format($caisseSolde, 2, ',', ' ') }} TND" style="color:#16a34a;">••••••</div>
+                <button type="button" id="caisse-toggle" aria-label="Afficher le solde" style="background:none; border:none; cursor:pointer; padding:4px; opacity:0.65; color:#16a34a;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+            </div>
             <a class="section__link" href="{{ route('tresorerie.caisse.index') }}">Voir le détail →</a>
         </div>
+        <script>
+        (() => {
+            const valeur = document.getElementById('caisse-valeur');
+            const btn = document.getElementById('caisse-toggle');
+            const masque = '••••••';
+            let visible = false;
+
+            btn.addEventListener('click', () => {
+                visible = !visible;
+                valeur.textContent = visible ? valeur.dataset.valeur : masque;
+                btn.setAttribute('aria-label', visible ? 'Masquer le solde' : 'Afficher le solde');
+            });
+        })();
+        </script>
         @endif
 
         @if($mesCotisationsCount !== null)
