@@ -30,7 +30,7 @@
                     @if($annonce->image_path)
                         <div style="margin-bottom: 20px;">
                             <label class="admKpi__label text-white">Image actuelle</label>
-                            <img src="{{ asset('storage/'.$annonce->image_path) }}" style="width:100%; border-radius:12px; margin-top:10px; border:1px solid rgba(255,255,255,0.1);">
+                            <img src="{{ $annonce->image_url }}" style="width:100%; border-radius:12px; margin-top:10px; border:1px solid rgba(255,255,255,0.1);">
                             <label style="display:flex; gap:8px; align-items:center; margin-top:10px; color:#f87171; font-size:12px;">
                                 <input type="checkbox" name="remove_image" value="1"> Retirer cette image
                             </label>
