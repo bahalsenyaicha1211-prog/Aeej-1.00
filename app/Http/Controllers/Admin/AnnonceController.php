@@ -9,6 +9,7 @@ use App\Notifications\NewAnnoncePublished;
 use App\Models\BureauMembre;
 use App\Models\GaleriePhoto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
@@ -49,7 +50,7 @@ class AnnonceController extends Controller
         $data['published_at'] = $data['is_published'] ? now() : null;
 
         if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('annonces', 'public');
+            $data['image_path'] = $this->uploadImageCloudinary($request->file('image'));
         }
 
         $annonce = Annonce::create($data);
@@ -101,16 +102,16 @@ public function edit(Annonce $annonce)
 
         // Retirer l'image
         if ($request->boolean('remove_image') && $annonce->image_path) {
-            Storage::disk('public')->delete($annonce->image_path);
+            $this->supprimerImageLocaleSiApplicable($annonce->image_path);
             $data['image_path'] = null;
         }
 
         // Remplacer / ajouter image
         if ($request->hasFile('image')) {
             if ($annonce->image_path) {
-                Storage::disk('public')->delete($annonce->image_path);
+                $this->supprimerImageLocaleSiApplicable($annonce->image_path);
             }
-            $data['image_path'] = $request->file('image')->store('annonces', 'public');
+            $data['image_path'] = $this->uploadImageCloudinary($request->file('image'));
         }
 
         $annonce->update($data);
@@ -154,10 +155,43 @@ public function edit(Annonce $annonce)
     public function destroy(Annonce $annonce)
     {
         if ($annonce->image_path) {
-            Storage::disk('public')->delete($annonce->image_path);
+            $this->supprimerImageLocaleSiApplicable($annonce->image_path);
         }
 
         $annonce->delete();
         return back()->with('success', 'Annonce supprimée.');
+    }
+
+    /**
+     * Upload vers Cloudinary (mêmes identifiants que GalerieController/BureauMembreController).
+     * Retourne l'URL sécurisée à stocker dans image_path.
+     */
+    private function uploadImageCloudinary($file): string
+    {
+        $tempName = 'annonce-' . time() . '-' . uniqid();
+
+        $response = Http::asMultipart()->post('https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload', [
+            'file'          => fopen($file->getRealPath(), 'r'),
+            'upload_preset' => 'ml_default',
+            'public_id'     => $tempName,
+            'folder'        => 'annonces',
+        ]);
+
+        if (!$response->successful()) {
+            abort(back()->withErrors(['image' => "Échec de l'envoi de l'image : " . $response->body()]));
+        }
+
+        return $response->json()['secure_url'];
+    }
+
+    /**
+     * Anciennes annonces : image_path pouvait pointer vers le disque local.
+     * Les nouvelles images (Cloudinary) ne doivent jamais passer par ici.
+     */
+    private function supprimerImageLocaleSiApplicable(string $imagePath): void
+    {
+        if (!str_starts_with($imagePath, 'http')) {
+            Storage::disk('public')->delete($imagePath);
+        }
     }
 }

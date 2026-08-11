@@ -31,7 +31,13 @@ class Annonce extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image_path ? asset('storage/'.$this->image_path) : null;
+        if (!$this->image_path) {
+            return null;
+        }
+
+        return str_starts_with($this->image_path, 'http')
+            ? $this->image_path
+            : asset('storage/'.$this->image_path);
     }
    
     public function auteur()
