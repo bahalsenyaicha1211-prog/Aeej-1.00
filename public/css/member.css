@@ -63,6 +63,8 @@ img{ max-width:100%; display:block; }
   display:flex;
   flex-direction:column;
   gap:8px;
+  flex:1 1 auto;
+  overflow-y:auto;
 }
 
 .nav__item{
@@ -378,9 +380,11 @@ img{ max-width:100%; display:block; }
   box-shadow: var(--shadow);
   display:flex;
   flex-direction:column;
+  overflow:hidden;
 }
 .drawer__top{
   height:70px;
+  flex-shrink:0;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -394,6 +398,11 @@ img{ max-width:100%; display:block; }
   padding:10px 12px;
   font-weight:900;
   cursor:pointer;
+}
+.drawer__bottom{
+  flex-shrink:0;
+  padding:14px;
+  border-top:1px solid var(--border);
 }
 
 /* ==========================
