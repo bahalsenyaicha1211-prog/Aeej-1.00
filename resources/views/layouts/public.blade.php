@@ -50,11 +50,11 @@
                 <li><a href="{{ route('contact') }}">Contact</a></li>
 
                 @guest
-                    <li><a href="{{ route('inscription') }}">S’inscrire</a></li>
-                    <li><a href="{{ route('login') }}">Connexion</a></li>
+                    <li><a class="cta" href="{{ route('inscription') }}">S’inscrire</a></li>
+                    <li><a class="cta" href="{{ route('login') }}">Se connecter</a></li>
                 @else
                     <li>
-                        <a href="{{ route('logout') }}"
+                        <a class="cta" href="{{ route('logout') }}"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Déconnexion
                         </a>

@@ -190,7 +190,7 @@ header.defile {
   top: 70px; /* sous le header */
   left: 0;
   width: 100%;
-  background: rgba(10, 10, 35, 0.95); /* Fond plus opaque pour meilleure lisibilité */
+  background: radial-gradient(120% 100% at 50% -10%, #0c3a1e 0%, #04160c 65%, #02100a 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   z-index: 2; /* derrière le logo et bouton */
@@ -199,7 +199,7 @@ header.defile {
   opacity: 0;
   visibility: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border-top: 2px solid rgba(0, 191, 165, 0.3);
+  border-top: 2px solid rgba(58, 150, 222, 0.35);
 }
 
 #menu-navigation.actif {
@@ -241,7 +241,7 @@ header.defile {
 }
 
 #menu-navigation ul::-webkit-scrollbar-thumb{
-  background: rgba(0,191,165,0.3);
+  background: rgba(58,150,222,0.35);
   border-radius: 10px;
 }
 
@@ -255,23 +255,43 @@ header.defile {
 }
 
 #menu-navigation ul li a{
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
   padding: 14px 18px;
   border-radius: 14px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(0,191,165,0.25);
-  color: #ffffff;
+  background: rgba(255,255,255,0.045);
+  border: 1px solid rgba(58,150,222,0.22);
+  color: #eef3ec;
   font-size: 1.1em;
   font-weight: 500;
+  text-decoration: none;
   transition: all 0.3s ease;
 }
 
+#menu-navigation ul li a::before{
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--menu-accent, #3a96de);
+  box-shadow: 0 0 6px rgba(58,150,222,0.8);
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
 #menu-navigation ul li a:hover{
-  background: rgba(0,191,165,0.22);
-  color: #00ffcc;
+  background: rgba(58,150,222,0.16);
+  border-color: rgba(58,150,222,0.55);
+  color: #bfe0f7;
   transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0,191,165,0.35);
+  box-shadow: 0 10px 25px rgba(58,150,222,0.35);
+}
+
+#menu-navigation ul li a.cta{
+  border-color: rgba(58,150,222,0.6);
+  color: var(--menu-accent, #3a96de);
+  font-weight: 700;
 }
 
 /* RESPONSIVE */
@@ -314,42 +334,7 @@ header.defile {
 #menu-navigation.actif ul li:nth-child(5) { transition-delay: 0.3s; }
 #menu-navigation.actif ul li:nth-child(6) { transition-delay: 0.35s; }
 
-#menu-navigation ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 1.2em;
-  font-weight: 500;
-  padding: 12px 30px;
-  display: inline-block;
-  position: relative;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  letter-spacing: 0.5px;
-}
-
-/* Effet de survol amélioré */
-#menu-navigation ul li a::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #00bfa5, #0055cc);
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
-}
-
-#menu-navigation ul li a:hover::before {
-  width: 80%;
-}
-
-#menu-navigation ul li a:hover {
-  color: #00eaff;
-  background: rgba(0, 191, 165, 0.1);
-  transform: translateX(5px);
-  text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
-}
+/* Styles de #menu-navigation ul li a consolidés plus haut (accent bleu) */
 
 
 /* main des pages*/
@@ -361,8 +346,8 @@ main{
 /*Pieds des pages*/
 
 footer{
-	
-	background: linear-gradient(135deg, #0d6603, #1a1a40);
+
+	background: linear-gradient(135deg, #023a03, #01230a);
 	color: #FFF;
 	width: 100%;
 	height: 100%;
@@ -478,33 +463,21 @@ footer img{
 
 
 /* =========================
-   COULEUR VERTE AEEJ PRIORITAIRE
+   ACCENT DU MENU DEROULANT (bleu)
    ========================= */
 :root{
-  --aeej-green: #00bfa5;
-  --aeej-green-dark: #057136;
+  --menu-accent: #3a96de;
+  --menu-accent-dim: #2f7ab8;
 }
 
 /* Bouton menu */
 .bouton-menu:hover span,
 .bouton-menu.actif span{
-  background: var(--aeej-green) !important;
+  background: var(--menu-accent) !important;
 }
 
 .bouton-menu:hover p{
-  color: var(--aeej-green) !important;
+  color: var(--menu-accent) !important;
 }
 
-/* Liens menu */
-#menu-navigation ul li a::before{
-  background: linear-gradient(
-    90deg,
-    var(--aeej-green),
-    var(--aeej-green-dark)
-  );
-}
-
-/* Footer accent vert */
-footer{
-  background: linear-gradient(135deg, #083503, #057136);
-}
+/* Couleur du footer alignée sur le header : voir la règle "footer{}" plus haut */

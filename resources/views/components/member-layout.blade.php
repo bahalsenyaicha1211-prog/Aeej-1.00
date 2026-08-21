@@ -209,6 +209,15 @@
                 <a class="nav__item" href="{{ route('admin.dashboard') }}">⚙️ Espace admin</a>
             @endif
         </nav>
+
+        <div class="drawer__bottom">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="btn btn--primary" style="width:100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>🚪</span> Déconnexion
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
