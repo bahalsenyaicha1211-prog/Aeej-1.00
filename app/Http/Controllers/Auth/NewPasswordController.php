@@ -7,7 +7,9 @@ use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
@@ -52,10 +54,34 @@ class NewPasswordController extends Controller
             }
         );
 
-       
-        return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        if ($status !== Password::PASSWORD_RESET) {
+            $this->journaliserEchec($request, $status);
+
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => __($status)]);
+        }
+
+        return redirect()->route('login')->with('status', __($status));
+    }
+
+    /**
+     * Diagnostic temporaire : le message "jeton invalide" est générique et ne
+     * dit pas si le jeton est absent, expiré, ou remplacé par un plus récent.
+     * On consigne l'état réel de la table pour identifier la vraie cause.
+     */
+    private function journaliserEchec(Request $request, string $status): void
+    {
+        $ligne = DB::table('password_reset_tokens')
+            ->where('email', $request->input('email'))
+            ->first();
+
+        Log::warning('Échec de réinitialisation de mot de passe', [
+            'email' => $request->input('email'),
+            'status' => $status,
+            'jeton_existe_en_base' => $ligne !== null,
+            'age_du_jeton_en_base_secondes' => $ligne
+                ? now()->diffInSeconds(\Carbon\Carbon::parse($ligne->created_at))
+                : null,
+        ]);
     }
 }

@@ -10,6 +10,14 @@
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required readonly autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+
+            @if ($errors->has('email'))
+                <form method="POST" action="{{ route('password.email') }}" style="margin-top: 10px;">
+                    @csrf
+                    <input type="hidden" name="email" value="{{ old('email', $request->email) }}">
+                    <button type="submit" class="underline">Ce lien ne fonctionne plus ? Recevoir un nouveau lien</button>
+                </form>
+            @endif
         </div>
 
         <!-- Password -->
