@@ -36,7 +36,10 @@ class NewPasswordController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-      
+        // Un clavier mobile peut modifier la casse du champ e-mail (majuscule
+        // automatique) et faire échouer la comparaison exacte du jeton.
+        $request->merge(['email' => Str::lower(trim($request->string('email')))]);
+
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user) use ($request) {
