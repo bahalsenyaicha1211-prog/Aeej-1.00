@@ -94,4 +94,52 @@ class PasswordResetTest extends TestCase
             return true;
         });
     }
+
+    public function test_a_new_reset_request_invalidates_the_earlier_link(): void
+    {
+        // Documente le comportement réel qui cause la plupart des "jetons
+        // invalides" en production : Laravel n'autorise qu'un seul jeton
+        // actif par e-mail. Redemander un lien (même quelques secondes plus
+        // tard) invalide silencieusement le précédent.
+        Notification::fake();
+
+        $user = User::factory()->create();
+
+        $this->post('/forgot-password', ['email' => $user->email]);
+        $ancienToken = null;
+        Notification::assertSentTo($user, WelcomeSetPassword::class, function ($notification) use (&$ancienToken) {
+            $ancienToken = $notification->token;
+
+            return true;
+        });
+
+        $this->travel(2)->minutes();
+        $this->post('/forgot-password', ['email' => $user->email]);
+
+        $response = $this->post('/reset-password', [
+            'token' => $ancienToken,
+            'email' => $user->email,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+    }
+
+    public function test_the_invalid_token_screen_offers_a_resend_link(): void
+    {
+        $user = User::factory()->create();
+
+        $this->from('/reset-password/jeton-invalide?email='.$user->email)
+            ->post('/reset-password', [
+                'token' => 'jeton-invalide',
+                'email' => $user->email,
+                'password' => 'password',
+                'password_confirmation' => 'password',
+            ]);
+
+        $response = $this->get('/reset-password/jeton-invalide?email='.$user->email);
+
+        $response->assertSee(route('password.email'), false);
+    }
 }
