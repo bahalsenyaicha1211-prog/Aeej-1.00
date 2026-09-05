@@ -248,7 +248,12 @@
   .jdb__container{padding: 18px 0 52px;}
   .jdbHero__content{padding: 18px;}
   .jdbHero{min-height: 380px; border-radius: 18px;}
-  .jdbKpi{grid-column: span 12;}
+  /* Deux cartes par ligne au lieu d'une pleine largeur : moins d'espace
+     perdu, comme sur les grilles de stats de l'espace admin. */
+  .jdbKpi{grid-column: span 6; padding: 12px;}
+  .jdbKpi__value{font-size: 22px; margin-top: 6px;}
+  .jdbKpi__label{font-size: 10px;}
+  .jdbKpi__meta{font-size: 11px;}
 }
 </style>
 @endsection
@@ -306,7 +311,7 @@
   }
 
   // ===== COUNTERS =====
-  function animateCounter(el, target, duration = 1200){
+  function animateCounter(el, target, suffix = '', duration = 1200){
     let cur = 0;
     const steps = Math.max(24, Math.floor(duration / 16));
     const inc = target / steps;
@@ -314,10 +319,10 @@
     const timer = setInterval(() => {
       cur += inc;
       if (cur >= target){
-        el.textContent = Math.round(target);
+        el.textContent = Math.round(target) + suffix;
         clearInterval(timer);
       } else {
-        el.textContent = Math.round(cur);
+        el.textContent = Math.round(cur) + suffix;
       }
     }, 16);
   }
@@ -333,7 +338,8 @@
         if (el.dataset.animated) return;
         el.dataset.animated = "1";
         const target = parseInt(el.getAttribute('data-jdb-count') || "0", 10);
-        animateCounter(el, isNaN(target) ? 0 : target);
+        const suffix = el.getAttribute('data-jdb-suffix') || '';
+        animateCounter(el, isNaN(target) ? 0 : target, suffix);
         obs.unobserve(el);
       });
     }, {threshold: 0.25});
@@ -407,7 +413,7 @@
         </div>
         <div class="jdbKpi">
           <div class="jdbKpi__label">Ambiance</div>
-          <div class="jdbKpi__value" data-jdb-count="100">0</div>
+          <div class="jdbKpi__value" data-jdb-count="100" data-jdb-suffix="%">0</div>
           <div class="jdbKpi__meta">Calme et accueillante</div>
         </div>
         <div class="jdbKpi">

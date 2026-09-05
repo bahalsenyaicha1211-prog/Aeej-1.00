@@ -100,6 +100,7 @@ require __DIR__.'/auth.php';
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/coordonnees', [ProfileController::class, 'updateCoordonnees'])->name('profile.coordonnees.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
      Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])

@@ -26,32 +26,32 @@
     <div class="admPanel admPanel--full">
         <div class="admPanel__body" style="padding: 0;">
             <div class="table-wrap">
-                <table class="table" style="width: 100%; border-collapse: collapse;">
+                <table class="table table--compact-rows" style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr style="background: rgba(255,255,255,0.02); text-align: left;">
-                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase; width: 140px;">Date</th>
-                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase;">Libellé de l'activité</th>
-                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase;">Catégorie</th>
-                            <th style="padding: 18px; color: #64748b; font-size: 11px; text-transform: uppercase; text-align: right;">Actions</th>
+                            <th style="color: #64748b; font-size: 11px; text-transform: uppercase; width: 140px;">Date</th>
+                            <th style="color: #64748b; font-size: 11px; text-transform: uppercase;">Libellé de l'activité</th>
+                            <th style="color: #64748b; font-size: 11px; text-transform: uppercase;">Catégorie</th>
+                            <th style="color: #64748b; font-size: 11px; text-transform: uppercase; text-align: right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="admRows">
                         @forelse($activites as $a)
-                        <tr class="admRow" style="display: table-row; background: transparent; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                            <td style="padding: 18px;">
+                        <tr class="admRow" style="background: transparent; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td>
                                 <div style="color: #4ade80; font-family: monospace; font-weight: 700; background: rgba(74, 222, 128, 0.1); padding: 4px 10px; border-radius: 8px; font-size: 13px; display: inline-block;">
                                     {{ \Illuminate\Support\Carbon::parse($a->date)->format('d/m/Y') }}
                                 </div>
                             </td>
-                            <td style="padding: 18px;">
+                            <td>
                                 <div style="font-weight: 800; color: #fff; font-size: 15px;">{{ $a->libelle }}</div>
                             </td>
-                            <td style="padding: 18px;">
+                            <td>
                                 <span style="padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">
                                     {{ $a->categorie ?: 'Non classée' }}
                                 </span>
                             </td>
-                            <td style="padding: 18px; text-align: right;">
+                            <td style="text-align: right;">
                                 <div style="display: flex; gap: 8px; justify-content: flex-end;">
                                     <a class="admQuick__btn" href="{{ route('admin.activites.edit', $a) }}" style="padding: 6px 15px; font-size: 12px; text-decoration: none; border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
                                         Modifier

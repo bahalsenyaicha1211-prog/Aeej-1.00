@@ -123,7 +123,9 @@
         /* Formulaire */
         label { display: block; color: var(--text-dim); font-size: 12px; margin-bottom: 8px; margin-top: 15px; padding-left: 5px;}
         
-        input {
+        /* Champs texte uniquement : une case à cocher/radio ne doit pas
+           hériter de ce style plein-largeur (voir règle dédiée plus bas). */
+        input:not([type="checkbox"]):not([type="radio"]) {
             width: 100%;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
@@ -135,6 +137,30 @@
             transition: 0.3s;
         }
         input:focus { border-color: var(--primary); background: rgba(255, 255, 255, 0.1); box-shadow: 0 0 15px rgba(34, 197, 94, 0.1); }
+
+        /* Case à cocher (ex. "Se souvenir de moi") : taille normale, alignée
+           avec son libellé au lieu de prendre toute la largeur. */
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* La règle "label { display:block }" ci-dessus vise les champs texte ;
+           un label qui enveloppe une case à cocher doit rester sur une seule
+           ligne, case et texte au même niveau. */
+        label:has(input[type="checkbox"]),
+        label:has(input[type="radio"]),
+        label.inline-flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-left: 0;
+            cursor: pointer;
+        }
 
         /* Boutons & Liens */
         button:not(.underline) {

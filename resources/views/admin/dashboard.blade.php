@@ -28,6 +28,14 @@
     .admKpi__value { font-size: 32px; font-weight: 900; margin: 8px 0; }
     .admKpi__meta { font-size: 12px; color: #4ade80; font-weight: 600; }
 
+    /* Petite animation d'entrée, en cascade */
+    @keyframes admKpiIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .admKpi { animation: admKpiIn .45s ease both; }
+    .admKpi:nth-child(1) { animation-delay: .03s; }
+    .admKpi:nth-child(2) { animation-delay: .09s; }
+    .admKpi:nth-child(3) { animation-delay: .15s; }
+    .admKpi:nth-child(4) { animation-delay: .21s; }
+
     /* Grille des Panels (Milieu) */
     .admGrid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
     .admPanel { 
@@ -69,6 +77,15 @@
 
     /* Responsive */
     @media (max-width: 1024px) { .admPanel { grid-column: span 12; } }
+
+    /* Mobile : Membres+Pays sur une ligne, Hommes+Femmes sur une autre,
+       au lieu d'empiler 4 cartes pleine largeur (espace gaspillé). */
+    @media (max-width: 640px) {
+        .admKpiGrid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .admKpi { padding: 16px; border-radius: 16px; }
+        .admKpi__value { font-size: 26px; margin: 6px 0; }
+        .admKpi__label { font-size: 10px; letter-spacing: 1px; }
+    }
 </style>
 @endsection
 
@@ -85,11 +102,13 @@
     {{-- 1. Section KPI --}}
     <div class="admKpiGrid">
         @php
+            // Ordre pensé pour le mobile (grille 2 colonnes) :
+            // ligne 1 = Membres / Pays, ligne 2 = Hommes / Femmes.
             $kpis = [
                 ['Membres', $stats['total_membres'] ?? 0, 'Inscrits', 'blue'],
+                ['Pays', $stats['pays'] ?? 0, 'Référencés', 'purple'],
                 ['Hommes', $stats['hommes'] ?? 0, 'Sexe M', 'green'],
                 ['Femmes', $stats['femmes'] ?? 0, 'Sexe F', 'pink'],
-                ['Pays', $stats['pays'] ?? 0, 'Référencés', 'purple']
             ];
         @endphp
         @foreach($kpis as $kpi)
@@ -174,7 +193,7 @@
     {{-- 3. Communautés par pays (Full Width) --}}
     <div class="admPanel admPanel--full">
         <div class="admPanel__head">
-            <h2 class="admPanel__h text-white">🏘️ Communautés par pays</h2>
+            <h2 class="admPanel__h text-white">🏘️ Communautés par département</h2>
             <p class="admPanel__p text-white">Détail des membres par département au sein de chaque pays.</p>
         </div>
         <div class="admPanel__body">

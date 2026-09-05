@@ -370,24 +370,31 @@ footer img{
 	padding:0 20px;
 }
 
+.drapeau{
+	width: 100%;
+}
+
 .drapeau ul{
 	list-style: none;
-	display: flex;
-	flex-wrap: wrap;
-	gap:10px;
+	display: grid;
+	/* Colonnes égales qui s'alignent proprement : 3 quand la largeur le
+	   permet, 2 sur mobile, jamais de pilules mal calées les unes sous
+	   les autres. */
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 12px;
+	width: 100%;
 }
 
 .drapeau li{
 	text-decoration: none;
 	display: flex;
 	align-items:center;
-	gap: 50px;
+	gap: 10px;
 	font-size: 14px;
 	background: rgba(189, 192, 189, 0.388);
-	padding: 6px 10px;
+	padding: 8px 12px;
 	border-radius: 12px;
-	transition-background:0.4s;	
-
+	transition: background 0.4s;
 }
 
 .drapeau li:hover{
@@ -400,6 +407,13 @@ footer img{
 	height: auto;
 	border-radius: 3px;
 	object-fit:cover;
+	flex-shrink: 0;
+}
+
+@media (max-width: 480px){
+	.drapeau ul{
+		grid-template-columns: repeat(2, 1fr);
+	}
 }
 
 .Resaux-sociaux{
