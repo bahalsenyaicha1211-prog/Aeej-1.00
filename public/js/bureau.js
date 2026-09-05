@@ -3,7 +3,7 @@ const galerie = document.getElementById('galerie');
 const boutonPrecedent = document.getElementById('precedent');
 const boutonSuivant = document.getElementById('suivant');
 
-let active = Math.floor(cartes.length / 2); // carte centrale
+let active = 0; // toujours démarrer sur la 1ère carte (le Président, trié par "ordre")
 let autoRotateInterval = null;
 let isPaused = false;
 let mouseX = 0;

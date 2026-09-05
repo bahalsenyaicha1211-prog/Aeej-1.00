@@ -51,6 +51,16 @@ class NewPasswordController extends Controller
                 ])->save();
 
                 event(new PasswordReset($user));
+
+                // Ce même écran sert à la fois au nouveau membre qui définit
+                // son mot de passe initial et à l'utilisateur qui a oublié le
+                // sien. Dans le premier cas, son e-mail n'a encore jamais été
+                // vérifié : on lui envoie donc automatiquement le mail de
+                // vérification ici, sans attendre qu'il clique sur
+                // « Renvoyer l'e-mail de vérification » une fois connecté.
+                if (! $user->hasVerifiedEmail()) {
+                    $user->sendEmailVerificationNotification();
+                }
             }
         );
 

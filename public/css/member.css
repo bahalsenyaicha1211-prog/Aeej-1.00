@@ -23,6 +23,8 @@ img{ max-width:100%; display:block; }
 .layout{
   display:flex;
   min-height:100vh;
+  max-width:100vw;
+  overflow-x:hidden;
 }
 
 /* Sidebar */
@@ -131,6 +133,7 @@ img{ max-width:100%; display:block; }
 /* Main */
 .main{
   flex:1;
+  min-width:0; /* empêche le contenu de forcer le débordement horizontal */
   display:flex;
   flex-direction:column;
 }

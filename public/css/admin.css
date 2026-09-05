@@ -140,7 +140,9 @@ body{
   overflow:hidden;
   text-overflow:ellipsis;
 }
-.topbar__right{display:flex; align-items:center; gap:10px}
+.topbar__right{display:flex; align-items:center; gap:10px; flex-shrink:0}
+.topbar__right .btn{flex-shrink:0}
+.topbar__right .avatar{flex-shrink:0}
 
 /* Icon button */
 .iconbtn{
@@ -236,6 +238,7 @@ body{
   cursor:pointer;
   font-weight:800;
   letter-spacing:0.1px;
+  white-space:nowrap; /* un bouton ne doit jamais casser son texte sur 2 lignes */
   transition: transform .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
 }
 .btn:hover{
@@ -340,6 +343,25 @@ select.input option{
 }
 .table tr:hover td{background: rgba(255,255,255,0.03)}
 
+/* Bloc "titre de page + action" (Dashboard, Départements, Membres, ...).
+   Certaines vues ne rechargent pas leur propre feuille de style : sans ces
+   règles de base, le bouton "+ Nouveau ..." n'a aucun espace garanti avec
+   ce qui suit (barre de recherche) et peut s'y coller/superposer. */
+.admDash{ display:flex; flex-direction:column; gap:24px; color:#fff; }
+.admDash__title{ font-size:28px; font-weight:900; margin:0; }
+.admDash__sub{ color:#94a3b8; font-size:14px; margin:4px 0 0; }
+.admDash__head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+@media (max-width: 640px){
+  .admDash__head{ flex-direction:column; align-items:stretch; }
+  .admDash__head > a.btn{ width:100%; text-align:center; }
+}
+
 .cell__title{font-weight:850}
 .cell__sub{color: var(--muted); font-size:12px; margin-top:3px}
 .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
@@ -392,6 +414,12 @@ select.input option{
   .page__actions{justify-content:flex-start}
 }
 
+@media (max-width: 480px){
+  .topbar{padding: 12px}
+  .topbar__right{gap:8px}
+  .topbar__right .btn{padding: 8px 10px; font-size: 13px}
+}
+
 @media (max-width: 780px){
   .grid--2{grid-template-columns: 1fr}
   .table{min-width: 0}
@@ -417,6 +445,37 @@ select.input option{
   }
   .actions{margin-top: 6px}
 }
+
+/* ===== Listes "ligne compacte" (Départements, Membres, ...) =====
+   Contrairement à la transformation "carte" ci-dessus (chaque cellule sur
+   sa propre ligne pleine largeur), ces tableaux doivent rester une seule
+   ligne compacte par élément sur mobile : infos à gauche, actions groupées
+   à droite — comme sur desktop. Le sélecteur composé (.table.table--compact-rows)
+   garantit la priorité sur les règles génériques ci-dessus. */
+.table.table--compact-rows th,
+.table.table--compact-rows td{ padding: 16px 18px; }
+
+@media (max-width: 780px){
+  .table.table--compact-rows tr{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap: 8px 14px;
+    padding: 14px;
+  }
+  .table.table--compact-rows td{
+    display:block;
+    width:auto;
+    padding:0;
+    border:0;
+  }
+  /* Le dernier <td> (actions) est poussé tout à droite, "au coin",
+     qu'il reste sur la même ligne ou qu'il passe à la suivante. */
+  .table.table--compact-rows td:last-child{
+    margin-left:auto;
+  }
+}
+
 /* ===== PATCH: bouton menu ☰ uniquement sur mobile ===== */
 @media (min-width: 1025px){
   .topbar .iconbtn[data-admin-drawer-open]{ display:none; }

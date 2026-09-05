@@ -15,9 +15,37 @@ class ProfileController extends Controller
 {
     public function edit()
     {
+        $user = Auth::user();
+
         return view('profile.edit', [
-            'user' => Auth::user(),
+            'user'   => $user,
+            'membre' => $user->membre()->with(['departement', 'pays'])->first(),
+            'unreadAnnoncesCount' => $user->unreadNotifications()->count(),
         ]);
+    }
+
+    /**
+     * Mise à jour des coordonnées du membre (téléphone / adresse).
+     */
+    public function updateCoordonnees(Request $request)
+    {
+        $user = Auth::user();
+        $membre = $user->membre;
+
+        if (! $membre) {
+            return back()->with('error', "Aucune fiche membre n'est associée à ce compte.");
+        }
+
+        $validated = $request->validateWithBag('updateCoordonnees', [
+            'telephone' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+()\s.\-]{6,20}$/'],
+            'adresse'   => ['nullable', 'string', 'max:255'],
+        ], [
+            'telephone.regex' => "Le numéro de téléphone n'est pas valide.",
+        ]);
+
+        $membre->update($validated);
+
+        return back()->with('success', 'Vos coordonnées ont été mises à jour.');
     }
 
     /**
@@ -27,14 +55,13 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        $validated = $request->validate([
-            'name'  => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+        $validated = $request->validateWithBag('updateProfile', [
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
         $user->update($validated);
 
-        return back()->with('success', 'Profil mis à jour avec succès.');
+        return back()->with('success', 'Votre nom a été mis à jour.');
     }
 
     /**
@@ -59,11 +86,11 @@ public function updatePhoto(Request $request)
 
     if ($request->hasFile('photo')) {
         $img = $request->file('photo');
-        $cloudName = "dg9lez6mx"; 
+        $cloudName = "dg9lez6mx";
 
         $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
             'file'          => fopen($img->getRealPath(), 'r'),
-            'upload_preset' => 'ml_default', 
+            'upload_preset' => 'ml_default',
             'folder'        => 'avatars',
         ]);
 

@@ -22,13 +22,29 @@
 
   // ===== SLIDER =====
   const slides = document.querySelectorAll('.slide');
+  const sliderEl = document.querySelector('.home__hero .slider');
   let index = 0;
+  let bgSlot = 'b'; // le premier rendu utilisera le slot "a"
+
+  // Recopie l'image affichée en fond flouté : la bande est remplie
+  // sans que la photo soit rognée. Deux slots pour le fondu enchaîné.
+  function paintBackdrop(img) {
+    if (!sliderEl || !img) return;
+    const src = img.currentSrc || img.src;
+    if (!src) return;
+
+    bgSlot = (bgSlot === 'a') ? 'b' : 'a';
+    sliderEl.style.setProperty(`--hero-bg-${bgSlot}`, `url("${src}")`);
+    sliderEl.classList.toggle('is-a', bgSlot === 'a');
+    sliderEl.classList.toggle('is-b', bgSlot === 'b');
+  }
 
   function changeSlide() {
     if (!slides.length) return;
     slides[index].classList.remove('active');
     index = (index + 1) % slides.length;
     slides[index].classList.add('active');
+    paintBackdrop(slides[index]);
   }
 
   // ===== COUNTERS =====
@@ -79,6 +95,7 @@
     }
 
     // slider
+    if (slides.length) paintBackdrop(slides[index]);
     setInterval(changeSlide, 4200);
 
     // compteurs
