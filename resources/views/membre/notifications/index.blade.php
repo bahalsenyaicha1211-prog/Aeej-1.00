@@ -1,4 +1,4 @@
-<x-membre-layout>
+<x-member-layout>
     <x-slot name="header">
         Notifications
     </x-slot>
@@ -50,4 +50,4 @@
             {{ $notifications->links() }}
         </div>
     </div>
-</x-membre-layout>
+</x-member-layout>

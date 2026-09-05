@@ -169,7 +169,13 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    // Cookie de session marqué "Secure" (HTTPS uniquement) partout sauf en
+    // local/test. Un SESSION_SECURE_COOKIE explicite dans l'environnement
+    // reste prioritaire.
+    'secure' => env(
+        'SESSION_SECURE_COOKIE',
+        ! in_array(env('APP_ENV', 'production'), ['local', 'testing'], true)
+    ),
 
     /*
     |--------------------------------------------------------------------------

@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'super_admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
+            'approved' => \App\Http\Middleware\EnsureAccountApproved::class,
             'tresorier' => \App\Http\Middleware\TresorierMiddleware::class,
             'chef_tresorier' => \App\Http\Middleware\ChefTresorierMiddleware::class,
             'commissaire' => \App\Http\Middleware\CommissaireMiddleware::class,

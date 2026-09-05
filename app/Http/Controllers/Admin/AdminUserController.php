@@ -5,10 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Hash;
 
-class AdminUserController extends Controller
+class AdminUserController extends Controller implements HasMiddleware
 {
+    /**
+     * Défense en profondeur : quelle que soit la définition des routes,
+     * aucune action de ce contrôleur n'est atteignable hors super-admin
+     * (créer / éditer un admin revient à s'octroyer des privilèges).
+     */
+    public static function middleware(): array
+    {
+        return ['super_admin'];
+    }
+
     public function index(Request $request)
     {
         $q = trim((string) $request->query('q', ''));
@@ -49,7 +60,8 @@ class AdminUserController extends Controller
             'password' => Hash::make($data['password']),
             'is_admin' => true,
             'is_super_admin' => false,
-            'email_verified_at' => now(), // optionnel: tu peux enlever si tu veux qu'ils vérifient
+            'email_verified_at' => now(),
+            'approved_at' => now(),
         ]);
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin ajouté.');

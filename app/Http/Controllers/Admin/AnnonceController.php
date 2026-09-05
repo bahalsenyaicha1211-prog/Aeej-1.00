@@ -8,8 +8,8 @@ use App\Models\User;
 use App\Notifications\NewAnnoncePublished;
 use App\Models\BureauMembre;
 use App\Models\GaleriePhoto;
+use App\Services\CloudinaryUploader;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
@@ -168,20 +168,17 @@ public function edit(Annonce $annonce)
      */
     private function uploadImageCloudinary($file): string
     {
-        $tempName = 'annonce-' . time() . '-' . uniqid();
+        $url = app(CloudinaryUploader::class)->upload(
+            $file,
+            'annonces',
+            'annonce-' . time() . '-' . uniqid()
+        );
 
-        $response = Http::asMultipart()->post('https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload', [
-            'file'          => fopen($file->getRealPath(), 'r'),
-            'upload_preset' => 'ml_default',
-            'public_id'     => $tempName,
-            'folder'        => 'annonces',
-        ]);
-
-        if (!$response->successful()) {
-            abort(back()->withErrors(['image' => "Échec de l'envoi de l'image : " . $response->body()]));
+        if ($url === null) {
+            abort(back()->withErrors(['image' => "Échec de l'envoi de l'image vers Cloudinary."]));
         }
 
-        return $response->json()['secure_url'];
+        return $url;
     }
 
     /**

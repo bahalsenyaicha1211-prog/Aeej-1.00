@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\GaleriePhoto;
+use App\Services\CloudinaryUploader;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class GalerieController extends Controller
 {
@@ -67,22 +66,12 @@ class GalerieController extends Controller
     ]);
 
     $rows = [];
+    $uploader = app(CloudinaryUploader::class);
     foreach ($request->file('images') as $img) {
-    $tempName = time() . '-' . uniqid();
+    $path = $uploader->upload($img, 'galerie', time() . '-' . uniqid());
 
-    // On utilise asMultipart() pour un envoi de fichier standard, plus fiable
-    $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
-        'file'          => fopen($img->getRealPath(), 'r'),
-        'upload_preset' => 'ml_default',
-        'public_id'     => $tempName,
-        'folder'        => 'galerie', // On remet le dossier ici, SANS slash
-    ]);
-
-    if ($response->successful()) {
-        $path = $response->json()['secure_url'];
-    } else {
-        // Affiche l'erreur complète pour comprendre si c'est encore le slash
-        return back()->withErrors('Détails Erreur : ' . $response->body());
+    if ($path === null) {
+        return back()->withErrors("Échec de l'envoi d'une image vers Cloudinary.");
     }
 
         $rows[] = [
@@ -130,10 +119,11 @@ class GalerieController extends Controller
         }
 
         if ($request->hasFile('image')) {
-         $upload =Cloudinary::upload($request->file('image')->getRealPath(), [
-                'folder'=> 'galerie'
-             ]);
-         $data['image_path'] = $upload->getSecurePath();
+         $url = app(CloudinaryUploader::class)->upload($request->file('image'), 'galerie', time() . '-' . uniqid());
+         if ($url === null) {
+             return back()->withErrors(['image' => "Échec de l'envoi de l'image vers Cloudinary."]);
+         }
+         $data['image_path'] = $url;
     } else {
     // Crucial : si on ne télécharge pas de nouvelle image, 
     // on retire image_path des données à mettre à jour 

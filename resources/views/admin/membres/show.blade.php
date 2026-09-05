@@ -55,6 +55,19 @@
                         @if($u) <span style="color:#4ade80; font-size:12px;">✅ {{ $u->email }}</span>
                         @else <span style="color:#fb7185; font-size:12px;">❌ Aucun compte</span> @endif
                     </div>
+                    @if($u)
+                    <div class="admRow">
+                        <span style="color:#64748b;">Statut d'accès</span>
+                        @if($u->approved_at)
+                            <span style="color:#4ade80; font-size:12px;">Validé</span>
+                        @else
+                            <form method="POST" action="{{ route('admin.membres.approve', $membre) }}" onsubmit="return confirm('Valider l’inscription de ce membre ?');" style="margin:0;">
+                                @csrf @method('PATCH')
+                                <button class="admQuick__btn" style="padding:5px 12px; font-size:12px; border-color: rgba(34,197,94,0.35); color:#4ade80; background: rgba(34,197,94,0.06); cursor:pointer;">En attente — Approuver</button>
+                            </form>
+                        @endif
+                    </div>
+                    @endif
                     <div class="admRow" style="flex-direction:column; align-items:flex-start;">
                         <span style="color:#64748b; margin-bottom:5px;">Adresse</span>
                         <span class="text-white" style="font-size:13px; line-height:1.4;">{{ $membre->adresse ?: 'Non renseignée' }}</span>

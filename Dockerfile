@@ -28,12 +28,11 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 6. Nettoyage du cache, Migrations, Lancement du Worker (Emails) et Apache
-# La commande entre parenthèses avec le '&' permet d'envoyer les emails en tâche de fond
-CMD php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan view:clear && \
+# 6. Mise en cache de la config/vues (perf + fige les variables d'env au build
+#    du conteneur), migrations, worker d'e-mails en tâche de fond, puis Apache.
+CMD php artisan config:cache && \
+    php artisan view:cache && \
     php artisan route:clear && \
     php artisan migrate --force && \
-    (php artisan queue:work --tries=3 --timeout=90 &) && \
+    (php artisan queue:work --tries=3 --timeout=90 --sleep=3 &) && \
     apache2-foreground
