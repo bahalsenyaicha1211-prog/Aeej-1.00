@@ -33,7 +33,9 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Aucune fonctionnalité ne sert de fichiers privés via HTTP :
+            // on désactive les routes GET/PUT /storage/{path} de Laravel 11+.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],

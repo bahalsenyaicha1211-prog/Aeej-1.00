@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\BureauMembre;
 use App\Models\Membre;
+use App\Services\CloudinaryUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Http;
 
 class BureauMembreController extends Controller
 {
@@ -62,18 +62,14 @@ class BureauMembreController extends Controller
     ];
 
     if ($request->hasFile('photo')) {
-        $img = $request->file('photo');
-        $tempName = 'bureau-' . time() . '-' . uniqid();
+        $url = app(CloudinaryUploader::class)->upload(
+            $request->file('photo'),
+            'bureau',
+            'bureau-' . time() . '-' . uniqid()
+        );
 
-        $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
-            'file'          => fopen($img->getRealPath(), 'r'),
-            'upload_preset' => 'ml_default',
-            'public_id'     => $tempName,
-            'folder'        => 'bureau',
-        ]);
-
-        if ($response->successful()) {
-            $data['photo'] = $response->json()['secure_url'];
+        if ($url !== null) {
+            $data['photo'] = $url;
         }
     }
 
@@ -113,18 +109,14 @@ class BureauMembreController extends Controller
     }
 
     if ($request->hasFile('photo')) {
-        $img = $request->file('photo');
-        $tempName = 'bureau-' . time() . '-' . uniqid();
+        $url = app(CloudinaryUploader::class)->upload(
+            $request->file('photo'),
+            'bureau',
+            'bureau-' . time() . '-' . uniqid()
+        );
 
-        $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/dg9lez6mx/image/upload", [
-            'file'          => fopen($img->getRealPath(), 'r'),
-            'upload_preset' => 'ml_default',
-            'public_id'     => $tempName,
-            'folder'        => 'bureau',
-        ]);
-
-        if ($response->successful()) {
-            $data['photo'] = $response->json()['secure_url'];
+        if ($url !== null) {
+            $data['photo'] = $url;
         }
     }
 

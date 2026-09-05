@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'cloudinary' => [
+        // Valeurs par défaut = celles utilisées jusqu'ici, pour ne rien casser
+        // si les variables d'environnement ne sont pas encore définies.
+        'cloud_name'    => env('CLOUDINARY_CLOUD_NAME', 'dg9lez6mx'),
+        'upload_preset' => env('CLOUDINARY_UPLOAD_PRESET', 'ml_default'),
+    ],
+
 ];

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CloudinaryUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Illuminate\Support\Facades\Http;
 
 
 
@@ -85,17 +84,10 @@ public function updatePhoto(Request $request)
     ]);
 
     if ($request->hasFile('photo')) {
-        $img = $request->file('photo');
-        $cloudName = "dg9lez6mx";
+        $url = app(CloudinaryUploader::class)->upload($request->file('photo'), 'avatars');
 
-        $response = Http::asMultipart()->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
-            'file'          => fopen($img->getRealPath(), 'r'),
-            'upload_preset' => 'ml_default',
-            'folder'        => 'avatars',
-        ]);
-
-        if ($response->successful()) {
-            $user->update(['profile_photo_path' => $response->json()['secure_url']]);
+        if ($url !== null) {
+            $user->update(['profile_photo_path' => $url]);
             return back()->with('success', 'Photo mise à jour !');
         }
     }

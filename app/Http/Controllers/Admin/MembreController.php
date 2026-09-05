@@ -20,7 +20,7 @@ class MembreController extends Controller
     {
         $q = trim((string) $request->query('q', ''));
 
-        $membres = Membre::with(['departement','pays'])
+        $membres = Membre::with(['departement','pays','user'])
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
                     $sub->where('matricule', 'like', "%{$q}%")
@@ -34,7 +34,12 @@ class MembreController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('admin.membres.index', compact('membres', 'q'));
+        $pendingCount = User::whereNotNull('matricule')
+            ->whereNull('approved_at')
+            ->where('is_admin', false)
+            ->count();
+
+        return view('admin.membres.index', compact('membres', 'q', 'pendingCount'));
     }
 
     public function show(Membre $membre)
@@ -69,6 +74,24 @@ class MembreController extends Controller
 
         return redirect()->route('admin.membres.show', $membre)
             ->with('success', 'Membre mis à jour.');
+    }
+
+    /**
+     * Valide l'inscription d'un membre : son compte devient utilisable.
+     */
+    public function approve(Membre $membre)
+    {
+        $user = $membre->user;
+
+        if (! $user) {
+            return back()->with('error', "Aucun compte n'est associé à ce membre.");
+        }
+
+        if ($user->approved_at === null) {
+            $user->forceFill(['approved_at' => now()])->save();
+        }
+
+        return back()->with('success', "Inscription de {$membre->prenom} {$membre->nom} validée.");
     }
 
    public function destroy(Membre $membre)

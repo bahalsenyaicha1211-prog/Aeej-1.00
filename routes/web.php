@@ -105,9 +105,12 @@ Route::middleware('auth')->group(function () {
 
      Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])
         ->name('profile.photo.update');
+
+    // Écran affiché tant qu'un admin n'a pas validé l'inscription.
+    Route::view('/compte/en-attente', 'auth.pending-approval')->name('account.pending');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'approved'])->group(function () {
     Route::get('/dashboard', [TableauController::class, 'index'])->name('dashboard');
 
     Route::get('/annonces', [AnnonceMembreController::class, 'index'])->name('membre.annonces.index');
@@ -129,10 +132,13 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-    Route::resource('admins', AdminUserController::class)->except(['show']);
-    Route::patch('admins/{admin}/toggle-super', [AdminUserController::class, 'toggleSuper'])
-    ->middleware('super_admin')
-    ->name('admins.toggleSuper');
+    // Gestion des comptes administrateurs : réservée au super-administrateur.
+    // (Créer/éditer un admin = pouvoir en pratique équivalent à toggle-super.)
+    Route::middleware('super_admin')->group(function () {
+        Route::resource('admins', AdminUserController::class)->except(['show']);
+        Route::patch('admins/{admin}/toggle-super', [AdminUserController::class, 'toggleSuper'])
+            ->name('admins.toggleSuper');
+    });
 
 
 
@@ -147,6 +153,7 @@ Route::prefix('admin')
 
         // Membres : inscription publique => pas de create/store ici
         Route::resource('membres', MembreController::class)->only(['index','show','edit','update','destroy']);
+        Route::patch('membres/{membre}/approuver', [MembreController::class, 'approve'])->name('membres.approve');
 
         Route::resource('activites', ActiviteController::class)->except(['show']);
         
@@ -176,7 +183,7 @@ Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
 |--------------------------------------------------------------------------
 */
 Route::prefix('tresorerie')
-    ->middleware(['auth', 'tresorerie_area'])
+    ->middleware(['auth', 'approved', 'tresorerie_area'])
     ->name('tresorerie.')
     ->group(function () {
 

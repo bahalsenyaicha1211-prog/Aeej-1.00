@@ -20,6 +20,12 @@
         @endif
     </form>
 
+    @if(($pendingCount ?? 0) > 0)
+        <div style="margin-bottom:16px; padding:12px 16px; border-radius:12px; background:rgba(251,191,36,0.10); border:1px solid rgba(251,191,36,0.30); color:#fcd34d; font-weight:600; font-size:13px;">
+            {{ $pendingCount }} inscription{{ $pendingCount > 1 ? 's' : '' }} en attente de validation.
+        </div>
+    @endif
+
     <div class="admPanel admPanel--full">
         <div class="admPanel__body" style="padding: 0;">
             <div class="table-wrap">
@@ -39,6 +45,9 @@
                             <td>
                                 <div style="font-weight: 800; color: #fff; font-size: 15px;">{{ $m->prenom }} {{ $m->nom }}</div>
                                 <div style="font-size: 11px; color: #4ade80; font-family: monospace;">ID: {{ $m->matricule }}</div>
+                                @if($m->user && $m->user->approved_at === null)
+                                    <span style="display:inline-block; margin-top:4px; font-size:10px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:2px 8px; border-radius:999px; background:rgba(251,191,36,0.12); color:#fcd34d; border:1px solid rgba(251,191,36,0.3);">En attente</span>
+                                @endif
                             </td>
                             <td>
                                 <span style="color: #e2e8f0; font-size: 13px;">{{ $m->departement?->nom ?? '—' }}</span>
@@ -54,7 +63,13 @@
                                 </span>
                             </td>
                             <td style="text-align: right;">
-                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+                                    @if($m->user && $m->user->approved_at === null)
+                                        <form method="POST" action="{{ route('admin.membres.approve', $m) }}" onsubmit="return confirm('Valider l’inscription de {{ $m->prenom }} {{ $m->nom }} ?');">
+                                            @csrf @method('PATCH')
+                                            <button class="admQuick__btn" style="padding: 6px 12px; font-size: 12px; border-color: rgba(34,197,94,0.35); color: #4ade80; background: rgba(34,197,94,0.06); cursor:pointer;">Approuver</button>
+                                        </form>
+                                    @endif
                                     <a class="admQuick__btn" href="{{ route('admin.membres.show', $m) }}" style="padding: 6px 12px; font-size: 12px; text-decoration: none;">Voir</a>
                                     <a class="admQuick__btn" href="{{ route('admin.membres.edit', $m) }}" style="padding: 6px 12px; font-size: 12px; text-decoration: none; border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">Modifier</a>
                                 </div>

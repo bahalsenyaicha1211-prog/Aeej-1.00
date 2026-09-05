@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_chef_tresorier',
         'is_commissaire_comptes',
         'email_verified_at',
+        'approved_at',
     ];
 
     protected $hidden = [
@@ -37,6 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'approved_at'       => 'datetime',
         'password'          => 'hashed',
         'is_admin'          => 'boolean',
         'is_tresorier'          => 'boolean',
@@ -53,6 +55,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAdmin(): bool
     {
         return (bool) $this->is_admin;
+    }
+
+    /**
+     * Un compte est utilisable si c'est un admin, ou si un administrateur a
+     * validé l'inscription du membre (colonne approved_at renseignée).
+     */
+    public function isApproved(): bool
+    {
+        return $this->is_admin || $this->approved_at !== null;
     }
 
     public function isSuperAdmin(): bool
