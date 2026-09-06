@@ -25,6 +25,7 @@ class AdminUserController extends Controller implements HasMiddleware
         $q = trim((string) $request->query('q', ''));
 
         $admins = User::query()
+            ->with('membre.bureauMembres')
             ->where('is_admin', true)
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {

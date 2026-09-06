@@ -96,6 +96,28 @@ class User extends Authenticatable implements MustVerifyEmail
             : asset('images/default-avatar.png');
     }
 
+    /**
+     * Photo à afficher dans les listes (admins, comptes trésorerie…) :
+     * 1) sa propre photo de profil, sinon
+     * 2) la photo de sa fiche « membre du bureau », sinon
+     * 3) l'avatar par défaut.
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->profile_photo_path) {
+            return \Illuminate\Support\Str::startsWith($this->profile_photo_path, 'http')
+                ? $this->profile_photo_path
+                : asset('storage/' . $this->profile_photo_path);
+        }
+
+        $bureau = $this->membre?->bureauMembres;
+        if ($bureau && $bureau->photo) {
+            return $bureau->photo_url;
+        }
+
+        return asset('images/default-avatar.png');
+    }
+
   
     public function annoncesLues()
     {
