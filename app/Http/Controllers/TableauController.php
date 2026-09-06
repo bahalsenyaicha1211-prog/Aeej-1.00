@@ -6,6 +6,7 @@ use App\Models\Membre;
 use App\Models\Annonce;
 use App\Models\Cotisation;
 use App\Models\Depense;
+use App\Models\Pays;
 use Illuminate\Support\Facades\DB;
 
 class TableauController extends Controller
@@ -32,6 +33,8 @@ class TableauController extends Controller
         $totalMembres = Membre::count();
         $hommes = Membre::where('sexe', 'M')->count();
         $femmes = Membre::where('sexe', 'F')->count();
+        // Nombre de pays référencés : identique à l'accueil et à l'espace admin (Pays::count()).
+        $paysCount = Pays::count();
 
         $parSexe = [
             'M' => $hommes,
@@ -59,6 +62,7 @@ class TableauController extends Controller
             'user',
             'membre',
             'totalMembres',
+            'paysCount',
             'parSexe',
             'annonces',
             'parPays',

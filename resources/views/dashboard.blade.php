@@ -2,8 +2,39 @@
 <x-member-layout :unreadAnnoncesCount="$unreadAnnoncesCount ?? 0">
     <x-slot name="header">Tableau de bord</x-slot>
 
+    <style>
+        /* Libellé court des boutons d'action : masqué par défaut (desktop). */
+        .dash-action__mini { display: none; }
+
+        /* Mobile : on garde 2 cartes par ligne pour économiser de l'espace,
+           au lieu d'empiler des cartes pleine largeur. */
+        @media (max-width: 520px) {
+            /* Solde de la caisse + action (dépense / paiement) sur la même ligne */
+            .dash-tres.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 12px; }
+            .dash-tres .card { padding: 14px; }
+            .dash-tres .kpi__value { font-size: 22px; }
+            .dash-tres .dash-action {
+                background: none; border: none; box-shadow: none; padding: 0;
+                display: flex; align-items: center; justify-content: center;
+            }
+            .dash-tres .dash-action .kpi__label { display: none; }
+            .dash-tres .dash-action .btn {
+                margin-top: 0 !important;
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+            .dash-tres .dash-action__full { display: none; }
+            .dash-tres .dash-action__mini { display: inline; }
+
+            /* KPIs : Total membres + Pays, puis Hommes + Femmes */
+            .dash-kpis.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+            .dash-kpis .card { padding: 14px; }
+            .dash-kpis .kpi__value { font-size: 24px; }
+        }
+    </style>
+
     @if($caisseSolde !== null || $mesCotisationsCount !== null)
-    <div class="grid grid-3" style="margin-bottom:16px;">
+    <div class="grid grid-3 dash-tres" style="margin-bottom:16px;">
         @if($caisseSolde !== null)
         <div class="card" style="background:#f0fdf4; border-color:#bbf7d0;">
             <div class="kpi__label">Solde de la caisse</div>
@@ -40,26 +71,41 @@
         @endif
 
         @if($user->isTresorier())
-        <div class="card">
+        <div class="card dash-action">
             <div class="kpi__label">Cotisations</div>
-            <a class="btn btn--primary" href="{{ route('tresorerie.cotisations.create') }}" style="display:inline-block; margin-top:10px;">+ Enregistrer un paiement</a>
+            <a class="btn btn--primary" href="{{ route('tresorerie.cotisations.create') }}" style="display:inline-flex; align-items:center; gap:6px; margin-top:10px;">
+                <span aria-hidden="true">💰</span>
+                <span class="dash-action__full">Enregistrer un paiement</span>
+                <span class="dash-action__mini">Paiement</span>
+            </a>
         </div>
         @endif
 
         @if($user->isCommissaireComptes())
-        <div class="card">
+        <div class="card dash-action">
             <div class="kpi__label">Dépenses</div>
-            <a class="btn btn--primary" href="{{ route('tresorerie.depenses.create') }}" style="display:inline-block; margin-top:10px;">+ Enregistrer une dépense</a>
+            <a class="btn btn--primary" href="{{ route('tresorerie.depenses.create') }}" style="display:inline-flex; align-items:center; gap:6px; margin-top:10px;">
+                <span aria-hidden="true">💸</span>
+                <span class="dash-action__full">Enregistrer une dépense</span>
+                <span class="dash-action__mini">Dépense</span>
+            </a>
         </div>
         @endif
     </div>
     @endif
 
     {{-- KPIs --}}
-    <div class="grid grid-4" style="margin-bottom:16px;">
+    {{-- Ordre pensé pour le mobile (grille 2 colonnes) :
+         ligne 1 = Total membres / Pays, ligne 2 = Hommes / Femmes. --}}
+    <div class="grid grid-4 dash-kpis" style="margin-bottom:16px;">
         <div class="card">
             <div class="kpi__label">Total membres</div>
             <div class="kpi__value">{{ $totalMembres }}</div>
+        </div>
+
+        <div class="card">
+            <div class="kpi__label">Pays représentés</div>
+            <div class="kpi__value">{{ $paysCount }}</div>
         </div>
 
         <div class="card">
@@ -70,11 +116,6 @@
         <div class="card">
             <div class="kpi__label">Femmes</div>
             <div class="kpi__value">{{ $parSexe['F'] ?? 0 }}</div>
-        </div>
-
-        <div class="card">
-            <div class="kpi__label">Pays représentés</div>
-            <div class="kpi__value">{{ $parPays->count() }}</div>
         </div>
     </div>
 
