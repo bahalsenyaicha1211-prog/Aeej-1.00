@@ -16,7 +16,7 @@ class TresorerieCompteController extends Controller
         $q = trim((string) $request->query('q', ''));
 
         $comptes = User::query()
-            ->with('membre')
+            ->with('membre.bureauMembres')
             ->where(function ($sub) {
                 $sub->where('is_tresorier', true)
                   ->orWhere('is_chef_tresorier', true)
