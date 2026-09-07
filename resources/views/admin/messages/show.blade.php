@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">{{ $message->prenom }} {{ $message->nom }}</h1>
             <p class="admDash__sub">Reçu le {{ $message->created_at->format('d M Y à H:i') }}</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.messages.index') }}" style="text-decoration:none;">← Retour</a>
+        <x-adm-back :href="route('admin.messages.index')" />
     </div>
 
     <div class="admGrid">

@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Nouvelle Activité</h1>
             <p class="admDash__sub">Enregistrez un nouvel événement dans le journal de l'association.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.activites.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.activites.index')" />
     </div>
 
     <div class="admGrid">

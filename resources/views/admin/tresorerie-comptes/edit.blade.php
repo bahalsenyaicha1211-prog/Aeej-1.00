@@ -14,7 +14,7 @@
             <h1 class="admDash__title text-white">Modifier le rôle</h1>
             <p class="admDash__sub">{{ $compte->name }} @if($compte->matricule) — {{ $compte->matricule }} @endif</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.tresorerie-comptes.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.tresorerie-comptes.index')" />
     </div>
 
     @if($errors->any())

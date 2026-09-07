@@ -25,7 +25,7 @@
         </div>
         <div style="display:flex; gap:10px;">
             <a class="admQuick__btn" href="{{ route('admin.membres.edit', $membre) }}" style="background:rgba(59, 130, 246, 0.1); color:#60a5fa; text-decoration:none;">Modifier le profil</a>
-            <a class="admQuick__btn" href="{{ route('admin.membres.index') }}" style="text-decoration:none;">← Retour</a>
+            <x-adm-back :href="route('admin.membres.index')" />
         </div>
     </div>
 

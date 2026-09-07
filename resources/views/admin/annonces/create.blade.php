@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Nouvelle annonce</h1>
             <p class="admDash__sub">Rédigez un message percutant pour la communauté.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.annonces.index') }}" style="text-decoration: none;">← Retour aux annonces</a>
+        <x-adm-back :href="route('admin.annonces.index')" />
     </div>
 
     <form method="POST" action="{{ route('admin.annonces.store') }}" enctype="multipart/form-data">

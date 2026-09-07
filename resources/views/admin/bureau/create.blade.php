@@ -10,8 +10,7 @@
             <h1 class="admDash__title text-white">Nouveau membre du bureau</h1>
             <p class="admDash__sub">Associez un membre existant à une fonction officielle du bureau public.</p>
         </div>
-        {{-- Bouton Retour Stylisé --}}
-        <a class="admQuick__btn" href="{{ route('admin.bureau.index') }}">← Retour à la liste</a>
+        <x-adm-back :href="route('admin.bureau.index')" />
     </div>
 
     <div class="admGrid">

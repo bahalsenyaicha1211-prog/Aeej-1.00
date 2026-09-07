@@ -3,6 +3,10 @@
 @section('title', 'Admin • Ajouter photos')
 @section('header', 'Nouvel Upload')
 
+@section('styles')
+    <script src="{{ asset('js/bulk-upload.js') }}?v={{ filemtime(public_path('js/bulk-upload.js')) }}" defer></script>
+@endsection
+
 @section('content')
 <div class="admDash">
     <div class="admDash__head">
@@ -10,12 +14,16 @@
             <h1 class="admDash__title text-white">Ajouter des photos</h1>
             <p class="admDash__sub">Publication multiple possible (JPG, PNG, WEBP).</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.galerie.index') }}" style="text-decoration:none;">← Retour</a>
+        <x-adm-back :href="route('admin.galerie.index')" />
     </div>
 
     <div class="admPanel admPanel--full">
         <div class="admPanel__body">
-            <form method="POST" action="{{ route('admin.galerie.store') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('admin.galerie.store') }}" enctype="multipart/form-data"
+                  data-bulk-upload
+                  data-cloud-name="{{ config('services.cloudinary.cloud_name') }}"
+                  data-upload-preset="{{ config('services.cloudinary.upload_preset') }}"
+                  data-folder="galerie">
                 @csrf
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:25px;">
                     
@@ -47,7 +55,7 @@
                     <div class="field" style="grid-column: span 2; border: 2px dashed rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; text-align: center;">
                         <label class="admKpi__label text-white" style="margin-bottom:15px; display:block;">Sélectionnez vos fichiers</label>
                         <input type="file" name="images[]" accept="image/*" multiple required style="color:#94a3b8;">
-                        <p style="font-size:12px; color:#64748b; margin-top:10px;">Max 4 Mo par image. Maintenez CTRL pour en choisir plusieurs.</p>
+                        <p style="font-size:12px; color:#64748b; margin-top:10px;">Maintenez CTRL pour en choisir plusieurs. Des centaines d'images à la fois, envoyées en parallèle.</p>
                     </div>
 
                     {{-- Checkbox --}}

@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Ajouter un administrateur</h1>
             <p class="admDash__sub">Créez un nouvel accès privilégié à la plateforme.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.admins.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.admins.index')" />
     </div>
 
     <div class="admGrid">

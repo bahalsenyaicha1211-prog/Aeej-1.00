@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Modifier le profil</h1>
             <p class="admDash__sub">Mise à jour des informations de <span style="color:#4ade80;">{{ $membre->prenom }} {{ $membre->nom }}</span></p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.membres.show', $membre) }}" style="text-decoration:none;">← Annuler</a>
+        <x-adm-back :href="route('admin.membres.show', $membre)" />
     </div>
 
     <div class="admPanel admPanel--full">

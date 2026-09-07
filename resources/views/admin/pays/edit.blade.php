@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Modifier le pays</h1>
             <p class="admDash__sub">Édition de l'entrée : <span style="color: #3b82f6;">{{ $pays->nom }}</span></p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.pays.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.pays.index')" />
     </div>
 
     <div class="admGrid">
