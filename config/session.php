@@ -18,7 +18,9 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'),
+    // Défaut : cookie chiffré — aucun aller-retour vers la base (TiDB distante)
+    // à chaque requête, et les sessions survivent aux redéploiements.
+    'driver' => env('SESSION_DRIVER', 'cookie'),
 
     /*
     |--------------------------------------------------------------------------

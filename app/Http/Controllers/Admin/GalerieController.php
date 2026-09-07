@@ -55,6 +55,45 @@ class GalerieController extends Controller
      */
     public function store(Request $request)
 {
+    // Chemin normal : le navigateur a déjà envoyé les images à Cloudinary
+    // (public/js/bulk-upload.js) et ne nous transmet que les URLs.
+    if ($request->filled('image_urls')) {
+        $data = $request->validate([
+            'category'     => ['required', 'string', 'max:80'],
+            'event_date'   => ['required', 'date'],
+            'title'        => ['nullable', 'string', 'max:180'],
+            'description'  => ['nullable', 'string', 'max:2000'],
+            'is_published' => ['nullable'],
+            'image_urls'   => ['required', 'array', 'max:500'],
+            'image_urls.*' => ['required', 'string', 'max:500', function ($attr, $value, $fail) {
+                if (! str_starts_with($value, 'https://res.cloudinary.com/')) {
+                    $fail('URL d\'image invalide.');
+                }
+            }],
+        ]);
+
+        $now = now();
+        $rows = array_map(fn ($url) => [
+            'title'        => $data['title'] ?? null,
+            'category'     => $data['category'],
+            'event_date'   => $data['event_date'],
+            'description'  => $data['description'] ?? null,
+            'image_path'   => $url,
+            'is_published' => $request->boolean('is_published'),
+            'created_by'   => auth()->id(),
+            'created_at'   => $now,
+            'updated_at'   => $now,
+        ], $data['image_urls']);
+
+        foreach (array_chunk($rows, 50) as $chunk) {
+            GaleriePhoto::insert($chunk);
+        }
+
+        return redirect()->route('admin.galerie.index')
+            ->with('success', count($rows) . ' photo(s) ajoutée(s).');
+    }
+
+    // Fallback (JS désactivé / indisponible) : envoi serveur séquentiel.
     $data = $request->validate([
         'category'     => ['required', 'string', 'max:80'],
         'event_date'   => ['required', 'date'],

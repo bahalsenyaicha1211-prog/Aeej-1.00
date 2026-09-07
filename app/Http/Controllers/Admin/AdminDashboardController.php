@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use App\Models\Membre;
 use App\Models\Departement;
@@ -12,6 +13,15 @@ use App\Models\Annonce;
 class AdminDashboardController extends Controller
 {
     public function index()
+    {
+        // ~10 requêtes d'agrégat sur la base distante : mises en cache 5 min,
+        // vidées dès qu'une donnée change (App\Support\StatsCache::flush()).
+        $data = Cache::remember('admin.dashboard', now()->addMinutes(5), fn () => $this->compute());
+
+        return view('admin.dashboard', $data);
+    }
+
+    private function compute(): array
     {
         // 1. Stats Globales (KPI)
         $stats = [
@@ -69,14 +79,14 @@ class AdminDashboardController extends Controller
             ->get()
             ->groupBy('pays');
 
-        // 7. Retour à la vue avec les bonnes variables
-        return view('admin.dashboard', compact(
+        // 7. Données prêtes pour la vue
+        return compact(
             'stats',
             'parPays',
             'parDepartement',
             'parAnnee',
             'sexeParPays', // Correction ici (doit correspondre au nom dans la vue)
             'communauteParPays'
-        ));
+        );
     }
 }

@@ -51,6 +51,11 @@ return [
             */
            'options' => extension_loaded('pdo_mysql') ? array_filter([
     (class_exists(\Pdo\Mysql::class) ? \Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+    // Optionnel : réutilise la connexion (et le handshake TLS) vers TiDB entre
+    // les requêtes d'un même worker Apache. À activer via DB_PERSISTENT=true et
+    // à surveiller (limite de connexions TiDB, "MySQL server has gone away").
+    // array_filter retire l'entrée quand la valeur est false/null.
+    PDO::ATTR_PERSISTENT => filter_var(env('DB_PERSISTENT', false), FILTER_VALIDATE_BOOL),
 ]) : [],
 
         ],

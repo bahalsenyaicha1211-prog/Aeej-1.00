@@ -5,10 +5,14 @@ RUN apt-get update && apt-get install -y \
     git unzip zip libzip-dev libpng-dev libicu-dev curl \
     && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
-    && docker-php-ext-install pdo pdo_mysql zip bcmath intl
+    && docker-php-ext-install pdo pdo_mysql zip bcmath intl \
+    && docker-php-ext-enable opcache
 
-# 2. Configuration Apache
-RUN a2enmod rewrite
+# 1b. Réglages PHP de production (OPcache, limites d'upload…)
+COPY docker/php.ini "$PHP_INI_DIR/conf.d/zz-app.ini"
+
+# 2. Configuration Apache (rewrite + compression + cache des assets)
+RUN a2enmod rewrite deflate expires headers
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
@@ -28,11 +32,14 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 6. Mise en cache de la config/vues (perf + fige les variables d'env au build
-#    du conteneur), migrations, worker d'e-mails en tâche de fond, puis Apache.
+# 5b. Compilation du Blade au build (ne dépend pas des variables d'env runtime).
+RUN php artisan view:cache
+
+# 6. Au démarrage : cache config + routes (les variables d'env Render sont
+#    injectées au runtime), migrations, worker d'e-mails en tâche de fond,
+#    puis Apache.
 CMD php artisan config:cache && \
-    php artisan view:cache && \
-    php artisan route:clear && \
+    php artisan route:cache && \
     php artisan migrate --force && \
-    (php artisan queue:work --tries=3 --timeout=90 --sleep=3 &) && \
+    (php artisan queue:work --tries=3 --timeout=90 --sleep=5 --max-time=3600 &) && \
     apache2-foreground
