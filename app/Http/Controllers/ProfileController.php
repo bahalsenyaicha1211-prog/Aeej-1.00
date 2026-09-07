@@ -79,8 +79,11 @@ public function updatePhoto(Request $request)
     }
 
     // Si on télécharge une photo
-    $request->validate([
-        'photo' => ['required', 'image', 'max:2048'],
+    $request->validateWithBag('updatePhoto', [
+        'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:min_width=100,min_height=100'],
+    ], [
+        'photo.dimensions' => "L'image doit faire au moins 100 x 100 pixels.",
+        'photo.max'        => "L'image ne doit pas dépasser 2 Mo.",
     ]);
 
     if ($request->hasFile('photo')) {

@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
      Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])
+        ->middleware('throttle:12,1')
         ->name('profile.photo.update');
 
     // Écran affiché tant qu'un admin n'a pas validé l'inscription.
