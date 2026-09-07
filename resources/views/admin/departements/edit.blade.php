@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Modifier le département</h1>
             <p class="admDash__sub">Édition de : <span style="color: #4ade80;">{{ $departement->nom }}</span></p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.departements.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.departements.index')" />
     </div>
 
     <div class="admGrid">

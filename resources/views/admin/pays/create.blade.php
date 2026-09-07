@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Nouveau pays</h1>
             <p class="admDash__sub">Enregistrez une nouvelle destination pour vos membres.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.pays.index') }}" style="text-decoration: none;">← Retour à la liste</a>
+        <x-adm-back :href="route('admin.pays.index')" />
     </div>
 
     <div class="admGrid">

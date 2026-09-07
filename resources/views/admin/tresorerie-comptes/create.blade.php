@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Attribuer un rôle trésorerie</h1>
             <p class="admDash__sub">Sélectionnez un membre déjà inscrit sur la plateforme — aucun nouveau compte n'est créé.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.tresorerie-comptes.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.tresorerie-comptes.index')" />
     </div>
 
     @if($errors->any())

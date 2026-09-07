@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Modifier l'annonce</h1>
             <p class="admDash__sub">Mise à jour d'un message existant.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.annonces.index') }}" style="text-decoration: none;">← Annuler</a>
+        <x-adm-back :href="route('admin.annonces.index')" />
     </div>
 
     <form method="POST" action="{{ route('admin.annonces.update', $annonce) }}" enctype="multipart/form-data">

@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Modifier l'administrateur</h1>
             <p class="admDash__sub">Édition du compte de <span style="color:#60a5fa;">{{ $admin->name }}</span></p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.admins.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.admins.index')" />
     </div>
 
     <div class="admGrid">

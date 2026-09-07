@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Nouveau département</h1>
             <p class="admDash__sub">Ajoutez un pôle d'activité pour vos membres.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.departements.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.departements.index')" />
     </div>
 
     <div class="admGrid">

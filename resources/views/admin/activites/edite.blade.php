@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Modifier l'activité</h1>
             <p class="admDash__sub">Édition de l'événement : <span style="color: #4ade80;">{{ $activite->libelle }}</span></p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.activites.index') }}" style="text-decoration: none;">← Retour</a>
+        <x-adm-back :href="route('admin.activites.index')" />
     </div>
 
     <div class="admGrid">

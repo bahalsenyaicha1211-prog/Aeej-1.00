@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Modifier le Membre</h1>
             <p class="admDash__sub">Ajustez le rôle et la visibilité au sein du bureau.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.bureau.index') }}">← Annuler et retour</a>
+        <x-adm-back :href="route('admin.bureau.index')" />
     </div>
 
     <div class="admGrid">

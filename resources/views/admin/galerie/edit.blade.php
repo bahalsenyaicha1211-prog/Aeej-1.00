@@ -10,7 +10,7 @@
             <h1 class="admDash__title text-white">Modifier la photo</h1>
             <p class="admDash__sub">Mise à jour des métadonnées de l'image.</p>
         </div>
-        <a class="admQuick__btn" href="{{ route('admin.galerie.index') }}" style="text-decoration:none;">← Retour</a>
+        <x-adm-back :href="route('admin.galerie.index')" />
     </div>
 
     <div class="admGrid">
