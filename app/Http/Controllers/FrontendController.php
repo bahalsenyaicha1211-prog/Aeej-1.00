@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activite;
 use App\Models\Departement;
+use App\Models\HeroImage;
 use App\Models\Membre;
 use App\Models\Pays;
 use App\Models\BureauMembre;
@@ -12,6 +13,7 @@ use App\Models\ContactMessage;
 use App\Rules\MatriculePaysMatch;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -29,19 +31,25 @@ class FrontendController extends Controller
 
  public function accueil()
 {
-    $startMonth = now()->startOfMonth();
-    $endMonth   = now()->endOfMonth();
+    // Une dizaine de count() sur la base distante à chaque visite : mis en cache
+    // 10 min, vidé dès qu'une donnée change (App\Support\StatsCache::flush()).
+    $stats = Cache::remember('home.stats', now()->addMinutes(10), function () {
+        return [
+            'membresCount'      => Membre::count(),
+            'departementsCount' => Departement::count(),
+            'activitesCount'    => Activite::count(),
+            'paysCount'         => Pays::count(),
+            'bureauCount'       => BureauMembre::count(),
+            'inscriptionsRecent' => Membre::whereBetween('created_at', [
+                now()->startOfMonth(), now()->endOfMonth(),
+            ])->count(),
+        ];
+    });
 
     return view('accueil', [
-        'membresCount'      => Membre::count(),
-        'departementsCount' => Departement::count(),
-        'activitesCount'    => Activite::count(),
-        'paysCount'         => Pays::count(),
-        'bureauCount'       => BureauMembre::count(),
-
-        // ✅ inscriptions du mois (suppose que "created_at" existe sur membres)
-        'inscriptionsRecent' => Membre::whereBetween('created_at', [$startMonth, $endMonth])->count(),
-    ]);
+        // Hors cache : léger, et doit refléter l'admin immédiatement.
+        'heroImages' => HeroImage::active()->orderBy('position')->orderBy('id')->get(),
+    ] + $stats);
 }
 
     public function apropos()

@@ -24,6 +24,7 @@ use App\Http\Controllers\Membre\AnnonceMembreController;
 use App\Http\Controllers\Membre\NotificationController;
 use App\Http\Controllers\Membre\CotisationMembreController;
 use App\Http\Controllers\Admin\GalerieController;
+use App\Http\Controllers\Admin\HeroImageController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\TresorerieCompteController;
@@ -166,6 +167,14 @@ Route::prefix('admin')
 
 Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
     ->name('galerie.toggle');
+
+        // Photos du diaporama de la page d'accueil
+        Route::resource('hero-images', HeroImageController::class)
+    ->parameters(['hero-images' => 'heroImage'])
+    ->except(['show']);
+
+Route::patch('hero-images/{heroImage}/toggle', [HeroImageController::class, 'toggle'])
+    ->name('hero-images.toggle');
 
         Route::resource('messages', ContactMessageController::class)
     ->only(['index', 'show', 'destroy']);
