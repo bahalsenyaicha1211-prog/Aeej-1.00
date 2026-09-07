@@ -1,14 +1,6 @@
 {{-- resources/views/components/member-layout.blade.php --}}
 @php
     $user = auth()->user();
-    
-    $nameParts = explode(' ', trim($user->name));
-    if (count($nameParts) >= 2) {
-        $initials = substr($nameParts[0], 0, 1) . substr(end($nameParts), 0, 1);
-    } else {
-        $initials = substr($user->name, 0, 2);
-    }
-    $initials = strtoupper($initials);
 
     $unreadAnnoncesCount = $unreadAnnoncesCount ?? 0;
 
@@ -35,20 +27,6 @@
     <script src="{{ asset('js/password-toggle.js') }}" defer></script>
     
     <style>
-        .avatar-circle {
-            background: #055b20;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .avatar-sidebar { width: 45px; height: 45px; font-size: 1.2rem; }
-        .avatar-topbar { width: 35px; height: 35px; font-size: 0.9rem; }
-        
         /* Ajustement pour les icônes du menu */
         .nav__item { display: flex; align-items: center; gap: 12px; }
         .nav__icon { font-size: 1.1rem; width: 20px; text-align: center; }
@@ -61,9 +39,7 @@
     {{-- Sidebar Desktop --}}
     <aside class="sidebar" aria-label="Navigation membre">
         <div class="sidebar__top">
-            <div class="avatar-circle avatar-sidebar">
-                {{ $initials }}
-            </div>
+            <x-avatar :user="$user" :size="45" />
             <div class="userbox">
                 <div class="userbox__name">{{ $user->name }}</div>
                 <div class="userbox__email">{{ $user->email }}</div>
@@ -159,9 +135,7 @@
                     @endif
                 </a>
 
-                <div class="avatar-circle avatar-topbar">
-                    {{ $initials }}
-                </div>
+                <x-avatar :user="$user" :size="35" />
             </div>
         </header>
 
@@ -177,9 +151,7 @@
     <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Menu membre">
         <div class="drawer__top">
             <div style="display:flex; align-items:center; gap:10px;">
-                <div class="avatar-circle avatar-sidebar">
-                    {{ $initials }}
-                </div>
+                <x-avatar :user="$user" :size="45" />
                 <div class="userbox">
                     <div class="userbox__name">{{ $user->name }}</div>
                 </div>

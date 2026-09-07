@@ -14,10 +14,13 @@
 <div class="admDash">
     <div class="admDash__head">
         <div style="display:flex; gap:20px; align-items:center;">
-            {{-- Avatar Initials --}}
-            <div style="width:70px; height:70px; border-radius:20px; background:linear-gradient(45deg, #2563eb, #3b82f6); color:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:900; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);">
-                {{ $initials }}
-            </div>
+            @if($u && $u->profile_photo_path)
+                <x-avatar :user="$u" :size="70" style="border-radius:20px; box-shadow:0 10px 20px rgba(37,99,235,0.2);" />
+            @else
+                <div style="width:70px; height:70px; border-radius:20px; background:linear-gradient(45deg, #2563eb, #3b82f6); color:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:900; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);">
+                    {{ $initials }}
+                </div>
+            @endif
             <div>
                 <h1 class="admDash__title text-white">{{ $membre->prenom }} {{ $membre->nom }}</h1>
                 <p class="admDash__sub">Matricule : <span style="color:#4ade80; font-family:monospace;">{{ $membre->matricule }}</span></p>

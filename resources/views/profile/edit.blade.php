@@ -238,7 +238,9 @@
             {{-- Colonne gauche : résumé --}}
             <aside>
                 <div class="pf-card pf-summary">
-                    <div class="pf-summary__avatar">{{ $initials }}</div>
+                    <div style="display:flex; justify-content:center; margin:4px 0 14px;">
+                        <x-avatar :user="$user" :size="96" />
+                    </div>
                     <div class="pf-summary__name">{{ $user->name }}</div>
                     <div class="pf-summary__email">{{ $user->email }}</div>
 
@@ -305,6 +307,10 @@
                 <div class="pf-card">
                     <h2 class="pf-card__title">Modifier mes informations</h2>
                     <p class="pf-card__desc">Vous pouvez tenir à jour vos coordonnées et votre nom affiché.</p>
+
+                    @include('profile.partials.update-profile-photo-form')
+
+                    <hr class="pf-divider">
 
                     @include('profile.partials.update-coordonnees-form')
 
