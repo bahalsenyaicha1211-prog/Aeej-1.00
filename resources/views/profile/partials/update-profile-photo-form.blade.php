@@ -1,45 +1,37 @@
 @php($user = auth()->user())
 
-<section class="section">
-    <header class="section__head">
-        <h3 class="section__title">Photo de profil</h3>
-        <p class="section__desc">Facultatif. Affichée en rond dans votre espace. Sans photo, ce sont vos initiales qui s'affichent.</p>
-    </header>
+<div class="pf-avatar">
+    <div class="pf-avatar__frame">
+        <x-avatar :user="$user" :size="96" />
 
-    @if ($errors->updatePhoto->any())
-        <div class="alert alert--danger">
-            <ul class="list">
-                @foreach ($errors->updatePhoto->all() as $e)
-                    <li>{{ $e }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
-        <x-avatar :user="$user" :size="72" />
-
-        <form method="POST" action="{{ route('profile.photo.update') }}" enctype="multipart/form-data" class="form" style="flex:1; min-width:240px;">
+        {{-- Bouton caméra façon réseau social : ouvre le sélecteur de fichier
+             et envoie directement le formulaire. --}}
+        <form method="POST" action="{{ route('profile.photo.update') }}" enctype="multipart/form-data" class="pf-avatar__cam">
             @csrf
             @method('PATCH')
-
-            <div class="field">
-                <label class="label" for="photo">Choisir une image</label>
-                <input class="input" id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp">
-                <span class="field__hint">JPG, PNG ou WEBP — 2 Mo maximum.</span>
-            </div>
-
-            <div class="actions" style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn btn--dark" type="submit">Enregistrer la photo</button>
-
-                @if ($user->profile_photo_path)
-                    <button class="btn" type="submit" name="remove_photo" value="1"
-                            style="background:#fff; border:1px solid var(--pf-border); color:var(--pf-muted);"
-                            onclick="return confirm('Revenir aux initiales ?');">
-                        Supprimer la photo
-                    </button>
-                @endif
-            </div>
+            <label title="Changer la photo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                </svg>
+                <span class="pf-visually-hidden">Changer la photo de profil</span>
+                <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" hidden
+                       onchange="if(this.files.length) this.form.submit()">
+            </label>
         </form>
     </div>
-</section>
+
+    @if ($errors->updatePhoto->any())
+        <p class="pf-avatar__err">{{ $errors->updatePhoto->first() }}</p>
+    @elseif ($user->profile_photo_path)
+        <div class="pf-avatar__hint">
+            <form method="POST" action="{{ route('profile.photo.update') }}" style="display:inline;">
+                @csrf @method('PATCH')
+                <button type="submit" name="remove_photo" value="1" class="pf-avatar__remove"
+                        onclick="return confirm('Revenir aux initiales ?');">Retirer la photo</button>
+            </form>
+        </div>
+    @else
+        <p class="pf-avatar__hint">JPG, PNG ou WEBP — 2 Mo max.</p>
+    @endif
+</div>

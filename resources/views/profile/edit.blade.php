@@ -7,14 +7,6 @@
         $user = auth()->user();
         $membre = $membre ?? $user->membre;
 
-        $nameParts = preg_split('/\s+/', trim($user->name)) ?: [];
-        if (count($nameParts) >= 2) {
-            $initials = mb_substr($nameParts[0], 0, 1) . mb_substr(end($nameParts), 0, 1);
-        } else {
-            $initials = mb_substr($user->name, 0, 2);
-        }
-        $initials = mb_strtoupper($initials);
-
         $roles = [];
         if ($user->is_admin)               $roles[] = 'Administrateur';
         if ($user->isChefTresorier())      $roles[] = 'Chef trésorier';
@@ -89,19 +81,42 @@
 
         /* --- Carte résumé (colonne gauche) --- */
         .pf-summary { text-align: center; position: sticky; top: 90px; }
-        .pf-summary__avatar {
-            width: 96px;
-            height: 96px;
-            margin: 4px auto 14px;
-            border-radius: 50%;
-            background: var(--pf-brand);
-            color: #fff;
+
+        /* Avatar + bouton caméra (style réseau social) */
+        .pf-avatar { text-align: center; }
+        .pf-avatar__frame {
+            position: relative;
+            display: inline-block;
+            margin: 4px 0 6px;
+        }
+        .pf-avatar__cam { position: absolute; right: -2px; bottom: -2px; margin: 0; }
+        .pf-avatar__cam label {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: .5px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--pf-brand);
+            color: #fff;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 6px rgba(17, 24, 39, .25);
+            cursor: pointer;
+            transition: filter .12s ease;
+        }
+        .pf-avatar__cam label:hover { filter: brightness(1.12); }
+        .pf-avatar__cam svg { width: 15px; height: 15px; }
+        .pf-avatar__hint { font-size: 12px; color: var(--pf-muted); margin: 0 0 12px; }
+        .pf-avatar__err { font-size: 12px; color: var(--pf-danger); font-weight: 700; margin: 0 0 12px; }
+        .pf-avatar__remove {
+            background: none; border: 0; padding: 0;
+            font: inherit; font-size: 12px; color: var(--pf-muted);
+            text-decoration: underline; cursor: pointer;
+        }
+        .pf-avatar__remove:hover { color: var(--pf-danger); }
+        .pf-visually-hidden {
+            position: absolute; width: 1px; height: 1px; overflow: hidden;
+            clip: rect(0 0 0 0); white-space: nowrap;
         }
         .pf-summary__name {
             font-size: 16px;
@@ -238,9 +253,7 @@
             {{-- Colonne gauche : résumé --}}
             <aside>
                 <div class="pf-card pf-summary">
-                    <div style="display:flex; justify-content:center; margin:4px 0 14px;">
-                        <x-avatar :user="$user" :size="96" />
-                    </div>
+                    @include('profile.partials.update-profile-photo-form')
                     <div class="pf-summary__name">{{ $user->name }}</div>
                     <div class="pf-summary__email">{{ $user->email }}</div>
 
@@ -307,10 +320,6 @@
                 <div class="pf-card">
                     <h2 class="pf-card__title">Modifier mes informations</h2>
                     <p class="pf-card__desc">Vous pouvez tenir à jour vos coordonnées et votre nom affiché.</p>
-
-                    @include('profile.partials.update-profile-photo-form')
-
-                    <hr class="pf-divider">
 
                     @include('profile.partials.update-coordonnees-form')
 
