@@ -33,11 +33,24 @@
   border:1px solid var(--border);
 }
 .jdbHero__media{ position:absolute; inset:0; background:#0b1220; }
-.jdbHero__img{
+
+/* Diaporama générique (héro, médias de section, cartes lieux) */
+.jdb-slide{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  opacity:0; transition: opacity 1s ease;
+  opacity:0; transition: opacity .7s ease;
 }
-.jdbHero__img.is-active{ opacity:1; }
+.jdb-slide.is-active{ opacity:1; }
+.jdb-dots{
+  position:absolute; z-index:3; right:12px; top:12px;
+  display:flex; gap:6px;
+}
+.jdb-dots i{
+  width:7px; height:7px; border-radius:999px; cursor:pointer;
+  background: rgba(255,255,255,.45);
+  box-shadow: 0 1px 3px rgba(0,0,0,.4);
+  transition: background .2s ease, transform .2s ease;
+}
+.jdb-dots i.is-on{ background:#fff; transform: scale(1.25); }
 .jdbHero__overlay{
   position:absolute; inset:0;
   background: linear-gradient(90deg, rgba(4,20,15,.82), rgba(4,20,15,.30)),
@@ -99,8 +112,9 @@
 }
 .jdbCard h3{ margin:0 0 8px; font-size:16px; font-weight:900; }
 .jdbCard p{ margin:0 0 10px; color: var(--muted); line-height:1.75; font-size:14px; }
-.jdbCard--media{ padding:0; overflow:hidden; }
-.jdbCard--media img{ width:100%; height:100%; min-height: 240px; object-fit:cover; display:block; }
+.jdbCard--media{ padding:0; overflow:hidden; position:relative; min-height: 260px; }
+.jdbCard--media .jdb-show{ position:absolute; inset:0; }
+.jdbCard--media img{ width:100%; height:100%; object-fit:cover; display:block; }
 
 .jdbList{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; }
 .jdbList li{ position:relative; padding-left: 22px; color: var(--muted); font-size:14px; line-height:1.6; }
@@ -135,21 +149,50 @@
 .jdbPrice b{ font-size:15px; }
 .jdbPrice span{ display:block; font-size:12.5px; color: var(--muted); margin-top:2px; }
 
-/* Visiter : cartes */
-.jdbPlaces{ display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+/* Visiter : cartes image + texte incrusté en bas */
+.jdbPlaces{ display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:18px; }
 .jdbPlace{
-  background: var(--card); border:1px solid var(--border); border-radius:18px; overflow:hidden;
-  box-shadow: 0 10px 28px rgba(2,6,23,.07);
-  display:flex; flex-direction:column;
-  transition: transform .16s ease, box-shadow .16s ease;
+  position:relative; overflow:hidden; isolation:isolate;
+  border-radius:20px; border:1px solid var(--border);
+  min-height: 380px;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  box-shadow: 0 14px 34px rgba(2,6,23,.16);
+  transition: transform .18s ease, box-shadow .18s ease;
 }
-.jdbPlace:hover{ transform: translateY(-4px); box-shadow: 0 22px 46px rgba(2,6,23,.14); }
-.jdbPlace__strip{ height:8px; background: linear-gradient(90deg, var(--green), var(--green2)); }
-.jdbPlace__b{ padding:18px; flex:1; display:flex; flex-direction:column; }
-.jdbPlace__tag{ font-size:11px; font-weight:900; letter-spacing:.06em; text-transform:uppercase; color: var(--green2); }
-.jdbPlace h3{ margin:6px 0 8px; font-size:17px; font-weight:950; }
-.jdbPlace p{ margin:0; font-size:13.5px; color: var(--muted); line-height:1.65; }
-.jdbPlace__meta{ margin-top:auto; padding-top:12px; font-size:12px; color: var(--muted); font-weight:800; }
+.jdbPlace:hover{ transform: translateY(-5px); box-shadow: 0 28px 58px rgba(2,6,23,.24); }
+.jdbPlace__show{ position:absolute; inset:0; z-index:0; background:#0b1220; }
+.jdbPlace__show .jdb-slide{ transition: opacity .7s ease, transform 6s ease; }
+.jdbPlace:hover .jdbPlace__show .jdb-slide.is-active{ transform: scale(1.06); }
+.jdbPlace__fallback{
+  position:absolute; inset:0; z-index:0;
+  background: linear-gradient(135deg, var(--g0), var(--g1));
+}
+
+.jdbPlace__scrim{
+  position:relative; z-index:2;
+  padding: 22px 18px 18px;
+  color:#fff;
+  background: linear-gradient(to top,
+    rgba(4,12,9,.95) 0%, rgba(4,12,9,.80) 38%, rgba(4,12,9,.30) 74%, transparent 100%);
+}
+.jdbPlace__tag{
+  display:inline-block; padding: 4px 10px; border-radius:999px;
+  background: rgba(34,197,94,.30); border:1px solid rgba(74,222,128,.55);
+  font-size:10.5px; font-weight:900; letter-spacing:.06em; text-transform:uppercase;
+  color:#eafff1;
+}
+.jdbPlace__scrim h3{ margin: 10px 0 6px; font-size:19px; font-weight:950; letter-spacing:-.01em; text-shadow:0 2px 12px rgba(0,0,0,.55); }
+.jdbPlace__txt{
+  margin:0; font-size:13px; line-height:1.6; color: rgba(255,255,255,.9);
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.jdbPlace.is-open .jdbPlace__txt{ -webkit-line-clamp: unset; display:block; }
+.jdbPlace__more{
+  margin-top:7px; padding:0; background:none; border:0; cursor:pointer;
+  font:inherit; font-size:12px; font-weight:900; color:#7ee7a8;
+}
+.jdbPlace__more:hover{ text-decoration:underline; }
+.jdbPlace__meta{ margin-top:12px; font-size:11.5px; font-weight:800; color: rgba(255,255,255,.72); letter-spacing:.02em; }
 
 /* Bon à savoir */
 .jdbTips{ display:grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap:14px; }
@@ -182,45 +225,7 @@
 @endsection
 
 @section('scripts')
-<script>
-(() => {
-  const slides = document.querySelectorAll('[data-jdb-slide]');
-  let s = 0;
-  if (slides.length){ slides[0].classList.add('is-active'); }
-  if (slides.length > 1){
-    setInterval(() => {
-      slides[s].classList.remove('is-active');
-      s = (s + 1) % slides.length;
-      slides[s].classList.add('is-active');
-    }, 5000);
-  }
-
-  const heroText = document.querySelector('[data-jdb-text]');
-  const phrases = [
-    "Au pied des monts de la Kroumirie.",
-    "Sur la plaine du Medjerda, grenier de la Tunisie.",
-    "À deux pas de Bulla Regia et de Chemtou."
-  ];
-  let t = 0;
-  function rotate(){
-    if (!heroText) return;
-    heroText.style.opacity = "0";
-    heroText.style.transform = "translateY(6px)";
-    setTimeout(() => {
-      heroText.textContent = phrases[t];
-      heroText.style.opacity = "1";
-      heroText.style.transform = "translateY(0)";
-      t = (t + 1) % phrases.length;
-    }, 240);
-  }
-  if (heroText){ rotate(); setInterval(rotate, 4200); }
-
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('is-in'); obs.unobserve(e.target); } });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-})();
-</script>
+<script src="{{ asset('js/jendouba.js') }}?v={{ filemtime(public_path('js/jendouba.js')) }}" defer></script>
 @endsection
 
 @section('content')
@@ -229,10 +234,11 @@
 
     {{-- HERO --}}
     <section class="jdbHero reveal">
-      <div class="jdbHero__media">
-        <img data-jdb-slide class="jdbHero__img" src="{{ asset('images/jendouba/p3.jpg') }}" alt="Paysage de Jendouba">
-        <img data-jdb-slide class="jdbHero__img" src="{{ asset('images/jendouba/p1.jpg') }}" alt="Nature autour de Jendouba">
-        <img data-jdb-slide class="jdbHero__img" src="{{ asset('images/jendouba/P4.jpg') }}" alt="Région de Jendouba">
+      <div class="jdbHero__media" data-jdb-show="5000">
+        @php $heroImgs = !empty($hero) ? $hero : [asset('images/jendouba/p3.jpg'), asset('images/jendouba/p1.jpg'), asset('images/jendouba/P4.jpg')]; @endphp
+        @foreach($heroImgs as $src)
+          <img class="jdb-slide @if($loop->first) is-active @endif" src="{{ $src }}" alt="Région de Jendouba" @if(!$loop->first) loading="lazy" @endif>
+        @endforeach
         <div class="jdbHero__overlay"></div>
       </div>
       <div class="jdbHero__content">
@@ -314,7 +320,13 @@
           <p style="margin-top:12px; font-weight:700; color:var(--g1);">Meilleure période pour découvrir la région : le printemps (avril–mai) et l'automne (octobre–novembre), 15–20°C.</p>
         </div>
         <div class="jdbCard jdbCard--media">
-          <img loading="lazy" src="{{ asset('images/jendouba/v2.jpg') }}" alt="Paysage du Nord-Ouest tunisien">
+          @php $natureImgs = !empty($nature) ? $nature : [asset('images/jendouba/v2.jpg')]; @endphp
+          <div class="jdb-show" data-jdb-show="4500">
+            @foreach($natureImgs as $src)
+              <img class="jdb-slide @if($loop->first) is-active @endif" loading="lazy" src="{{ $src }}" alt="Paysage du Nord-Ouest tunisien">
+            @endforeach
+          </div>
+          @if(count($natureImgs) > 1)<span class="jdb-dots"></span>@endif
         </div>
       </div>
     </section>
@@ -327,7 +339,13 @@
       </div>
       <div class="jdbGrid jdbGrid--rev">
         <div class="jdbCard jdbCard--media">
-          <img loading="lazy" src="{{ asset('images/jendouba/v1.jpg') }}" alt="Vie locale à Jendouba">
+          @php $vieImgs = !empty($vie) ? $vie : [asset('images/jendouba/v1.jpg')]; @endphp
+          <div class="jdb-show" data-jdb-show="4500">
+            @foreach($vieImgs as $src)
+              <img class="jdb-slide @if($loop->first) is-active @endif" loading="lazy" src="{{ $src }}" alt="Vie locale à Jendouba">
+            @endforeach
+          </div>
+          @if(count($vieImgs) > 1)<span class="jdb-dots"></span>@endif
         </div>
         <div class="jdbCard">
           <h3>Une ville universitaire à taille humaine</h3>
@@ -367,65 +385,28 @@
       </p>
 
       <div class="jdbPlaces">
-        <article class="jdbPlace">
-          <div class="jdbPlace__strip"></div>
-          <div class="jdbPlace__b">
-            <span class="jdbPlace__tag">Site romain</span>
-            <h3>Bulla Regia</h3>
-            <p>Unique au monde : les riches Romains y bâtissaient leurs villas <b>sous terre</b> pour fuir la chaleur — cours à colonnades et mosaïques enterrées (maisons de la Chasse, de la Pêche, d'Amphitrite).</p>
-            <div class="jdbPlace__meta">≈ 8 km · nord-est</div>
-          </div>
-        </article>
+        @foreach($places as $p)
+          <article class="jdbPlace">
+            @if(!empty($p['images']))
+              <div class="jdbPlace__show" data-jdb-show="2600">
+                @foreach($p['images'] as $img)
+                  <img class="jdb-slide @if($loop->first) is-active @endif" loading="lazy" src="{{ $img }}" alt="{{ $p['titre'] }}">
+                @endforeach
+              </div>
+              @if(count($p['images']) > 1)<span class="jdb-dots"></span>@endif
+            @else
+              <div class="jdbPlace__fallback"></div>
+            @endif
 
-        <article class="jdbPlace">
-          <div class="jdbPlace__strip"></div>
-          <div class="jdbPlace__b">
-            <span class="jdbPlace__tag">Carrières antiques</span>
-            <h3>Chemtou (Simitthus)</h3>
-            <p>Les carrières du célèbre <b>marbre jaune numidique</b> (<i>giallo antico</i>), le plus prestigieux de l'Empire romain. Site archéologique et musée sur la Medjerda.</p>
-            <div class="jdbPlace__meta">≈ 20 km · ouest</div>
-          </div>
-        </article>
-
-        <article class="jdbPlace">
-          <div class="jdbPlace__strip"></div>
-          <div class="jdbPlace__b">
-            <span class="jdbPlace__tag">Montagne &amp; forêt</span>
-            <h3>Aïn Draham &amp; la Kroumirie</h3>
-            <p>Forêts de chêne-liège, sentiers de randonnée, panoramas, fraîcheur en été et neige en hiver. La station de montagne la plus connue de Tunisie.</p>
-            <div class="jdbPlace__meta">≈ 30 km · nord</div>
-          </div>
-        </article>
-
-        <article class="jdbPlace">
-          <div class="jdbPlace__strip"></div>
-          <div class="jdbPlace__b">
-            <span class="jdbPlace__tag">Nature protégée</span>
-            <h3>Parc national d'El Feïja</h3>
-            <p>2 765 ha de forêt de montagne près de Ghardimaou : biodiversité, sources, et le <b>cerf de Berbérie</b>, réintroduit dans la région.</p>
-            <div class="jdbPlace__meta">≈ 50 km · nord-ouest</div>
-          </div>
-        </article>
-
-        <article class="jdbPlace">
-          <div class="jdbPlace__strip"></div>
-          <div class="jdbPlace__b">
-            <span class="jdbPlace__tag">Mer</span>
-            <h3>Tabarka</h3>
-            <p>Station balnéaire du Nord-Ouest : les <b>Aiguilles</b>, le fort génois, les fonds coralliens et le festival de jazz en été.</p>
-            <div class="jdbPlace__meta">≈ 60 km · nord</div>
-          </div>
-        </article>
-
-        <article class="jdbPlace">
-          <div class="jdbPlace__strip"></div>
-          <div class="jdbPlace__b">
-            <span class="jdbPlace__tag">Patrimoine mondial</span>
-            <h3>Dougga</h3>
-            <p>La cité romaine la mieux conservée d'Afrique du Nord, classée à l'UNESCO — capitole, théâtre, temples — à combiner avec la région du Kef.</p>
-            <div class="jdbPlace__meta">≈ 90 km · sud-est</div>
-          </div>
-        </article>
+            <div class="jdbPlace__scrim">
+              <span class="jdbPlace__tag">{{ $p['tag'] }}</span>
+              <h3>{{ $p['titre'] }}</h3>
+              <p class="jdbPlace__txt">{!! $p['texte'] !!}</p>
+              <button class="jdbPlace__more" type="button" hidden>Afficher plus</button>
+              <div class="jdbPlace__meta">{{ $p['meta'] }}</div>
+            </div>
+          </article>
+        @endforeach
       </div>
     </section>
 

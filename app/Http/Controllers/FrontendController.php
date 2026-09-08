@@ -60,6 +60,50 @@ class FrontendController extends Controller
         return view('apropos', compact('pays'));
     }
 
+    public function jendouba()
+    {
+        // Chaque bloc d'images est piloté par un dossier : il suffit d'y
+        // déposer des fichiers (jpg/jpeg/png/webp/avif) pour alimenter le
+        // diaporama correspondant. Simple glob local, pas de cache nécessaire.
+        $scan = fn (string $dir): array => collect(glob(public_path("images/jendouba/{$dir}/*"), GLOB_BRACE) ?: [])
+            ->filter(fn ($path) => in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp', 'avif'], true))
+            ->unique(fn ($path) => strtolower(basename($path)))
+            ->sort()
+            ->map(fn ($path) => asset('images/jendouba/' . $dir . '/' . basename($path)))
+            ->values()->all();
+
+        $data = (function () use ($scan) {
+            $places = [
+                ['slug' => 'bulla-regia',  'tag' => 'Site romain',        'titre' => 'Bulla Regia',                 'meta' => '≈ 8 km · nord-est',
+                 'texte' => "Unique au monde : les riches Romains y bâtissaient leurs villas <b>sous terre</b> pour fuir la chaleur — cours à colonnades et mosaïques enterrées (maisons de la Chasse, de la Pêche, d'Amphitrite). L'une des cités antiques les mieux préservées d'Afrique du Nord."],
+                ['slug' => 'chemtou',      'tag' => 'Carrières antiques',  'titre' => 'Chemtou (Simitthus)',        'meta' => '≈ 20 km · ouest',
+                 'texte' => "Les carrières du célèbre <b>marbre jaune numidique</b> (<i>giallo antico</i>), le plus prestigieux de l'Empire romain, exporté jusqu'à Rome. Site archéologique et musée au bord de la Medjerda, avec les vestiges du pont romain et du camp."],
+                ['slug' => 'ain-draham',   'tag' => 'Montagne & forêt',    'titre' => 'Aïn Draham & la Kroumirie',  'meta' => '≈ 30 km · nord',
+                 'texte' => "Station de montagne à 800 m d'altitude, toits de tuiles rouges, air frais : la « petite Suisse tunisienne ». Forêts de chêne-liège, sentiers de randonnée, panoramas, fraîcheur en été et neige en hiver."],
+                ['slug' => 'el-feija',     'tag' => 'Nature protégée',     'titre' => "Parc national d'El Feïja",   'meta' => '≈ 50 km · nord-ouest',
+                 'texte' => "2 765 ha de forêt de montagne près de Ghardimaou : subéraie, sources, lacs et une riche biodiversité. C'est ici qu'a été réintroduit le <b>cerf de Berbérie</b>, emblème de la région."],
+                ['slug' => 'tabarka',      'tag' => 'Mer',                 'titre' => 'Tabarka',                    'meta' => '≈ 60 km · nord',
+                 'texte' => "Station balnéaire du Nord-Ouest : les <b>Aiguilles</b> rocheuses, le fort génois sur son île, les fonds coralliens et le festival de jazz en été. Un contraste saisissant avec la montagne toute proche."],
+                ['slug' => 'dougga',       'tag' => 'Patrimoine mondial',  'titre' => 'Dougga',                    'meta' => '≈ 90 km · sud-est',
+                 'texte' => "La cité romaine la mieux conservée d'Afrique du Nord, classée à l'UNESCO : capitole, théâtre de 3 500 places, temples et arc de triomphe dominant une plaine d'oliviers. À combiner avec la région du Kef."],
+            ];
+
+            foreach ($places as &$p) {
+                $p['images'] = $scan('places/' . $p['slug']);
+            }
+            unset($p);
+
+            return [
+                'hero'   => $scan('hero'),
+                'nature' => $scan('nature'),
+                'vie'    => $scan('vie-etudiante'),
+                'places' => $places,
+            ];
+        })();
+
+        return view('jendouba', $data);
+    }
+
     public function partenaires(Request $request)
     {
         // Tout le jeu publié est mis en cache une fois (10 min) ; le filtrage
