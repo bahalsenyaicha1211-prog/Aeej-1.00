@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="{{ asset('css/partenaires.css') }}?v={{ filemtime(public_path('css/partenaires.css')) }}">
 @endsection
 
+@section('scripts')
+    <script src="{{ asset('js/partenaires.js') }}?v={{ filemtime(public_path('js/partenaires.js')) }}" defer></script>
+@endsection
+
 @section('content')
 <main class="pt">
     <div class="pt__wrap">
@@ -37,7 +41,7 @@
 
                 <div class="pt-grid">
                     @foreach($items as $p)
-                        <article class="pt-card">
+                        <article class="pt-card" style="--i: {{ $loop->index }}">
                             <div class="pt-card__logo">
                                 <img loading="lazy" src="{{ $p->logo_url }}" alt="Logo {{ $p->nom }}">
                             </div>
@@ -45,6 +49,7 @@
                                 <h3 class="pt-card__name">{{ $p->nom }}</h3>
                                 <span class="pt-tag">{{ $p->categorie?->nom ?? 'Non classé' }}</span>
                                 <p class="pt-card__desc">{{ $p->description }}</p>
+                                <button class="pt-card__more" type="button" hidden>Lire la suite</button>
                                 @if($p->url)
                                     <a class="pt-card__link" href="{{ $p->url }}" target="_blank" rel="noopener noreferrer">
                                         Visiter le site
