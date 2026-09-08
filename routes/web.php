@@ -25,6 +25,8 @@ use App\Http\Controllers\Membre\NotificationController;
 use App\Http\Controllers\Membre\CotisationMembreController;
 use App\Http\Controllers\Admin\GalerieController;
 use App\Http\Controllers\Admin\HeroImageController;
+use App\Http\Controllers\Admin\PartenaireController;
+use App\Http\Controllers\Admin\PartnerCategoryController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\TresorerieCompteController;
@@ -59,6 +61,8 @@ Route::get('/bureau', [BureauPublicController::class, 'index'])->name('bureau');
 Route::get('/activites', [FrontendController::class, 'activites'])->name('activites.public');
 
 Route::get('/galerie', [FrontendController::class, 'galerie'])->name('galerie');
+
+Route::get('/partenaires', [FrontendController::class, 'partenaires'])->name('partenaires');
 
 Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 Route::post('/contact', [FrontendController::class, 'contactStore'])->name('contact.store');
@@ -176,6 +180,22 @@ Route::patch('galerie/{photo}/toggle', [GalerieController::class, 'toggle'])
 
 Route::patch('hero-images/{heroImage}/toggle', [HeroImageController::class, 'toggle'])
     ->name('hero-images.toggle');
+
+        // Partenaires (page publique « Nos partenaires »)
+        Route::resource('partenaires', PartenaireController::class)
+    ->parameters(['partenaires' => 'partenaire'])
+    ->except(['show']);
+
+Route::patch('partenaires/{partenaire}/toggle', [PartenaireController::class, 'toggle'])
+    ->name('partenaires.toggle');
+
+        // Catégories de partenaires : gérées depuis la page partenaires
+        Route::post('partenaires-categories', [PartnerCategoryController::class, 'store'])
+    ->name('partenaires-categories.store');
+Route::patch('partenaires-categories/{categorie}', [PartnerCategoryController::class, 'update'])
+    ->name('partenaires-categories.update');
+Route::delete('partenaires-categories/{categorie}', [PartnerCategoryController::class, 'destroy'])
+    ->name('partenaires-categories.destroy');
 
         Route::resource('messages', ContactMessageController::class)
     ->only(['index', 'show', 'destroy']);
