@@ -12,10 +12,6 @@
     $isPays      = request()->routeIs('admin.pays.*');
     $isDeps      = request()->routeIs('admin.departements.*');
     $isMessages  = request()->routeIs('admin.messages.*');
-
-    $initials = $user
-        ? strtoupper(substr($user->name, 0, 1) . (explode(' ', $user->name)[1][0] ?? ''))
-        : '??';
 @endphp
 
 <!doctype html>
@@ -37,18 +33,8 @@
     {{-- Sidebar desktop --}}
     <aside class="sidebar" aria-label="Navigation admin">
         <div class="sidebar__top">
-            <div class="brand">
-                <div class="brand__logo">AEEJ</div>
-                <div class="brand__text">
-                    <div class="brand__title">Admin</div>
-                    <div class="brand__sub">Back-office</div>
-                </div>
-            </div>
-
             <div class="who">
-                <div class="avatar" style="background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;text-transform:uppercase;">
-                    {{ $initials }}
-                </div>
+                <x-avatar :user="$user" :size="44" bg="#2563eb" />
                 <div class="who__meta">
                     <div class="who__name">{{ $user->name }}</div>
                     <div class="who__email">{{ $user->email }}</div>
@@ -117,9 +103,7 @@
 
             <div class="topbar__right">
                 <a class="btn btn--ghost" href="{{ route('accueil') }}">Site public</a>
-                <div class="avatar" style="background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;text-transform:uppercase;">
-                    {{ $initials }}
-                </div>
+                <x-avatar :user="$user" :size="40" bg="#2563eb" />
             </div>
         </header>
 
@@ -146,9 +130,7 @@
 
         <div class="drawer__top">
             <div class="who">
-                <div class="avatar" style="background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;text-transform:uppercase;">
-                    {{ $initials }}
-                </div>
+                <x-avatar :user="$user" :size="44" bg="#2563eb" />
                 <div class="who__meta">
                     <div class="who__name">{{ $user->name }}</div>
                     <div class="who__email">{{ $user->email }}</div>
