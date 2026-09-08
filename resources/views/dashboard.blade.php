@@ -74,7 +74,7 @@
         <div class="card dash-action">
             <div class="kpi__label">Cotisations</div>
             <a class="btn btn--primary" href="{{ route('tresorerie.cotisations.create') }}" style="display:inline-flex; align-items:center; gap:6px; margin-top:10px;">
-                <span aria-hidden="true">💰</span>
+                <x-icon name="coins"/>
                 <span class="dash-action__full">Enregistrer un paiement</span>
                 <span class="dash-action__mini">Paiement</span>
             </a>
@@ -85,7 +85,7 @@
         <div class="card dash-action">
             <div class="kpi__label">Dépenses</div>
             <a class="btn btn--primary" href="{{ route('tresorerie.depenses.create') }}" style="display:inline-flex; align-items:center; gap:6px; margin-top:10px;">
-                <span aria-hidden="true">💸</span>
+                <x-icon name="banknote"/>
                 <span class="dash-action__full">Enregistrer une dépense</span>
                 <span class="dash-action__mini">Dépense</span>
             </a>

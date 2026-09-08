@@ -125,7 +125,7 @@
         {{-- Sexe par Pays (Prend plus de place car important) --}}
         <div class="admPanel admPanel--full">
             <div class="admPanel__head">
-                <h2 class="admPanel__h text-white">🌍 Répartition Hommes/Femmes par Pays</h2>
+                <h2 class="admPanel__h text-white"><x-icon name="globe"/> Répartition Hommes/Femmes par Pays</h2>
                 <p class="admPanel__p text-white">Analyse démographique géographique.</p>
             </div>
             <div class="admPanel__body">
@@ -158,7 +158,7 @@
         {{-- Membres par Pays --}}
         <div class="admPanel">
             <div class="admPanel__head">
-                <h2 class="admPanel__h text-white">📊 Top Pays</h2>
+                <h2 class="admPanel__h text-white"><x-icon name="dashboard"/> Top Pays</h2>
             </div>
             <div class="admPanel__body">
                 <div class="admRows">
@@ -175,7 +175,7 @@
         {{-- Membres par Année --}}
         <div class="admPanel">
             <div class="admPanel__head">
-                <h2 class="admPanel__h text-white">📅 Croissance annuelle</h2>
+                <h2 class="admPanel__h text-white"><x-icon name="calendar"/> Croissance annuelle</h2>
             </div>
             <div class="admPanel__body">
                 <div class="admRows">
@@ -193,7 +193,7 @@
     {{-- 3. Communautés par pays (Full Width) --}}
     <div class="admPanel admPanel--full">
         <div class="admPanel__head">
-            <h2 class="admPanel__h text-white">🏘️ Communautés par département</h2>
+            <h2 class="admPanel__h text-white"><x-icon name="briefcase"/> Communautés par département</h2>
             <p class="admPanel__p text-white">Détail des membres par département au sein de chaque pays.</p>
         </div>
         <div class="admPanel__body">

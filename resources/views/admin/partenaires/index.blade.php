@@ -38,7 +38,7 @@
                         <form method="POST" action="{{ route('admin.partenaires-categories.destroy', $cat) }}"
                               onsubmit="return confirm('Supprimer la catégorie « {{ $cat->nom }} » ? {{ $cat->partners_count }} partenaire(s) passeront en « Non classé ».');">
                             @csrf @method('DELETE')
-                            <button type="submit" class="admQuick__btn" style="padding:6px 10px; font-size:11px; color:#f87171; border-color:rgba(239,68,68,0.25);">✕</button>
+                            <button type="submit" class="admQuick__btn" style="padding:6px 10px; font-size:11px; color:#f87171; border-color:rgba(239,68,68,0.25); display:inline-flex; align-items:center;" aria-label="Supprimer la catégorie"><x-icon name="x" style="width:14px;height:14px"/></button>
                         </form>
                     </div>
                 @endforeach
