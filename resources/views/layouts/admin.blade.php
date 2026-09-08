@@ -57,45 +57,43 @@
         </div>
 
         <nav class="nav">
-            <a class="nav__item {{ $isDash ? 'is-active' : '' }}" href="{{ route('admin.dashboard') }}"><span class="nav__icon">⌂</span>Dashboard</a>
-            <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('admin.annonces.index') }}"><span class="nav__icon">📣</span>Annonces</a>
-            <a class="nav__item {{ $isActivites ? 'is-active' : '' }}" href="{{ route('admin.activites.index') }}"><span class="nav__icon">🗓</span>Activités</a>
-            <a class="nav__item {{ $isBureau ? 'is-active' : '' }}" href="{{ route('admin.bureau.index') }}"><span class="nav__icon">👔</span>Bureau</a>
+            <a class="nav__item {{ $isDash ? 'is-active' : '' }}" href="{{ route('admin.dashboard') }}"><span class="nav__icon"><x-icon name="dashboard"/></span>Dashboard</a>
+            <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('admin.annonces.index') }}"><span class="nav__icon"><x-icon name="megaphone"/></span>Annonces</a>
+            <a class="nav__item {{ $isActivites ? 'is-active' : '' }}" href="{{ route('admin.activites.index') }}"><span class="nav__icon"><x-icon name="calendar"/></span>Activités</a>
+            <a class="nav__item {{ $isBureau ? 'is-active' : '' }}" href="{{ route('admin.bureau.index') }}"><span class="nav__icon"><x-icon name="briefcase"/></span>Bureau</a>
 
             <a class="nav__item {{ request()->routeIs('admin.galerie.*') ? 'is-active' : '' }}"
-   href="{{ route('admin.galerie.index') }}"><span class="nav__icon">🖼</span>Galerie</a>
+   href="{{ route('admin.galerie.index') }}"><span class="nav__icon"><x-icon name="image"/></span>Galerie</a>
 
             <a class="nav__item {{ request()->routeIs('admin.hero-images.*') ? 'is-active' : '' }}"
-   href="{{ route('admin.hero-images.index') }}"><span class="nav__icon">🏠</span>Accueil (photos)</a>
+   href="{{ route('admin.hero-images.index') }}"><span class="nav__icon"><x-icon name="home"/></span>Accueil (photos)</a>
 
             <a class="nav__item {{ request()->routeIs('admin.partenaires*') ? 'is-active' : '' }}"
-   href="{{ route('admin.partenaires.index') }}"><span class="nav__icon">🤝</span>Partenaires</a>
+   href="{{ route('admin.partenaires.index') }}"><span class="nav__icon"><x-icon name="handshake"/></span>Partenaires</a>
 
             <a class="nav__item {{ $isMessages ? 'is-active' : '' }}"
-   href="{{ route('admin.messages.index') }}"><span class="nav__icon">✉️</span>Messages</a>
+   href="{{ route('admin.messages.index') }}"><span class="nav__icon"><x-icon name="mail"/></span>Messages</a>
 
             <div class="nav__sep"></div>
 
-            <a class="nav__item {{ $isMembres ? 'is-active' : '' }}" href="{{ route('admin.membres.index') }}"><span class="nav__icon">👥</span>Membres</a>
-            <a class="nav__item {{ $isDeps ? 'is-active' : '' }}" href="{{ route('admin.departements.index') }}"><span class="nav__icon">🏷</span>Départements</a>
-            <a class="nav__item {{ $isPays ? 'is-active' : '' }}" href="{{ route('admin.pays.index') }}"><span class="nav__icon">🌍</span>Pays</a>
-              
+            <a class="nav__item {{ $isMembres ? 'is-active' : '' }}" href="{{ route('admin.membres.index') }}"><span class="nav__icon"><x-icon name="users"/></span>Membres</a>
+            <a class="nav__item {{ $isDeps ? 'is-active' : '' }}" href="{{ route('admin.departements.index') }}"><span class="nav__icon"><x-icon name="tag"/></span>Départements</a>
+            <a class="nav__item {{ $isPays ? 'is-active' : '' }}" href="{{ route('admin.pays.index') }}"><span class="nav__icon"><x-icon name="globe"/></span>Pays</a>
+
             @if($user->is_super_admin)
             <a class="nav__item {{ request()->routeIs('admin.admins.*') ? 'is-active' : '' }}"
              href="{{ route('admin.admins.index') }}">
-            <span class="nav__icon">🛡</span>Admins
+            <span class="nav__icon"><x-icon name="shield"/></span>Admins
              </a>
             <a class="nav__item {{ request()->routeIs('admin.tresorerie-comptes.*') ? 'is-active' : '' }}"
              href="{{ route('admin.tresorerie-comptes.index') }}">
-            <span class="nav__icon">💰</span>Trésorerie
+            <span class="nav__icon"><x-icon name="wallet"/></span>Trésorerie
              </a>
         @endif
 
             <div class="nav__sep"></div>
 
-            <a class="nav__item" href="{{ route('dashboard') }}"><span class="nav__icon">↩</span>Espace membre</a>
-
-          
+            <a class="nav__item" href="{{ route('dashboard') }}"><span class="nav__icon"><x-icon name="switch"/></span>Espace membre</a>
 
         </nav>
 
@@ -113,7 +111,7 @@
         {{-- Topbar --}}
         <header class="topbar">
             <div class="topbar__left">
-                <button class="iconbtn" type="button" data-admin-drawer-open aria-label="Ouvrir le menu">☰</button>
+                <button class="iconbtn" type="button" data-admin-drawer-open aria-label="Ouvrir le menu"><x-icon name="menu"/></button>
                 <div class="topbar__title">{{ $header }}</div>
             </div>
 
@@ -156,43 +154,43 @@
                     <div class="who__email">{{ $user->email }}</div>
                 </div>
             </div>
-            <button class="drawer__close" type="button" data-admin-drawer-close aria-label="Fermer">✕</button>
+            <button class="drawer__close" type="button" data-admin-drawer-close aria-label="Fermer"><x-icon name="x"/></button>
         </div>
 
         <nav class="nav">
-    <a class="nav__item {{ $isDash ? 'is-active' : '' }}" href="{{ route('admin.dashboard') }}"><span class="nav__icon">⌂</span>Dashboard</a>
-    <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('admin.annonces.index') }}"><span class="nav__icon">📣</span>Annonces</a>
-    <a class="nav__item {{ $isActivites ? 'is-active' : '' }}" href="{{ route('admin.activites.index') }}"><span class="nav__icon">🗓</span>Activités</a>
-    <a class="nav__item {{ $isBureau ? 'is-active' : '' }}" href="{{ route('admin.bureau.index') }}"><span class="nav__icon">👔</span>Bureau</a>
+    <a class="nav__item {{ $isDash ? 'is-active' : '' }}" href="{{ route('admin.dashboard') }}"><span class="nav__icon"><x-icon name="dashboard"/></span>Dashboard</a>
+    <a class="nav__item {{ $isAnnonces ? 'is-active' : '' }}" href="{{ route('admin.annonces.index') }}"><span class="nav__icon"><x-icon name="megaphone"/></span>Annonces</a>
+    <a class="nav__item {{ $isActivites ? 'is-active' : '' }}" href="{{ route('admin.activites.index') }}"><span class="nav__icon"><x-icon name="calendar"/></span>Activités</a>
+    <a class="nav__item {{ $isBureau ? 'is-active' : '' }}" href="{{ route('admin.bureau.index') }}"><span class="nav__icon"><x-icon name="briefcase"/></span>Bureau</a>
 
     <a class="nav__item {{ request()->routeIs('admin.galerie.*') ? 'is-active' : '' }}"
-       href="{{ route('admin.galerie.index') }}"><span class="nav__icon">🖼</span>Galerie</a>
+       href="{{ route('admin.galerie.index') }}"><span class="nav__icon"><x-icon name="image"/></span>Galerie</a>
 
     <a class="nav__item {{ request()->routeIs('admin.hero-images.*') ? 'is-active' : '' }}"
-       href="{{ route('admin.hero-images.index') }}"><span class="nav__icon">🏠</span>Accueil (photos)</a>
+       href="{{ route('admin.hero-images.index') }}"><span class="nav__icon"><x-icon name="home"/></span>Accueil (photos)</a>
 
     <a class="nav__item {{ request()->routeIs('admin.partenaires*') ? 'is-active' : '' }}"
-       href="{{ route('admin.partenaires.index') }}"><span class="nav__icon">🤝</span>Partenaires</a>
+       href="{{ route('admin.partenaires.index') }}"><span class="nav__icon"><x-icon name="handshake"/></span>Partenaires</a>
 
     <a class="nav__item {{ $isMessages ? 'is-active' : '' }}"
-       href="{{ route('admin.messages.index') }}"><span class="nav__icon">✉️</span>Messages</a>
+       href="{{ route('admin.messages.index') }}"><span class="nav__icon"><x-icon name="mail"/></span>Messages</a>
 
     <div class="nav__sep"></div>
 
-    <a class="nav__item {{ $isMembres ? 'is-active' : '' }}" href="{{ route('admin.membres.index') }}"><span class="nav__icon">👥</span>Membres</a>
-    <a class="nav__item {{ $isDeps ? 'is-active' : '' }}" href="{{ route('admin.departements.index') }}"><span class="nav__icon">🏷</span>Départements</a>
-    <a class="nav__item {{ $isPays ? 'is-active' : '' }}" href="{{ route('admin.pays.index') }}"><span class="nav__icon">🌍</span>Pays</a>
+    <a class="nav__item {{ $isMembres ? 'is-active' : '' }}" href="{{ route('admin.membres.index') }}"><span class="nav__icon"><x-icon name="users"/></span>Membres</a>
+    <a class="nav__item {{ $isDeps ? 'is-active' : '' }}" href="{{ route('admin.departements.index') }}"><span class="nav__icon"><x-icon name="tag"/></span>Départements</a>
+    <a class="nav__item {{ $isPays ? 'is-active' : '' }}" href="{{ route('admin.pays.index') }}"><span class="nav__icon"><x-icon name="globe"/></span>Pays</a>
 
     @if($user && $user->is_super_admin)
         <a class="nav__item {{ request()->routeIs('admin.admins.*') ? 'is-active' : '' }}"
-           href="{{ route('admin.admins.index') }}"><span class="nav__icon">🛡</span>Admins</a>
+           href="{{ route('admin.admins.index') }}"><span class="nav__icon"><x-icon name="shield"/></span>Admins</a>
         <a class="nav__item {{ request()->routeIs('admin.tresorerie-comptes.*') ? 'is-active' : '' }}"
-           href="{{ route('admin.tresorerie-comptes.index') }}"><span class="nav__icon">💰</span>Trésorerie</a>
+           href="{{ route('admin.tresorerie-comptes.index') }}"><span class="nav__icon"><x-icon name="wallet"/></span>Trésorerie</a>
     @endif
 
     <div class="nav__sep"></div>
 
-    <a class="nav__item" href="{{ route('dashboard') }}"><span class="nav__icon">↩</span>Espace membre</a>
+    <a class="nav__item" href="{{ route('dashboard') }}"><span class="nav__icon"><x-icon name="switch"/></span>Espace membre</a>
 </nav>
 
 
