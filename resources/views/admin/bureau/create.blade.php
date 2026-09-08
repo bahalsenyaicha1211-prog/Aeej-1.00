@@ -3,6 +3,10 @@
 @section('title', 'Admin • Ajouter bureau')
 @section('header', 'Ajouter un membre du bureau')
 
+@section('styles')
+    <script src="{{ asset('js/image-upload.js') }}?v={{ filemtime(public_path('js/image-upload.js')) }}" defer></script>
+@endsection
+
 @section('content')
 <div class="admDash">
     <div class="admDash__head">
@@ -54,11 +58,12 @@
                         </div>
 
                         {{-- Photo de bureau --}}
-                        <div class="field">
-                            <label class="admKpi__label text-white">Photo de bureau (optionnel)</label>
-                            {{-- Petit ajustement pour que le bouton d'upload s'intègre bien --}}
-                            <input class="input" type="file" name="photo" accept="image/*" style="font-size: 12px; padding: 10px;">
+                        <div class="field" style="grid-column: 1 / -1;">
+                            <label class="admKpi__label text-white">Photo de fonction (optionnel)</label>
+                            <x-image-upload name="photo" folder="bureau" label="Photo de fonction"
+                                            hint="Portrait de préférence — JPG, PNG ou WEBP, 4 Mo max." />
                             @error('photo') <div class="help" style="color:#fb7185; font-size: 11px;">⚠️ {{ $message }}</div> @enderror
+                            @error('photo_url') <div class="help" style="color:#fb7185; font-size: 11px;">⚠️ {{ $message }}</div> @enderror
                         </div>
                     </div>
 

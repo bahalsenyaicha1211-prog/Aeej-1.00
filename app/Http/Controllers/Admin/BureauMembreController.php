@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesImageUpload;
 use App\Http\Controllers\Controller;
 use App\Models\BureauMembre;
 use App\Models\Membre;
-use App\Services\CloudinaryUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class BureauMembreController extends Controller
 {
+    use HandlesImageUpload;
+
     public function index(Request $request)
     {
         $q = trim((string) $request->query('q', ''));
@@ -51,7 +53,6 @@ class BureauMembreController extends Controller
         'poste'     => ['required', 'string', 'max:120'],
         'ordre'     => ['nullable', 'integer', 'min:0', 'max:9999'],
         'is_actif'  => ['nullable', 'boolean'],
-        'photo'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
     ]);
 
     $data = [
@@ -61,16 +62,8 @@ class BureauMembreController extends Controller
         'is_actif'  => (bool) $request->boolean('is_actif'),
     ];
 
-    if ($request->hasFile('photo')) {
-        $url = app(CloudinaryUploader::class)->upload(
-            $request->file('photo'),
-            'bureau',
-            'bureau-' . time() . '-' . uniqid()
-        );
-
-        if ($url !== null) {
-            $data['photo'] = $url;
-        }
+    if ($photo = $this->resolveImageUrl($request, 'photo', 'bureau', required: false)) {
+        $data['photo'] = $photo;
     }
 
     BureauMembre::create($data);
@@ -93,7 +86,6 @@ class BureauMembreController extends Controller
         'poste'     => ['required', 'string', 'max:120'],
         'ordre'     => ['nullable', 'integer', 'min:0', 'max:9999'],
         'is_actif'  => ['nullable', 'boolean'],
-        'photo'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         'remove_photo' => ['nullable', 'boolean'],
     ]);
 
@@ -108,16 +100,8 @@ class BureauMembreController extends Controller
         $data['photo'] = null;
     }
 
-    if ($request->hasFile('photo')) {
-        $url = app(CloudinaryUploader::class)->upload(
-            $request->file('photo'),
-            'bureau',
-            'bureau-' . time() . '-' . uniqid()
-        );
-
-        if ($url !== null) {
-            $data['photo'] = $url;
-        }
+    if ($photo = $this->resolveImageUrl($request, 'photo', 'bureau', required: false)) {
+        $data['photo'] = $photo;
     }
 
     $bureau->update($data);

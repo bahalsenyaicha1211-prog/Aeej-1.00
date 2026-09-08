@@ -3,6 +3,10 @@
 @section('title', 'Admin • Configurer membre')
 @section('header', 'Configuration du Bureau')
 
+@section('styles')
+    <script src="{{ asset('js/image-upload.js') }}?v={{ filemtime(public_path('js/image-upload.js')) }}" defer></script>
+@endsection
+
 @section('content')
 <div class="admDash">
     <div class="admDash__head">
@@ -46,14 +50,17 @@
                         </div>
 
                         {{-- Photo --}}
-                        <div class="field">
+                        <div class="field" style="grid-column: 1 / -1;">
                             <label class="admKpi__label text-white">Photo de fonction (optionnel)</label>
-                            <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
-                                @if($bureau->photo)
-                                    <img src="{{ str_starts_with($bureau->photo, 'http') ? $bureau->photo : asset('storage/'.$bureau->photo) }}" style="width: 80px; height: 60px; border-radius: 10px; object-fit: cover;">
-                                @endif
-                                <input class="input" type="file" name="photo" style="font-size: 12px;">
-                            </div>
+                            <x-image-upload name="photo" folder="bureau" label="Photo de fonction"
+                                            :current="$bureau->photo ? (str_starts_with($bureau->photo, 'http') ? $bureau->photo : asset('storage/'.$bureau->photo)) : null"
+                                            hint="Portrait de préférence — JPG, PNG ou WEBP, 4 Mo max." />
+                            @if($bureau->photo)
+                                <label style="display:flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; color:#94a3b8;">
+                                    <input type="checkbox" name="remove_photo" value="1" style="width:16px;height:16px;accent-color:#ef4444;">
+                                    Retirer la photo
+                                </label>
+                            @endif
                         </div>
                     </div>
 

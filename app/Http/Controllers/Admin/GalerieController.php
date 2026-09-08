@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesImageUpload;
 use App\Http\Controllers\Controller;
 use App\Models\GaleriePhoto;
 use App\Services\CloudinaryUploader;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 class GalerieController extends Controller
 {
+    use HandlesImageUpload;
+
     public function index(Request $request)
     {
         $search = trim((string) $request->query('q', ''));
@@ -143,32 +146,13 @@ class GalerieController extends Controller
             'title'        => ['nullable', 'string', 'max:180'],
             'description'  => ['nullable', 'string', 'max:2000'],
             'is_published' => ['nullable'],
-
-            'image'        => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-            'remove_image' => ['nullable'],
         ]);
 
         $data['is_published'] = $request->boolean('is_published');
 
-        if ($request->boolean('remove_image') && $photo->image_path) {
-            if (!str_starts_with($photo->image_path, 'http')) {
-                Storage::disk('public')->delete($photo->image_path);
-            }
-            $data['image_path'] = '';
+        if ($url = $this->resolveImageUrl($request, 'image', 'galerie', required: false)) {
+            $data['image_path'] = $url;
         }
-
-        if ($request->hasFile('image')) {
-         $url = app(CloudinaryUploader::class)->upload($request->file('image'), 'galerie', time() . '-' . uniqid());
-         if ($url === null) {
-             return back()->withErrors(['image' => "Échec de l'envoi de l'image vers Cloudinary."]);
-         }
-         $data['image_path'] = $url;
-    } else {
-    // Crucial : si on ne télécharge pas de nouvelle image, 
-    // on retire image_path des données à mettre à jour 
-    // pour garder l'ancienne URL en base de données.
-    unset($data['image_path']);
-    }
 
         $photo->update($data);
 

@@ -4,7 +4,7 @@
 @section('header', 'Nouvelles photos du diaporama')
 
 @section('styles')
-    <script src="{{ asset('js/bulk-upload.js') }}?v={{ filemtime(public_path('js/bulk-upload.js')) }}" defer></script>
+    <script src="{{ asset('js/image-upload.js') }}?v={{ filemtime(public_path('js/image-upload.js')) }}" defer></script>
 @endsection
 
 @section('content')
@@ -25,11 +25,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('admin.hero-images.store') }}" enctype="multipart/form-data"
-                  data-bulk-upload
-                  data-cloud-name="{{ config('services.cloudinary.cloud_name') }}"
-                  data-upload-preset="{{ config('services.cloudinary.upload_preset') }}"
-                  data-folder="accueil">
+            <form method="POST" action="{{ route('admin.hero-images.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:25px;">
 
@@ -41,12 +37,14 @@
                     </div>
 
                     {{-- Upload --}}
-                    <div class="field" style="grid-column: span 2; border: 2px dashed rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; text-align: center;">
-                        <label class="admKpi__label text-white" style="margin-bottom:15px; display:block;">Sélectionnez vos fichiers</label>
-                        <input type="file" name="images[]" accept="image/*" multiple required style="color:#94a3b8;">
-                        <p style="font-size:12px; color:#64748b; margin-top:10px;">Maintenez CTRL pour en choisir plusieurs. Les nouvelles photos sont ajoutées à la fin du diaporama.</p>
-                        @error('images.*') <div style="color:#fb7185; font-size: 12px; margin-top: 8px;">⚠️ {{ $message }}</div> @enderror
-                        @error('images') <div style="color:#fb7185; font-size: 12px; margin-top: 8px;">⚠️ {{ $message }}</div> @enderror
+                    <div class="field" style="grid-column: span 2;">
+                        <label class="admKpi__label text-white" style="margin-bottom:8px; display:block;">Photos</label>
+                        <x-image-upload name="image" folder="accueil" multiple required
+                                        label="Photos du diaporama"
+                                        hint="Sélection ou glisser-déposer multiple. Ajoutées à la fin du diaporama." />
+                        @error('image_urls') <div style="color:#fb7185; font-size:12px; margin-top:6px;">⚠️ {{ $message }}</div> @enderror
+                        @error('images.*') <div style="color:#fb7185; font-size:12px; margin-top:6px;">⚠️ {{ $message }}</div> @enderror
+                        @error('images') <div style="color:#fb7185; font-size:12px; margin-top:6px;">⚠️ {{ $message }}</div> @enderror
                     </div>
 
                     {{-- Checkbox --}}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesImageUpload;
 use App\Http\Controllers\Controller;
 use App\Models\HeroImage;
 use App\Services\CloudinaryUploader;
@@ -9,6 +10,8 @@ use Illuminate\Http\Request;
 
 class HeroImageController extends Controller
 {
+    use HandlesImageUpload;
+
     public function index()
     {
         $images = HeroImage::query()
@@ -100,21 +103,12 @@ class HeroImageController extends Controller
             'alt'       => ['nullable', 'string', 'max:180'],
             'position'  => ['required', 'integer', 'min:0'],
             'is_active' => ['nullable'],
-            'image'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
 
-        if ($request->hasFile('image')) {
-            $url = app(CloudinaryUploader::class)->upload($request->file('image'), 'accueil', time() . '-' . uniqid());
-
-            if ($url === null) {
-                return back()->withErrors(['image' => "Échec de l'envoi de l'image vers Cloudinary."]);
-            }
-
+        if ($url = $this->resolveImageUrl($request, 'image', 'accueil', required: false)) {
             $data['image_path'] = $url;
-        } else {
-            unset($data['image_path']);
         }
 
         $heroImage->update($data);
