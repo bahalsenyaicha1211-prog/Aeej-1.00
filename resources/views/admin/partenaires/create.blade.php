@@ -3,6 +3,10 @@
 @section('title', 'Admin • Nouveau partenaire')
 @section('header', 'Nouveau partenaire')
 
+@section('styles')
+    <script src="{{ asset('js/image-upload.js') }}?v={{ filemtime(public_path('js/image-upload.js')) }}" defer></script>
+@endsection
+
 @section('content')
 <div class="admDash">
     <div class="admDash__head">

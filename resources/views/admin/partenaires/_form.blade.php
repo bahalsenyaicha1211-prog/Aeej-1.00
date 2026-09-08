@@ -31,10 +31,14 @@
     </div>
 
     <div class="field" style="grid-column: 1 / -1;">
-        <label class="admKpi__label text-white">Logo {{ $partenaire ? '(laisser vide pour conserver l\'actuel)' : '*' }}</label>
-        <input class="input" type="file" name="logo" accept="image/png,image/jpeg,image/webp" {{ $partenaire ? '' : 'required' }} style="font-size:12px;">
-        <p style="font-size:12px; color:#64748b; margin-top:6px;">PNG (fond transparent de préférence), JPG ou WEBP — 2 Mo max.</p>
+        <label class="admKpi__label text-white">Logo {{ $partenaire ? '' : '*' }}</label>
+        <x-image-upload name="logo" folder="partenaires"
+                        :current="$partenaire?->logo_url"
+                        :required="! $partenaire"
+                        label="Logo du partenaire"
+                        hint="PNG à fond transparent de préférence, JPG ou WEBP — 4 Mo max." />
         @error('logo') <div style="color:#fb7185; font-size:12px; margin-top:5px;">⚠️ {{ $message }}</div> @enderror
+        @error('logo_url') <div style="color:#fb7185; font-size:12px; margin-top:5px;">⚠️ {{ $message }}</div> @enderror
     </div>
 
     <div class="admRow" style="grid-column: 1 / -1; justify-content: flex-start; gap: 15px; background: rgba(255,255,255,0.02);">

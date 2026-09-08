@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesImageUpload;
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
 use App\Models\PartnerCategory;
-use App\Services\CloudinaryUploader;
 use Illuminate\Http\Request;
 
 class PartenaireController extends Controller
 {
+    use HandlesImageUpload;
+
     public function index(Request $request)
     {
         $q = trim((string) $request->query('q', ''));
@@ -38,19 +40,15 @@ class PartenaireController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->validated($request, logoRequired: true);
-
-        $url = app(CloudinaryUploader::class)->upload($request->file('logo'), 'partenaires', time() . '-' . uniqid());
-        if ($url === null) {
-            return back()->withInput()->withErrors(['logo' => "Échec de l'envoi du logo vers Cloudinary."]);
-        }
+        $data = $this->validated($request);
+        $logo = $this->resolveImageUrl($request, 'logo', 'partenaires', required: true);
 
         Partner::create([
             'nom'                 => $data['nom'],
             'partner_category_id' => $data['partner_category_id'] ?? null,
             'url'                 => $data['url'] ?? null,
             'description'         => $data['description'],
-            'logo_path'           => $url,
+            'logo_path'           => $logo,
             'is_published'        => $request->boolean('is_published'),
             'created_by'          => auth()->id(),
         ]);
@@ -68,7 +66,7 @@ class PartenaireController extends Controller
 
     public function update(Request $request, Partner $partenaire)
     {
-        $data = $this->validated($request, logoRequired: false);
+        $data = $this->validated($request);
 
         $payload = [
             'nom'                 => $data['nom'],
@@ -78,12 +76,8 @@ class PartenaireController extends Controller
             'is_published'        => $request->boolean('is_published'),
         ];
 
-        if ($request->hasFile('logo')) {
-            $url = app(CloudinaryUploader::class)->upload($request->file('logo'), 'partenaires', time() . '-' . uniqid());
-            if ($url === null) {
-                return back()->withInput()->withErrors(['logo' => "Échec de l'envoi du logo vers Cloudinary."]);
-            }
-            $payload['logo_path'] = $url;
+        if ($logo = $this->resolveImageUrl($request, 'logo', 'partenaires', required: false)) {
+            $payload['logo_path'] = $logo;
         }
 
         $partenaire->update($payload);
@@ -106,7 +100,7 @@ class PartenaireController extends Controller
         return back()->with('success', 'Visibilité du partenaire mise à jour.');
     }
 
-    private function validated(Request $request, bool $logoRequired): array
+    private function validated(Request $request): array
     {
         return $request->validate([
             'nom'                 => ['required', 'string', 'max:150'],
@@ -114,7 +108,6 @@ class PartenaireController extends Controller
             'url'                 => ['nullable', 'url', 'max:255'],
             'description'         => ['required', 'string', 'max:5000'],
             'is_published'        => ['nullable'],
-            'logo'                => [$logoRequired ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
     }
 }
