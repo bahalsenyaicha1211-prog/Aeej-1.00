@@ -7,9 +7,12 @@ use App\Models\Annonce;
 use App\Models\BureauMembre;
 use App\Models\Departement;
 use App\Models\Membre;
+use App\Models\Partner;
+use App\Models\PartnerCategory;
 use App\Models\Pays;
 use App\Models\User;
 use App\Support\StatsCache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -39,6 +42,16 @@ class AppServiceProvider extends ServiceProvider
         foreach ([Membre::class, Pays::class, Departement::class, Activite::class, BureauMembre::class, Annonce::class] as $model) {
             $model::saved(fn () => StatsCache::flush());
             $model::deleted(fn () => StatsCache::flush());
+        }
+
+        // Cache de la page publique « Nos partenaires ».
+        $flushPartners = function () {
+            Cache::forget('partners.public');
+            Cache::forget('partners.categories');
+        };
+        foreach ([Partner::class, PartnerCategory::class] as $model) {
+            $model::saved($flushPartners);
+            $model::deleted($flushPartners);
         }
 
         // Vos Gates existantes

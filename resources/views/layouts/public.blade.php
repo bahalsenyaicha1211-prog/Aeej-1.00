@@ -47,6 +47,7 @@
                 <li><a href="{{ route('jendouba') }}">Jendouba</a></li>
                 <li><a href="{{ route('faculte') }}"> Notre Université</a></li>
                 <li><a href="{{ route('galerie') }}" title="voir des images">Galerie</a></li>
+                <li><a href="{{ route('partenaires') }}">Nos partenaires</a></li>
                 <li><a href="{{ route('contact') }}">Contact</a></li>
 
                 @guest

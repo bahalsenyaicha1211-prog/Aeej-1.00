@@ -9,6 +9,8 @@ use App\Models\Membre;
 use App\Models\Pays;
 use App\Models\BureauMembre;
 use App\Models\GaleriePhoto;
+use App\Models\Partner;
+use App\Models\PartnerCategory;
 use App\Models\ContactMessage;
 use App\Rules\MatriculePaysMatch;
 use Illuminate\Http\Request;
@@ -56,6 +58,48 @@ class FrontendController extends Controller
     {
         $pays = Pays::all();
         return view('apropos', compact('pays'));
+    }
+
+    public function partenaires(Request $request)
+    {
+        // Tout le jeu publié est mis en cache une fois (10 min) ; le filtrage
+        // et le regroupement se font ensuite en mémoire. Vidé à chaque
+        // écriture (voir AppServiceProvider).
+        $partenaires = Cache::remember('partners.public', now()->addMinutes(10), function () {
+            return Partner::published()->with('categorie')->orderBy('nom')->get();
+        });
+
+        $categories = Cache::remember('partners.categories', now()->addMinutes(10), function () {
+            return PartnerCategory::orderBy('nom')->get();
+        });
+
+        $filtre = trim((string) $request->query('categorie', ''));
+        $filtered = $partenaires;
+        if ($filtre === 'non-classe') {
+            $filtered = $partenaires->whereNull('partner_category_id');
+        } elseif ($filtre !== '') {
+            $filtered = $partenaires->filter(fn ($p) => $p->categorie?->slug === $filtre);
+        }
+
+        // Groupes dans l'ordre des catégories (alpha), « Non classé » en dernier.
+        $groupes = collect();
+        foreach ($categories as $cat) {
+            $items = $filtered->where('partner_category_id', $cat->id)->values();
+            if ($items->isNotEmpty()) {
+                $groupes[$cat->nom] = $items;
+            }
+        }
+        $nonClasse = $filtered->whereNull('partner_category_id')->values();
+        if ($nonClasse->isNotEmpty()) {
+            $groupes['Non classé'] = $nonClasse;
+        }
+
+        return view('partenaires', [
+            'categories' => $categories,
+            'groupes'    => $groupes,
+            'filtre'     => $filtre,
+            'total'      => $partenaires->count(),
+        ]);
     }
 
     public function guideEtudiant()

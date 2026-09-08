@@ -68,6 +68,9 @@
             <a class="nav__item {{ request()->routeIs('admin.hero-images.*') ? 'is-active' : '' }}"
    href="{{ route('admin.hero-images.index') }}"><span class="nav__icon">🏠</span>Accueil (photos)</a>
 
+            <a class="nav__item {{ request()->routeIs('admin.partenaires*') ? 'is-active' : '' }}"
+   href="{{ route('admin.partenaires.index') }}"><span class="nav__icon">🤝</span>Partenaires</a>
+
             <a class="nav__item {{ $isMessages ? 'is-active' : '' }}"
    href="{{ route('admin.messages.index') }}"><span class="nav__icon">✉️</span>Messages</a>
 
@@ -167,6 +170,9 @@
 
     <a class="nav__item {{ request()->routeIs('admin.hero-images.*') ? 'is-active' : '' }}"
        href="{{ route('admin.hero-images.index') }}"><span class="nav__icon">🏠</span>Accueil (photos)</a>
+
+    <a class="nav__item {{ request()->routeIs('admin.partenaires*') ? 'is-active' : '' }}"
+       href="{{ route('admin.partenaires.index') }}"><span class="nav__icon">🤝</span>Partenaires</a>
 
     <a class="nav__item {{ $isMessages ? 'is-active' : '' }}"
        href="{{ route('admin.messages.index') }}"><span class="nav__icon">✉️</span>Messages</a>
