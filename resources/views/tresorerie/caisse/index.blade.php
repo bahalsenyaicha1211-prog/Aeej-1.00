@@ -38,7 +38,7 @@
                     <tbody>
                         @forelse($cotisationsParAnnee as $row)
                         <tr>
-                            <td style="font-weight:800;">{{ $row->annee }}</td>
+                            <td style="font-weight:800;">{{ \App\Support\AcademicYear::label($row->annee) }}</td>
                             <td style="color:var(--muted);">{{ $row->nb }}</td>
                             <td style="text-align:right; color:#16a34a; font-weight:700;">{{ number_format($row->total, 2, ',', ' ') }} TND</td>
                         </tr>

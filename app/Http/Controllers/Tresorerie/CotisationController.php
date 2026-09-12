@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Tresorerie;
 use App\Http\Controllers\Controller;
 use App\Models\Cotisation;
 use App\Models\CotisationConfig;
-use App\Models\CotisationDate;
 use App\Models\CotisationType;
 use App\Models\CotisationVolontaire;
 use App\Models\Membre;
+use App\Support\AcademicYear;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class CotisationController extends Controller
 {
@@ -84,35 +83,36 @@ class CotisationController extends Controller
     public function create(Request $request)
     {
         $membres = Membre::with('pays')->orderBy('prenom')->orderBy('nom')->get();
-        $configs = CotisationConfig::orderByDesc('annee')->get(['annee', 'montant_membre', 'montant_bureau']);
-        $dates = CotisationDate::orderBy('annee')->orderBy('date_collecte')->get()->groupBy('annee');
+        $anneeActive = AcademicYear::anneeActive();
+        $config = CotisationConfig::pourAnnee($anneeActive);
         $membresBureau = \App\Models\BureauMembre::where('is_actif', true)->pluck('matricule')->all();
         $typesVolontaires = CotisationType::actifs()->orderByDesc('annee')->orderBy('nom')->get();
 
-        return view('tresorerie.cotisations.create', compact('membres', 'configs', 'dates', 'membresBureau', 'typesVolontaires'));
+        return view('tresorerie.cotisations.create', compact('membres', 'anneeActive', 'config', 'membresBureau', 'typesVolontaires'));
     }
 
     public function store(Request $request)
     {
+        // L'année n'est jamais un choix libre : seule l'année académique en
+        // cours (ex. 2026-2027) est éligible à un nouveau paiement annuel.
+        $annee = AcademicYear::anneeActive();
+
         $data = $request->validate([
             'matricule' => ['required', 'exists:membres,matricule'],
-            'annee' => ['required', 'integer', 'min:2010', 'max:' . (date('Y') + 1)],
             'montant_paye' => ['required', 'numeric', 'min:0'],
-            'date_paiement' => ['required', 'date', Rule::in($this->datesValides((int) $request->input('annee')))],
-        ], [
-            'date_paiement.in' => "Cette date ne fait pas partie des dates de collecte configurées pour cette année.",
+            'date_paiement' => ['required', 'date'],
         ]);
 
-        if (Cotisation::where('matricule', $data['matricule'])->where('annee', $data['annee'])->exists()) {
+        if (Cotisation::where('matricule', $data['matricule'])->where('annee', $annee)->exists()) {
             return back()->withInput()->withErrors([
-                'matricule' => 'Une cotisation existe déjà pour ce membre en ' . $data['annee'] . '. Modifiez-la plutôt depuis la liste.',
+                'matricule' => 'Une cotisation existe déjà pour ce membre en ' . AcademicYear::label($annee) . '. Modifiez-la plutôt depuis la liste.',
             ]);
         }
 
-        $config = CotisationConfig::pourAnnee($data['annee']);
+        $config = CotisationConfig::pourAnnee($annee);
         if (!$config) {
             return back()->withInput()->withErrors([
-                'annee' => "Aucun montant de cotisation n'est configuré pour l'année {$data['annee']}. Demandez au chef trésorier de le définir.",
+                'matricule' => "Aucun montant de cotisation n'est configuré pour l'année " . AcademicYear::label($annee) . ". Demandez au chef trésorier de le définir.",
             ]);
         }
 
@@ -128,7 +128,7 @@ class CotisationController extends Controller
 
         $cotisation = new Cotisation([
             'matricule' => $data['matricule'],
-            'annee' => $data['annee'],
+            'annee' => $annee,
             'categorie' => $categorie,
             'montant_du' => $montantDu,
             'montant_paye' => $data['montant_paye'],
@@ -146,27 +146,17 @@ class CotisationController extends Controller
         $this->autoriserGestion($request, $cotisation);
 
         $cotisation->load('membre.pays');
-        $dates = CotisationDate::where('annee', $cotisation->annee)->orderBy('date_collecte')->get();
 
-        return view('tresorerie.cotisations.edit', compact('cotisation', 'dates'));
+        return view('tresorerie.cotisations.edit', compact('cotisation'));
     }
 
     public function update(Request $request, Cotisation $cotisation)
     {
         $this->autoriserGestion($request, $cotisation);
 
-        // L'ancienne date reste acceptée même si elle a depuis été retirée de la
-        // liste des dates de collecte, pour ne pas bloquer la modification d'une
-        // cotisation existante ni faire disparaître silencieusement sa date.
-        $datesAcceptees = $this->datesValides($cotisation->annee)
-            ->push($cotisation->date_paiement->toDateString())
-            ->unique();
-
         $data = $request->validate([
             'montant_paye' => ['required', 'numeric', 'min:0'],
-            'date_paiement' => ['required', 'date', Rule::in($datesAcceptees)],
-        ], [
-            'date_paiement.in' => "Cette date ne fait pas partie des dates de collecte configurées pour cette année.",
+            'date_paiement' => ['required', 'date'],
         ]);
 
         if ($data['montant_paye'] > $cotisation->montant_du) {
@@ -200,18 +190,5 @@ class CotisationController extends Controller
         if (!$user->isChefTresorier() && $cotisation->created_by !== $user->id) {
             abort(403, "Vous ne pouvez modifier que vos propres enregistrements.");
         }
-    }
-
-    /**
-     * Dates de collecte configurées pour une année, au format Y-m-d.
-     */
-    private function datesValides(int $annee)
-    {
-        // pluck() renvoie une Collection de base (pas Eloquent) : ->unique()
-        // ailleurs ne tente pas d'appeler getKey() sur de simples chaînes.
-        return CotisationDate::where('annee', $annee)
-            ->orderBy('date_collecte')
-            ->pluck('date_collecte')
-            ->map(fn ($d) => $d->toDateString());
     }
 }

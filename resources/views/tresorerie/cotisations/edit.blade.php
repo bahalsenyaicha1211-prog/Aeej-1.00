@@ -7,7 +7,7 @@
             <a class="section__link" href="{{ route('tresorerie.cotisations.index') }}">← Retour</a>
         </div>
         <p style="color:var(--muted); font-size:13px; margin-top:-6px; margin-bottom:16px;">
-            Cotisation {{ $cotisation->annee }} — {{ $cotisation->categorie === 'bureau' ? 'Membre du bureau' : 'Membre simple' }}
+            Cotisation {{ \App\Support\AcademicYear::label($cotisation->annee) }} — {{ $cotisation->categorie === 'bureau' ? 'Membre du bureau' : 'Membre simple' }}
         </p>
 
         @if($errors->any())
@@ -45,23 +45,7 @@
 
                 <div class="field">
                     <label>Date du paiement *</label>
-                    @php
-                        $dateActuelle = old('date_paiement', $cotisation->date_paiement->toDateString());
-                        $dateActuelleConnue = $dates->contains(fn ($d) => $d->date_collecte->toDateString() === $dateActuelle);
-                    @endphp
-                    <select class="input" name="date_paiement" required>
-                        @unless($dateActuelleConnue)
-                            <option value="{{ $dateActuelle }}" selected>{{ \Illuminate\Support\Carbon::parse($dateActuelle)->format('d/m/Y') }} (hors liste actuelle)</option>
-                        @endunless
-                        @foreach($dates as $d)
-                            <option value="{{ $d->date_collecte->toDateString() }}" @selected($d->date_collecte->toDateString() === $dateActuelle)>
-                                {{ $d->date_collecte->format('d/m/Y') }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @if($dates->isEmpty() && $dateActuelleConnue)
-                        <span class="field__hint">Aucune autre date de collecte configurée pour {{ $cotisation->annee }}.</span>
-                    @endif
+                    <input class="input" type="date" name="date_paiement" value="{{ old('date_paiement', $cotisation->date_paiement->toDateString()) }}" required>
                 </div>
             </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Membre;
 
 use App\Http\Controllers\Controller;
+use App\Support\AcademicYear;
 use Illuminate\Http\Request;
 
 class CotisationMembreController extends Controller
@@ -15,7 +16,7 @@ class CotisationMembreController extends Controller
             ? $membre->cotisations()->orderByDesc('annee')->get()
             : collect();
 
-        $anneeActuelle = now()->year;
+        $anneeActuelle = AcademicYear::anneeActive();
         $cotisationActuelle = $cotisations->firstWhere('annee', $anneeActuelle);
 
         $cotisationsVolontaires = $membre

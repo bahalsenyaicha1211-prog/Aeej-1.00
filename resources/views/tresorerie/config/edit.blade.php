@@ -21,14 +21,15 @@
                 <div class="section__title">Définir / mettre à jour une année</div>
             </div>
             <p style="color:var(--muted); font-size:13px; margin-top:-6px; margin-bottom:16px;">
-                Un membre du bureau paie un montant différent d'un membre simple.
+                Un membre du bureau paie un montant différent d'un membre simple. Année académique en cours : <strong>{{ \App\Support\AcademicYear::label($anneeActive) }}</strong> — c'est la seule utilisable pour un nouveau paiement.
             </p>
 
             <form method="POST" action="{{ route('tresorerie.config.update') }}">
                 @csrf
                 <div class="field">
-                    <label>Année *</label>
-                    <input class="input" type="number" name="annee" value="{{ old('annee', now()->year) }}" min="2010" max="{{ now()->year + 1 }}" required>
+                    <label>Année (de début) *</label>
+                    <input class="input" type="number" name="annee" value="{{ old('annee', $anneeActive) }}" min="2010" max="{{ now()->year + 1 }}" required>
+                    <span class="field__hint">Ex. saisir 2026 pour l'année académique 2026-2027.</span>
                 </div>
                 <div class="field" style="margin-top:16px;">
                     <label>Montant membre simple (TND) *</label>
@@ -61,7 +62,12 @@
                     <tbody>
                         @forelse($configs as $c)
                         <tr>
-                            <td style="font-weight:800;">{{ $c->annee }}</td>
+                            <td style="font-weight:800;">
+                                {{ \App\Support\AcademicYear::label($c->annee) }}
+                                @if($c->annee === $anneeActive)
+                                    <span class="tag" style="margin-left:6px; background:#dcfce7; color:#15803d;">en cours</span>
+                                @endif
+                            </td>
                             <td style="text-align:right;">{{ number_format($c->montant_membre, 2, ',', ' ') }} TND</td>
                             <td style="text-align:right; color:#6d28d9;">{{ number_format($c->montant_bureau, 2, ',', ' ') }} TND</td>
                         </tr>
@@ -71,59 +77,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-
-    <div class="grid grid-2" style="margin-top:20px;">
-        <div class="card">
-            <div class="section__head">
-                <div class="section__title">Ajouter une date de collecte</div>
-            </div>
-            <p style="color:var(--muted); font-size:13px; margin-top:-6px; margin-bottom:16px;">
-                Les paiements de cotisation ne pourront être datés que sur l'une de ces dates.
-            </p>
-
-            <form method="POST" action="{{ route('tresorerie.config.dates.store') }}">
-                @csrf
-                <div class="field">
-                    <label>Année *</label>
-                    <input class="input" type="number" name="annee" value="{{ old('annee', now()->year) }}" min="2010" max="{{ now()->year + 1 }}" required>
-                </div>
-                <div class="field" style="margin-top:16px;">
-                    <label>Date de collecte *</label>
-                    <input class="input" type="date" name="date_collecte" value="{{ old('date_collecte') }}" required>
-                </div>
-
-                <div style="margin-top:20px;">
-                    <button class="btn btn--primary" type="submit">Ajouter la date</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="card">
-            <div class="section__head">
-                <div class="section__title">Dates configurées</div>
-            </div>
-
-            @forelse($dates as $annee => $datesAnnee)
-                <div style="margin-bottom:16px;">
-                    <div style="font-weight:800; margin-bottom:8px;">{{ $annee }}</div>
-                    <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                        @foreach($datesAnnee as $d)
-                            <form method="POST" action="{{ route('tresorerie.config.dates.destroy', $d) }}"
-                                  onsubmit="return confirm('Retirer la date du {{ $d->date_collecte->format('d/m/Y') }} ?');"
-                                  style="display:inline-flex; align-items:center; gap:6px; padding:6px 6px 6px 12px; border-radius:999px; border:1px solid var(--border); background:#f9fafb; font-size:13px; font-weight:700;">
-                                @csrf @method('DELETE')
-                                <span>{{ $d->date_collecte->format('d/m/Y') }}</span>
-                                <button type="submit" aria-label="Retirer cette date"
-                                        style="width:20px; height:20px; border-radius:999px; border:0; background:#fee2e2; color:#b91c1c; font-weight:900; line-height:1; cursor:pointer;">×</button>
-                            </form>
-                        @endforeach
-                    </div>
-                </div>
-            @empty
-                <p style="color:var(--muted); font-size:13px;">Aucune date de collecte configurée pour le moment.</p>
-            @endforelse
         </div>
     </div>
 
@@ -140,7 +93,7 @@
                 @csrf
                 <div class="field">
                     <label>Année *</label>
-                    <input class="input" type="number" name="annee" value="{{ old('annee', now()->year) }}" min="2010" max="{{ now()->year + 1 }}" required>
+                    <input class="input" type="number" name="annee" value="{{ old('annee', $anneeActive) }}" min="2010" max="{{ now()->year + 1 }}" required>
                 </div>
                 <div class="field" style="margin-top:16px;">
                     <label>Motif *</label>

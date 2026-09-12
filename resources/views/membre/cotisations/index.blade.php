@@ -1,12 +1,14 @@
 <x-member-layout>
     <x-slot name="header">Ma cotisation</x-slot>
 
+    @php $anneeActuelleLabel = \App\Support\AcademicYear::label($anneeActuelle); @endphp
+
     <div class="container" style="padding:0;">
 
         @if($cotisationActuelle)
             <div class="card" style="margin-bottom:20px;">
                 <div class="section__head">
-                    <div class="section__title">Cotisation {{ $anneeActuelle }}</div>
+                    <div class="section__title">Cotisation {{ $anneeActuelleLabel }}</div>
                 </div>
 
                 <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; padding:16px 0;">
@@ -26,18 +28,18 @@
 
                 @if($cotisationActuelle->reste > 0)
                     <div style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:600;">
-                        Il vous reste {{ number_format($cotisationActuelle->reste, 2, ',', ' ') }} TND à régler pour {{ $anneeActuelle }}. Contactez un trésorier pour compléter votre paiement.
+                        Il vous reste {{ number_format($cotisationActuelle->reste, 2, ',', ' ') }} TND à régler pour {{ $anneeActuelleLabel }}. Contactez un trésorier pour compléter votre paiement.
                     </div>
                 @else
                     <div style="background:#f0fff4; border:1px solid #9ae6b4; color:#276749; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:600;">
-                        Votre cotisation {{ $anneeActuelle }} est entièrement réglée. Merci !
+                        Votre cotisation {{ $anneeActuelleLabel }} est entièrement réglée. Merci !
                     </div>
                 @endif
             </div>
         @else
             <div class="card" style="margin-bottom:20px;">
                 <div style="padding:20px; color:#718096; text-align:center;">
-                    Aucun paiement de cotisation enregistré pour {{ $anneeActuelle }} pour le moment.
+                    Aucun paiement de cotisation enregistré pour {{ $anneeActuelleLabel }} pour le moment.
                 </div>
             </div>
         @endif
@@ -51,7 +53,7 @@
                 @forelse($cotisations as $c)
                     <div class="item" style="display:flex; justify-content:space-between; align-items:center; gap:16px;">
                         <div>
-                            <div style="font-weight:900;">Année {{ $c->annee }}</div>
+                            <div style="font-weight:900;">Année {{ \App\Support\AcademicYear::label($c->annee) }}</div>
                             <div style="color:#718096; font-size:12px;">Payé le {{ $c->date_paiement->format('d/m/Y') }}</div>
                         </div>
                         <div style="text-align:right;">
