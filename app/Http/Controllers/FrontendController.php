@@ -104,6 +104,21 @@ class FrontendController extends Controller
         return view('jendouba', $data);
     }
 
+    public function faculte()
+    {
+        // Photos de l'Université de Jendouba : pilotées par dossier, comme
+        // pour /jendouba — déposer un fichier dans public/images/universite/
+        // suffit à l'ajouter au diaporama, sans rien changer au code.
+        $universiteImages = collect(glob(public_path('images/universite/*'), GLOB_BRACE) ?: [])
+            ->filter(fn ($path) => is_file($path) && in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp', 'avif'], true))
+            ->unique(fn ($path) => strtolower(basename($path)))
+            ->sort()
+            ->map(fn ($path) => asset('images/universite/' . basename($path)))
+            ->values()->all();
+
+        return view('faculte', compact('universiteImages'));
+    }
+
     public function partenaires(Request $request)
     {
         // Tout le jeu publié est mis en cache une fois (10 min) ; le filtrage
