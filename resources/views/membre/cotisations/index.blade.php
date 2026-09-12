@@ -68,5 +68,26 @@
                 @endforelse
             </div>
         </div>
+
+        @if($cotisationsVolontaires->isNotEmpty())
+            <div class="card" style="margin-top:20px;">
+                <div class="section__head">
+                    <div class="section__title">Contributions volontaires</div>
+                </div>
+                <p style="color:#718096; font-size:13px; margin-top:-6px; margin-bottom:12px;">Activités optionnelles (camping, sorties…) en plus de la cotisation annuelle.</p>
+
+                <div class="list">
+                    @foreach($cotisationsVolontaires as $c)
+                        <div class="item" style="display:flex; justify-content:space-between; align-items:center; gap:16px;">
+                            <div>
+                                <div style="font-weight:900;">{{ $c->type->nom ?? '—' }}</div>
+                                <div style="color:#718096; font-size:12px;">Payé le {{ $c->date_paiement->format('d/m/Y') }}</div>
+                            </div>
+                            <div style="font-weight:800; color:#22a559;">{{ number_format($c->montant_paye, 2, ',', ' ') }} TND</div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 </x-member-layout>

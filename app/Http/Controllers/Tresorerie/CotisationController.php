@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Cotisation;
 use App\Models\CotisationConfig;
 use App\Models\CotisationDate;
+use App\Models\CotisationType;
+use App\Models\CotisationVolontaire;
 use App\Models\Membre;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -16,6 +18,39 @@ class CotisationController extends Controller
     {
         $user = $request->user();
         $q = trim((string) $request->query('q', ''));
+        $tab = $request->query('tab') === 'volontaire' ? 'volontaire' : 'annuelle';
+
+        if ($tab === 'volontaire') {
+            $query = CotisationVolontaire::with(['membre', 'type', 'tresorier'])
+                ->orderByDesc('date_paiement')
+                ->orderByDesc('created_at');
+
+            if (!$user->isChefTresorier()) {
+                $query->where('created_by', $user->id);
+            }
+
+            if ($request->filled('annee')) {
+                $annee = (int) $request->input('annee');
+                $query->whereHas('type', fn ($t) => $t->where('annee', $annee));
+            }
+
+            if ($q !== '') {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('matricule', 'like', "%{$q}%")
+                        ->orWhereHas('membre', function ($m) use ($q) {
+                            $m->where('nom', 'like', "%{$q}%")
+                              ->orWhere('prenom', 'like', "%{$q}%")
+                              ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"])
+                              ->orWhereRaw("CONCAT(nom, ' ', prenom) like ?", ["%{$q}%"]);
+                        })
+                        ->orWhereHas('type', fn ($t) => $t->where('nom', 'like', "%{$q}%"));
+                });
+            }
+
+            $cotisationsVolontaires = $query->paginate(20)->withQueryString();
+
+            return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'cotisationsVolontaires' => $cotisationsVolontaires]);
+        }
 
         $query = Cotisation::with(['membre', 'tresorier'])
             ->orderByDesc('annee')
@@ -43,7 +78,7 @@ class CotisationController extends Controller
 
         $cotisations = $query->paginate(20)->withQueryString();
 
-        return view('tresorerie.cotisations.index', compact('cotisations', 'q'));
+        return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'cotisations' => $cotisations]);
     }
 
     public function create(Request $request)
@@ -52,8 +87,9 @@ class CotisationController extends Controller
         $configs = CotisationConfig::orderByDesc('annee')->get(['annee', 'montant_membre', 'montant_bureau']);
         $dates = CotisationDate::orderBy('annee')->orderBy('date_collecte')->get()->groupBy('annee');
         $membresBureau = \App\Models\BureauMembre::where('is_actif', true)->pluck('matricule')->all();
+        $typesVolontaires = CotisationType::actifs()->orderByDesc('annee')->orderBy('nom')->get();
 
-        return view('tresorerie.cotisations.create', compact('membres', 'configs', 'dates', 'membresBureau'));
+        return view('tresorerie.cotisations.create', compact('membres', 'configs', 'dates', 'membresBureau', 'typesVolontaires'));
     }
 
     public function store(Request $request)

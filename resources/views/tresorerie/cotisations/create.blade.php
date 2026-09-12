@@ -16,6 +16,13 @@
             </div>
         @endif
 
+        <div class="cotTabs" role="tablist">
+            <button type="button" class="cotTabs__btn is-active" data-cot-tab="annuelle">Cotisation annuelle</button>
+            <button type="button" class="cotTabs__btn" data-cot-tab="volontaire">Cotisation volontaire</button>
+        </div>
+
+        <div data-cot-panel="annuelle">
+
         @if($configs->isEmpty())
             <div class="alert alert--warning">
                 ⚠️ Aucun montant de cotisation n'a encore été configuré. Demandez au chef trésorier de le faire avant d'enregistrer un paiement.
@@ -90,7 +97,72 @@
                 <a href="{{ route('tresorerie.cotisations.index') }}" style="color:var(--muted); font-size:14px; font-weight:600;">Annuler</a>
             </div>
         </form>
+
+        </div>
+
+        <div data-cot-panel="volontaire" hidden>
+
+            @if($typesVolontaires->isEmpty())
+                <div class="alert alert--warning">
+                    ⚠️ Aucune cotisation volontaire n'a encore été configurée. Ajoutez-en une depuis « Montants cotisation » (ex. Camping, montant fixe) avant d'enregistrer un paiement.
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('tresorerie.cotisations-volontaires.store') }}">
+                @csrf
+
+                <div class="grid grid-2">
+                    <div class="field">
+                        <label>Membre *</label>
+                        <select class="input" name="matricule" required>
+                            <option value="">— Sélectionner un membre —</option>
+                            @foreach($membres as $m)
+                                <option value="{{ $m->matricule }}">{{ $m->prenom }} {{ $m->nom }} — {{ $m->matricule }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Cotisation volontaire *</label>
+                        <select class="input" name="cotisation_type_id" id="cotisation_type_id" required @if($typesVolontaires->isEmpty()) disabled @endif>
+                            <option value="">— Choisir —</option>
+                            @foreach($typesVolontaires as $t)
+                                <option value="{{ $t->id }}" data-montant="{{ $t->montant }}">{{ $t->nom }} ({{ $t->annee }}) — {{ number_format($t->montant, 2, ',', ' ') }} TND</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Montant payé (TND) *</label>
+                        <input class="input" type="number" step="0.01" min="0" name="montant_paye" id="montant_paye_volontaire" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Date du paiement *</label>
+                        <input class="input" type="date" name="date_paiement" value="{{ now()->toDateString() }}" required>
+                    </div>
+                </div>
+
+                <div style="margin-top:24px; display:flex; gap:12px; align-items:center;">
+                    <button class="btn btn--primary" type="submit" @if($typesVolontaires->isEmpty()) disabled @endif>Enregistrer le paiement</button>
+                    <a href="{{ route('tresorerie.cotisations.index') }}" style="color:var(--muted); font-size:14px; font-weight:600;">Annuler</a>
+                </div>
+            </form>
+
+        </div>
     </div>
+
+<style>
+.cotTabs{ display:flex; gap:8px; margin-bottom:18px; border-bottom:1px solid var(--border); }
+.cotTabs__btn{
+    padding:10px 16px; border:0; background:none; cursor:pointer;
+    font-size:14px; font-weight:800; color:var(--muted);
+    border-bottom:2px solid transparent; margin-bottom:-1px;
+    transition: color .15s ease, border-color .15s ease;
+}
+.cotTabs__btn:hover{ color:var(--text); }
+.cotTabs__btn.is-active{ color:var(--brand2); border-color:var(--brand2); }
+</style>
 
 <script>
 (() => {
@@ -173,6 +245,33 @@
 
     maj();
     majDates();
+
+    // ===== Onglets Annuelle / Volontaire =====
+    const tabBtns = document.querySelectorAll('[data-cot-tab]');
+    const panels = {
+        annuelle: document.querySelector('[data-cot-panel="annuelle"]'),
+        volontaire: document.querySelector('[data-cot-panel="volontaire"]'),
+    };
+    tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const cible = btn.dataset.cotTab;
+            tabBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
+            Object.entries(panels).forEach(([nom, panel]) => {
+                if (panel) panel.hidden = nom !== cible;
+            });
+        });
+    });
+
+    // ===== Cotisation volontaire : pré-remplir le montant selon le motif choisi =====
+    const typeSelect = document.getElementById('cotisation_type_id');
+    const montantVolontaireInput = document.getElementById('montant_paye_volontaire');
+    if (typeSelect && montantVolontaireInput) {
+        typeSelect.addEventListener('change', () => {
+            const option = typeSelect.selectedOptions[0];
+            const montant = option ? parseFloat(option.dataset.montant) : NaN;
+            if (!isNaN(montant)) montantVolontaireInput.value = montant.toFixed(2);
+        });
+    }
 })();
 </script>
 </x-member-layout>

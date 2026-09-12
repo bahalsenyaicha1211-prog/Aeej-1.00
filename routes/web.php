@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\TresorerieCompteController;
 use App\Http\Controllers\Tresorerie\CotisationController;
 use App\Http\Controllers\Tresorerie\CotisationConfigController;
+use App\Http\Controllers\Tresorerie\CotisationVolontaireController;
 use App\Http\Controllers\Tresorerie\CaisseController;
 use App\Http\Controllers\Tresorerie\DepenseController;
 
@@ -229,6 +230,22 @@ Route::prefix('tresorerie')
             ->middleware('tresorier')
             ->name('cotisations.destroy');
 
+        // Cotisations volontaires (activités : camping, etc.) — mêmes règles
+        // d'accès que les cotisations annuelles, regroupées sous le même
+        // écran "Nouveau paiement" / "Cotisations" via un onglet.
+        Route::post('cotisations-volontaires', [CotisationVolontaireController::class, 'store'])
+            ->middleware('tresorier')
+            ->name('cotisations-volontaires.store');
+        Route::get('cotisations-volontaires/{volontaire}/edit', [CotisationVolontaireController::class, 'edit'])
+            ->middleware('tresorier')
+            ->name('cotisations-volontaires.edit');
+        Route::put('cotisations-volontaires/{volontaire}', [CotisationVolontaireController::class, 'update'])
+            ->middleware('tresorier')
+            ->name('cotisations-volontaires.update');
+        Route::delete('cotisations-volontaires/{volontaire}', [CotisationVolontaireController::class, 'destroy'])
+            ->middleware('tresorier')
+            ->name('cotisations-volontaires.destroy');
+
         Route::get('config-montants', [CotisationConfigController::class, 'edit'])
             ->middleware('chef_tresorier')
             ->name('config.edit');
@@ -242,6 +259,16 @@ Route::prefix('tresorerie')
         Route::delete('config-montants/dates/{date}', [CotisationConfigController::class, 'destroyDate'])
             ->middleware('chef_tresorier')
             ->name('config.dates.destroy');
+
+        Route::post('config-montants/types', [CotisationConfigController::class, 'storeType'])
+            ->middleware('chef_tresorier')
+            ->name('config.types.store');
+        Route::patch('config-montants/types/{type}/toggle', [CotisationConfigController::class, 'toggleType'])
+            ->middleware('chef_tresorier')
+            ->name('config.types.toggle');
+        Route::delete('config-montants/types/{type}', [CotisationConfigController::class, 'destroyType'])
+            ->middleware('chef_tresorier')
+            ->name('config.types.destroy');
 
         Route::get('caisse', [CaisseController::class, 'index'])
             ->middleware('caisse_access')

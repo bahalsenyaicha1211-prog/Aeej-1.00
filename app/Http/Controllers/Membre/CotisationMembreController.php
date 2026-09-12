@@ -18,6 +18,10 @@ class CotisationMembreController extends Controller
         $anneeActuelle = now()->year;
         $cotisationActuelle = $cotisations->firstWhere('annee', $anneeActuelle);
 
-        return view('membre.cotisations.index', compact('cotisations', 'cotisationActuelle', 'anneeActuelle'));
+        $cotisationsVolontaires = $membre
+            ? $membre->cotisationsVolontaires()->with('type')->orderByDesc('date_paiement')->get()
+            : collect();
+
+        return view('membre.cotisations.index', compact('cotisations', 'cotisationActuelle', 'anneeActuelle', 'cotisationsVolontaires'));
     }
 }
