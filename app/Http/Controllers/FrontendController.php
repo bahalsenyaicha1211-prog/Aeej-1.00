@@ -197,7 +197,12 @@ class FrontendController extends Controller
 
     public function contact()
     {
-        return view('contact');
+        $equipe = \App\Models\ContactPerson::published()
+            ->orderBy('position')
+            ->orderBy('nom')
+            ->get();
+
+        return view('contact', compact('equipe'));
     }
 
     public function contactStore(Request $request)

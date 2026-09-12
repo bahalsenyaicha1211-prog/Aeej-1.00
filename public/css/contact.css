@@ -1,87 +1,241 @@
 :root {
-    --primary: #3182ce;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
     --gold: #d4af37;
-    --text: #2d3748;
+    --text: #1f2937;
+    --muted: #6b7280;
     --bg: #f7fafc;
+    --border: rgba(15, 23, 42, .08);
+    --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+    --shadow-lg: 0 20px 45px rgba(15, 23, 42, .12);
 }
 
 .contact-page {
-    padding: 40px 20px;
+    padding: 0 20px 60px;
     max-width: 1200px;
     margin: 0 auto;
+    color: var(--text);
+}
+.contact-page *{ box-sizing: border-box; }
+
+/* ---- Héro ---- */
+.ctcHero{
+    max-width: 720px;
+    margin: 44px auto 40px;
+    text-align: center;
+}
+.ctcKicker{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(37,99,235,.10);
+    border: 1px solid rgba(37,99,235,.22);
+    color: var(--primary-dark);
+    font-weight: 800;
+    font-size: 12.5px;
+    letter-spacing: .02em;
+}
+.ctcHero h1{
+    margin: 16px 0 10px;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 900;
+    letter-spacing: -.01em;
+    color: #111827;
+}
+.ctcHero p{
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 15.5px;
 }
 
-
+/* ---- Grille générale ---- */
 .contact-container {
     display: grid;
-    grid-template-columns: 1fr 350px; /* Grille pour desktop */
-    gap: 40px;
+    grid-template-columns: 1fr 350px;
+    gap: 28px;
 }
 
-/* Grille des membres */
+/* ---- Équipe ---- */
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 24px;
+    align-content: start;
+}
+
+.team-empty{
+    grid-column: 1 / -1;
+    border: 1px dashed var(--border);
+    border-radius: 18px;
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    background: #fff;
 }
 
 .member-card {
-    background: white;
-    border-radius: 15px;
+    position: relative;
+    background: #fff;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s ease;
     text-align: center;
 }
+.member-card:hover{
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
 
-.member-card:hover { transform: translateY(-10px); }
+.member-card.is-featured{
+    border-color: rgba(212,175,55,.45);
+    box-shadow: 0 12px 34px rgba(212,175,55,.18);
+}
+.member-card.is-featured:hover{ box-shadow: 0 20px 46px rgba(212,175,55,.26); }
 
-/* Style spécial pour le président */
-.admin-gold { border: 2px solid var(--gold); }
-.admin-gold .role { color: var(--gold); font-weight: bold; }
+.featured-badge{
+    position: absolute;
+    top: 12px; left: 12px;
+    z-index: 2;
+    background: linear-gradient(135deg, #f4d675, var(--gold));
+    color: #4a3803;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(212,175,55,.35);
+}
 
+.member-photo{
+    position: relative;
+    background: #eef2f7;
+}
 .member-photo img {
     width: 100%;
-    height: 450px;
-    object-fit: cover; /* Garde les proportions de la photo */
+    height: 320px;
+    object-fit: cover;
+    display: block;
+}
+.member-photo::after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,.28));
 }
 
-.member-info { padding: 20px; }
-.member-info h3 { margin: 0; font-size: 1.2rem; }
-.role { display: block; color: #718096; margin-bottom: 15px; font-size: 0.9rem; }
+.member-info { padding: 20px 18px 22px; position: relative; }
+.member-info h3 {
+    margin: 0;
+    font-size: 1.08rem;
+    font-weight: 900;
+    letter-spacing: .01em;
+}
+.role {
+    display: block;
+    color: var(--primary-dark);
+    margin: 4px 0 14px;
+    font-size: .82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+.is-featured .role{ color: #a2790a; }
 
+.member-contact{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 .member-contact a {
-    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: var(--text);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: .85rem;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+.member-contact a svg{ width: 14px; height: 14px; flex-shrink: 0; color: var(--primary); }
+.member-contact a:hover{
+    background: rgba(37,99,235,.08);
+    border-color: rgba(37,99,235,.25);
+    color: var(--primary-dark);
 }
 
-/* Sidebar */
+/* ---- Sidebar ---- */
 .contact-sidebar {
-    background: #2d3748;
-    color: white;
-    padding: 30px;
-    border-radius: 15px;
+    background: linear-gradient(160deg, #111827, #1f2937);
+    color: #fff;
+    padding: 30px 26px;
+    border-radius: 20px;
     height: fit-content;
+    box-shadow: var(--shadow-lg);
 }
 
-.sticky-info h3 { margin-bottom: 20px; border-bottom: 2px solid var(--primary); display: inline-block; }
+.sticky-info h3{
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+    font-weight: 900;
+}
+.sticky-info > p{
+    margin: 0 0 24px;
+    color: rgba(255,255,255,.62);
+    font-size: .88rem;
+    line-height: 1.6;
+}
 
-.info-item { display: flex; gap: 15px; margin-bottom: 25px; align-items: flex-start; }
-.info-item i { font-size: 1.5rem; color: var(--primary); }
-.info-item a { color: #ebf8ff; text-decoration: none; }
+.info-item { display: flex; gap: 14px; margin-bottom: 22px; align-items: flex-start; }
+.info-item svg{
+    width: 18px; height: 18px; flex-shrink: 0;
+    color: #93c5fd;
+    margin-top: 2px;
+}
+.info-item strong{ display:block; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: rgba(255,255,255,.55); font-weight: 800; margin-bottom: 3px; }
+.info-item a, .info-item span { color: #e5edff; text-decoration: none; font-weight: 600; font-size: .93rem; }
+.info-item a:hover{ color: #93c5fd; }
 
-/* Formulaire de contact */
+.social-links{
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,.10);
+}
+.social-links a{
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.08);
+    color: #fff;
+    transition: transform .18s ease, background .18s ease;
+}
+.social-links a svg{ width: 18px; height: 18px; }
+.social-links a:hover{ transform: translateY(-3px); }
+.social-links a.fb:hover{ background: #1877f2; }
+.social-links a.insta:hover{ background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); }
+.social-links a.tiktok:hover{ background: #000; }
+
+/* ---- Formulaire ---- */
 .contact-form-section {
     grid-column: 1 / -1;
-    background: white;
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
 }
 
-.contact-form-section h3 { margin: 0 0 5px; color: var(--text); }
-.contact-form-section > p { color: #718096; margin-bottom: 25px; }
+.contact-form-section h3 { margin: 0 0 6px; color: var(--text); font-size: 1.2rem; font-weight: 900; }
+.contact-form-section > p { color: var(--muted); margin-bottom: 26px; font-size: .93rem; }
 
 .cf-form {
     display: grid;
@@ -92,41 +246,48 @@
 .cf-field { display: flex; flex-direction: column; gap: 6px; }
 .cf-field--full { grid-column: 1 / -1; }
 
-.cf-field label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.cf-field label { font-size: 0.85rem; font-weight: 700; color: var(--text); }
 
 .cf-field input,
 .cf-field textarea {
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px 14px;
+    border-radius: 10px;
+    padding: 11px 14px;
     font-size: 0.95rem;
     font-family: inherit;
     color: var(--text);
+    background: #f8fafc;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
 }
 
 .cf-field input:focus,
 .cf-field textarea:focus {
     outline: none;
     border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(37,99,235,.12);
 }
 
 .cf-submit {
     grid-column: 1 / -1;
     justify-self: start;
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 12px 28px;
-    font-weight: 700;
+    border-radius: 12px;
+    padding: 13px 30px;
+    font-weight: 800;
+    font-size: .95rem;
     cursor: pointer;
-    transition: opacity 0.2s ease;
+    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 10px 24px rgba(37,99,235,.30);
 }
 
-.cf-submit:hover { opacity: 0.9; }
+.cf-submit:hover{ transform: translateY(-2px); box-shadow: 0 14px 30px rgba(37,99,235,.38); }
+.cf-submit:active{ transform: translateY(0); }
 
 .cf-alert {
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 12px 16px;
     margin-bottom: 20px;
     font-size: 0.9rem;
@@ -136,9 +297,18 @@
 .cf-alert--error { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
 .cf-alert--error ul { margin: 8px 0 0; padding-left: 20px; }
 
-/* Mobile */
+/* ---- Apparition au défilement ---- */
+.reveal{ opacity: 0; transform: translateY(14px); transition: opacity .55s ease, transform .55s ease; }
+.reveal.is-in{ opacity: 1; transform: translateY(0); }
+
+/* ---- Mobile ---- */
 @media (max-width: 992px) {
     .contact-container { grid-template-columns: 1fr; }
-    .contact-sidebar { order: -1; } /* Met le mail de l'asso en haut sur mobile */
+    .contact-sidebar { order: -1; }
     .cf-form { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px){
+    .ctcHero{ margin-top: 28px; }
+    .member-photo img{ height: 260px; }
+    .contact-form-section{ padding: 22px; }
 }
