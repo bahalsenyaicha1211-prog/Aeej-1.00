@@ -68,7 +68,7 @@ Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 Route::post('/contact', [FrontendController::class, 'contactStore'])->name('contact.store');
 
 Route::get('/jendouba', [FrontendController::class, 'jendouba'])->name('jendouba');
-Route::get('/faculte', fn() => view('faculte'))->name('faculte');
+Route::get('/faculte', [FrontendController::class, 'faculte'])->name('faculte');
 
 /*
 |--------------------------------------------------------------------------
