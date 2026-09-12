@@ -396,6 +396,12 @@ img{ max-width:100%; display:block; }
 .table th{ color:var(--muted); font-weight:900; background:#f9fafb; }
 .table tr:last-child td{ border-bottom:0; }
 
+/* Tableau à cellules denses (noms, montants...) : plutôt que de laisser
+   un nom long casser sur plusieurs lignes et gonfler la hauteur des
+   lignes, on garde chaque cellule sur une seule ligne et on laisse le
+   conteneur (overflow-x:auto) défiler horizontalement. */
+.table--nowrap th, .table--nowrap td{ white-space: nowrap; }
+
 /* Responsive */
 @media (max-width: 1100px){
   .grid-4{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -410,6 +416,18 @@ img{ max-width:100%; display:block; }
 
 @media (max-width: 520px){
   .grid-4, .grid-3, .grid-2{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px){
+  /* Un bouton d'action dans un en-tête de section (ex. "+ Enregistrer un
+     paiement") reste compact au lieu de s'étirer sur toute la largeur
+     disponible et de se retrouver sur deux lignes. */
+  .section__head{ flex-wrap: wrap; row-gap: 8px; }
+  .section__head .btn{
+    padding: 8px 12px;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
 }
 
 /* Mobile drawer */

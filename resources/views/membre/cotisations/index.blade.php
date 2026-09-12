@@ -3,6 +3,14 @@
 
     @php $anneeActuelleLabel = \App\Support\AcademicYear::label($anneeActuelle); @endphp
 
+    <style>
+        .cotStats__value{ white-space: nowrap; }
+        @media (max-width: 520px){
+            .cotStats{ gap:10px !important; }
+            .cotStats__value{ font-size:16px !important; }
+        }
+    </style>
+
     <div class="container" style="padding:0;">
 
         @if($cotisationActuelle)
@@ -11,18 +19,18 @@
                     <div class="section__title">Cotisation {{ $anneeActuelleLabel }}</div>
                 </div>
 
-                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; padding:16px 0;">
-                    <div>
+                <div class="cotStats" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; padding:16px 0;">
+                    <div style="min-width:0;">
                         <div style="color:#718096; font-size:12px; text-transform:uppercase; font-weight:700;">Montant dû</div>
-                        <div style="font-size:22px; font-weight:900; color:#1a202c;">{{ number_format($cotisationActuelle->montant_du, 2, ',', ' ') }} TND</div>
+                        <div class="cotStats__value" style="font-size:22px; font-weight:900; color:#1a202c;">{{ number_format($cotisationActuelle->montant_du, 2, ',', ' ') }} TND</div>
                     </div>
-                    <div>
+                    <div style="min-width:0;">
                         <div style="color:#718096; font-size:12px; text-transform:uppercase; font-weight:700;">Déjà payé</div>
-                        <div style="font-size:22px; font-weight:900; color:#22a559;">{{ number_format($cotisationActuelle->montant_paye, 2, ',', ' ') }} TND</div>
+                        <div class="cotStats__value" style="font-size:22px; font-weight:900; color:#22a559;">{{ number_format($cotisationActuelle->montant_paye, 2, ',', ' ') }} TND</div>
                     </div>
-                    <div>
+                    <div style="min-width:0;">
                         <div style="color:#718096; font-size:12px; text-transform:uppercase; font-weight:700;">Reste à payer</div>
-                        <div style="font-size:22px; font-weight:900; color:{{ $cotisationActuelle->reste > 0 ? '#d97706' : '#22a559' }};">{{ number_format($cotisationActuelle->reste, 2, ',', ' ') }} TND</div>
+                        <div class="cotStats__value" style="font-size:22px; font-weight:900; color:{{ $cotisationActuelle->reste > 0 ? '#d97706' : '#22a559' }};">{{ number_format($cotisationActuelle->reste, 2, ',', ' ') }} TND</div>
                     </div>
                 </div>
 
