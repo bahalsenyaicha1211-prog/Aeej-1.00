@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{{ asset('css/member.css') }}">
     <script src="{{ asset('js/member.js') }}" defer></script>
     <script src="{{ asset('js/password-toggle.js') }}" defer></script>
+    <script src="{{ asset('js/select-search.js') }}" defer></script>
     
     <style>
         /* Ajustement pour les icônes du menu */
