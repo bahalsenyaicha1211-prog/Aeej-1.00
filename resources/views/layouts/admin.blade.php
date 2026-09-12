@@ -25,6 +25,7 @@
     @yield('styles')
     <script src="{{ asset('js/admin.js') }}" defer></script>
     <script src="{{ asset('js/password-toggle.js') }}" defer></script>
+    <script src="{{ asset('js/select-search.js') }}" defer></script>
 </head>
 <body class="page">
 
