@@ -106,17 +106,40 @@ class FrontendController extends Controller
 
     public function faculte()
     {
-        // Photos de l'Université de Jendouba : pilotées par dossier, comme
-        // pour /jendouba — déposer un fichier dans public/images/universite/
-        // suffit à l'ajouter au diaporama, sans rien changer au code.
-        $universiteImages = collect(glob(public_path('images/universite/*'), GLOB_BRACE) ?: [])
+        // Photos pilotées par dossier, comme pour /jendouba : déposer un
+        // fichier dans le bon dossier suffit à alimenter le diaporama
+        // correspondant, sans rien changer au code.
+        $scan = fn (string $dir): array => collect(glob(public_path("images/{$dir}/*"), GLOB_BRACE) ?: [])
             ->filter(fn ($path) => is_file($path) && in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp', 'avif'], true))
             ->unique(fn ($path) => strtolower(basename($path)))
             ->sort()
-            ->map(fn ($path) => asset('images/universite/' . basename($path)))
+            ->map(fn ($path) => asset('images/' . $dir . '/' . basename($path)))
             ->values()->all();
 
-        return view('faculte', compact('universiteImages'));
+        $universiteImages = $scan('universite/hero');
+        $faculteImages    = $scan('faculte/hero');
+
+        $etablissements = [
+            ['slug' => 'fsjeg-jendouba',  'nom' => 'Faculté des Sciences Juridiques, Économiques et de Gestion — Jendouba', 'current' => true],
+            ['slug' => 'ish-jendouba',    'nom' => 'Institut Supérieur des Sciences Humaines — Jendouba'],
+            ['slug' => 'islai-beja',      'nom' => 'Institut Supérieur des Langues Appliquées et de l’Informatique — Béja'],
+            ['slug' => 'isbb-beja',       'nom' => 'Institut Supérieur de Biotechnologie — Béja'],
+            ['slug' => 'esier-medjez',    'nom' => 'École Supérieure d’Ingénieurs de Medjez el-Bab'],
+            ['slug' => 'iseah-kef',       'nom' => 'Institut Supérieur des Études Appliquées en Humanités — Le Kef'],
+            ['slug' => 'isi-kef',         'nom' => 'Institut Supérieur de l’Informatique — Le Kef'],
+            ['slug' => 'ismt-kef',        'nom' => 'Institut Supérieur de Musique et de Théâtre — Le Kef'],
+            ['slug' => 'issi-kef',        'nom' => 'Institut Supérieur des Sciences Infirmières — Le Kef'],
+            ['slug' => 'issep-kef',       'nom' => 'Institut Supérieur du Sport et de l’Éducation Physique — Le Kef'],
+            ['slug' => 'esa-kef',         'nom' => 'École Supérieure d’Agriculture — Le Kef'],
+            ['slug' => 'isp-tabarka',     'nom' => 'Institut Sylvo-Pastoral — Tabarka'],
+            ['slug' => 'isam-siliana',    'nom' => 'Institut Supérieur des Arts et Métiers — Siliana'],
+        ];
+        foreach ($etablissements as &$e) {
+            $e['images'] = $scan('universite/etablissements/' . $e['slug']);
+        }
+        unset($e);
+
+        return view('faculte', compact('universiteImages', 'faculteImages', 'etablissements'));
     }
 
     public function partenaires(Request $request)

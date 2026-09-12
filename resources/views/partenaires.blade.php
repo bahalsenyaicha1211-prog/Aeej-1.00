@@ -3,11 +3,11 @@
 @section('title', 'Nos partenaires - AEEJ')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/partenaires.css') }}?v={{ filemtime(public_path('css/partenaires.css')) }}">
+    <link rel="stylesheet" href="{{ asset_v('css/partenaires.css') }}?v={{ filemtime(public_path('css/partenaires.css')) }}">
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/partenaires.js') }}?v={{ filemtime(public_path('js/partenaires.js')) }}" defer></script>
+    <script src="{{ asset_v('js/partenaires.js') }}?v={{ filemtime(public_path('js/partenaires.js')) }}" defer></script>
 @endsection
 
 @section('content')

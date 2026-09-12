@@ -22,10 +22,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $header ?? 'Espace membre' }}</title>
 
-    <link rel="stylesheet" href="{{ asset('css/member.css') }}">
-    <script src="{{ asset('js/member.js') }}" defer></script>
-    <script src="{{ asset('js/password-toggle.js') }}" defer></script>
-    <script src="{{ asset('js/select-search.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ asset_v('css/member.css') }}">
+    <script src="{{ asset_v('js/member.js') }}" defer></script>
+    <script src="{{ asset_v('js/password-toggle.js') }}" defer></script>
+    <script src="{{ asset_v('js/select-search.js') }}" defer></script>
     
     <style>
         /* Ajustement pour les icônes du menu */

@@ -225,7 +225,7 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/jendouba.js') }}?v={{ filemtime(public_path('js/jendouba.js')) }}" defer></script>
+<script src="{{ asset_v('js/jendouba.js') }}?v={{ filemtime(public_path('js/jendouba.js')) }}" defer></script>
 @endsection
 
 @section('content')

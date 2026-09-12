@@ -4,7 +4,7 @@
 @section('header', 'Ajouter un membre du bureau')
 
 @section('styles')
-    <script src="{{ asset('js/image-upload.js') }}?v={{ filemtime(public_path('js/image-upload.js')) }}" defer></script>
+    <script src="{{ asset_v('js/image-upload.js') }}?v={{ filemtime(public_path('js/image-upload.js')) }}" defer></script>
 @endsection
 
 @section('content')

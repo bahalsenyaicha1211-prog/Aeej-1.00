@@ -4,11 +4,11 @@
 @section('title', "Inscription - AEEJ")
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/inscription.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('css/inscription.css') }}">
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/inscription.js') }}" defer></script>
+    <script src="{{ asset_v('js/inscription.js') }}" defer></script>
 @endsection
 
 @section('content')

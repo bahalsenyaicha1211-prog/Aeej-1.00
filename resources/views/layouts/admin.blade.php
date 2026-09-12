@@ -21,11 +21,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }}</title>
 
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('css/admin.css') }}">
     @yield('styles')
-    <script src="{{ asset('js/admin.js') }}" defer></script>
-    <script src="{{ asset('js/password-toggle.js') }}" defer></script>
-    <script src="{{ asset('js/select-search.js') }}" defer></script>
+    <script src="{{ asset_v('js/admin.js') }}" defer></script>
+    <script src="{{ asset_v('js/password-toggle.js') }}" defer></script>
+    <script src="{{ asset_v('js/select-search.js') }}" defer></script>
 </head>
 <body class="page">
 
