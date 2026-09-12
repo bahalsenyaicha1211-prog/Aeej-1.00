@@ -282,13 +282,47 @@
   font-size: 13px;
 }
 
-.facSource{
+.facSources{
   margin-top: 28px;
-  font-size: 12px;
-  color: rgba(229,231,235,.5);
-  line-height: 1.7;
+  display:flex;
+  align-items:center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
 }
-.facSource a{ color: rgba(167,243,208,.9); }
+.facSources__label{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size: 12px; font-weight: 800;
+  color: rgba(229,231,235,.55);
+  text-transform: uppercase; letter-spacing: .06em;
+  flex-shrink:0;
+}
+.facSources__label svg{ width:15px; height:15px; opacity:.8; }
+.facSources__sep{
+  width:1px; align-self:stretch;
+  background: rgba(255,255,255,.10);
+}
+.facSources__links{ display:flex; gap:8px; flex-wrap:wrap; }
+.facSourceLink{
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: rgba(209,250,229,.9);
+  font-size: 12px; font-weight: 750;
+  text-decoration:none;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+.facSourceLink:hover{
+  transform: translateY(-1px);
+  background: rgba(16,185,129,.14);
+  border-color: rgba(16,185,129,.35);
+}
+.facSourceLink svg{ width:11px; height:11px; opacity:.7; }
 
 .reveal{
   opacity:0;
@@ -431,7 +465,7 @@
             @endforeach
           </div>
           @if(count($universiteImages) > 1)<span class="fac-dots"></span>@endif
-          <div class="facHero__cap">Campus universitaire Mohamed Yaalaoui, Jendouba</div>
+          
         @else
           <div class="facHero__soon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M4 21V9l8-5 8 5v12M9 21v-6h6v6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -560,11 +594,27 @@
       </article>
     </section>
 
-    <p class="facSource reveal">
-      Sources : <a href="https://fr.wikipedia.org/wiki/Universit%C3%A9_de_Jendouba" target="_blank" rel="noopener">Université de Jendouba — Wikipédia</a>,
-      <a href="https://www.uj.rnu.tn/fr" target="_blank" rel="noopener">uj.rnu.tn</a>,
-      <a href="https://www.fsjegj.rnu.tn/fr" target="_blank" rel="noopener">fsjegj.rnu.tn</a>.
-    </p>
+    <div class="facSources reveal">
+      <span class="facSources__label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sources
+      </span>
+      <span class="facSources__sep"></span>
+      <div class="facSources__links">
+        <a class="facSourceLink" href="https://fr.wikipedia.org/wiki/Universit%C3%A9_de_Jendouba" target="_blank" rel="noopener">
+          Wikipédia
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="facSourceLink" href="https://www.uj.rnu.tn/fr" target="_blank" rel="noopener">
+          uj.rnu.tn
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="facSourceLink" href="https://www.fsjegj.rnu.tn/fr" target="_blank" rel="noopener">
+          fsjegj.rnu.tn
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
 
   </div>
 </main>
