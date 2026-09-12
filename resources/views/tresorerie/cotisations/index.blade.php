@@ -60,7 +60,7 @@
                                 <div style="font-weight:800;">{{ $c->membre->prenom ?? '?' }} {{ $c->membre->nom ?? '' }}</div>
                                 <div style="font-size:11px; color:var(--muted); font-family:monospace;">{{ $c->matricule }}</div>
                             </td>
-                            <td>{{ $c->annee }}</td>
+                            <td>{{ \App\Support\AcademicYear::label($c->annee) }}</td>
                             <td>
                                 <span class="tag" style="{{ $c->categorie === 'bureau' ? 'background:#ede9fe; color:#6d28d9;' : '' }}">
                                     {{ $c->categorie === 'bureau' ? 'BUREAU' : 'MEMBRE' }}
@@ -135,7 +135,7 @@
                             </td>
                             <td>
                                 <span class="tag">{{ $c->type->nom ?? '—' }}</span>
-                                <div style="font-size:11px; color:var(--muted); margin-top:2px;">{{ $c->type->annee ?? '' }}</div>
+                                <div style="font-size:11px; color:var(--muted); margin-top:2px;">{{ $c->type ? \App\Support\AcademicYear::label($c->type->annee) : '' }}</div>
                             </td>
                             <td style="text-align:right; color:#16a34a; font-weight:700;">{{ number_format($c->montant_paye, 2, ',', ' ') }}</td>
                             <td>{{ $c->date_paiement->format('d/m/Y') }}</td>

@@ -23,14 +23,13 @@
 
         <div data-cot-panel="annuelle">
 
-        @if($configs->isEmpty())
+        <p style="margin:-6px 0 16px; font-size:13px; color:var(--muted);">
+            Année académique en cours : <strong style="color:var(--text);">{{ \App\Support\AcademicYear::label($anneeActive) }}</strong>
+        </p>
+
+        @if(!$config)
             <div class="alert alert--warning">
-                ⚠️ Aucun montant de cotisation n'a encore été configuré. Demandez au chef trésorier de le faire avant d'enregistrer un paiement.
-            </div>
-        @endif
-        @if($dates->isEmpty())
-            <div class="alert alert--warning">
-                ⚠️ Aucune date de collecte n'a encore été configurée. Demandez au chef trésorier d'en ajouter (« Montants cotisation ») avant d'enregistrer un paiement.
+                ⚠️ Aucun montant de cotisation n'a encore été configuré pour {{ \App\Support\AcademicYear::label($anneeActive) }}. Demandez au chef trésorier de le faire (« Montants cotisation ») avant d'enregistrer un paiement.
             </div>
         @endif
 
@@ -51,11 +50,6 @@
                             </option>
                         @endforeach
                     </select>
-                </div>
-
-                <div class="field">
-                    <label>Année *</label>
-                    <input class="input" type="number" name="annee" id="annee" value="{{ old('annee', now()->year) }}" min="2010" max="{{ now()->year + 1 }}" required>
                 </div>
 
                 <div class="field">
@@ -85,10 +79,7 @@
 
                 <div class="field">
                     <label>Date du paiement *</label>
-                    <select class="input" name="date_paiement" id="date_paiement" required>
-                        <option value="">— Choisir une date de collecte —</option>
-                    </select>
-                    <span class="field__hint" id="date-paiement-hint" hidden>Aucune date de collecte configurée pour cette année.</span>
+                    <input class="input" type="date" name="date_paiement" value="{{ old('date_paiement', now()->toDateString()) }}" required>
                 </div>
             </div>
 
@@ -127,7 +118,7 @@
                         <select class="input" name="cotisation_type_id" id="cotisation_type_id" required @if($typesVolontaires->isEmpty()) disabled @endif>
                             <option value="">— Choisir —</option>
                             @foreach($typesVolontaires as $t)
-                                <option value="{{ $t->id }}" data-montant="{{ $t->montant }}">{{ $t->nom }} ({{ $t->annee }}) — {{ number_format($t->montant, 2, ',', ' ') }} TND</option>
+                                <option value="{{ $t->id }}" data-montant="{{ $t->montant }}">{{ $t->nom }} ({{ \App\Support\AcademicYear::label($t->annee) }}) — {{ number_format($t->montant, 2, ',', ' ') }} TND</option>
                             @endforeach
                         </select>
                     </div>
@@ -166,47 +157,20 @@
 
 <script>
 (() => {
-    const configs = @json($configs->keyBy('annee'));
-    const datesParAnnee = @json($dates->map(fn ($liste) => $liste->pluck('date_collecte')->map->toDateString()));
+    const config = @json($config);
     const matriculeSelect = document.getElementById('matricule');
-    const anneeInput = document.getElementById('annee');
-    const datePaiementSelect = document.getElementById('date_paiement');
-    const datePaiementHint = document.getElementById('date-paiement-hint');
     const paysAffiche = document.getElementById('pays-affiche');
     const categorieAffiche = document.getElementById('categorie-affiche');
     const montantDuAffiche = document.getElementById('montant-du-affiche');
     const montantPayeInput = document.getElementById('montant_paye');
     const resteAffiche = document.getElementById('reste-affiche');
 
-    function majDates() {
-        const valeurActuelle = datePaiementSelect.value;
-        const dates = datesParAnnee[anneeInput.value] || [];
-
-        datePaiementSelect.innerHTML = '<option value="">— Choisir une date de collecte —</option>';
-        dates.forEach((d) => {
-            const opt = document.createElement('option');
-            opt.value = d;
-            opt.textContent = new Date(d + 'T00:00:00').toLocaleDateString('fr-FR');
-            if (d === valeurActuelle) opt.selected = true;
-            datePaiementSelect.appendChild(opt);
-        });
-
-        datePaiementSelect.disabled = dates.length === 0;
-        datePaiementHint.hidden = dates.length !== 0;
-        // Le select ayant été reconstruit, l'amélioration « liste moderne »
-        // (select-search.js) doit se resynchroniser sur ses nouvelles options.
-        datePaiementSelect.dispatchEvent(new Event('ssel:refresh'));
-    }
-
     function montantDuActuel() {
         const option = matriculeSelect.selectedOptions[0];
-        if (!option || !option.value) return null;
-
-        const annee = configs[anneeInput.value];
-        if (!annee) return null;
+        if (!option || !option.value || !config) return null;
 
         const categorie = option.dataset.categorie;
-        return categorie === 'bureau' ? parseFloat(annee.montant_bureau) : parseFloat(annee.montant_membre);
+        return categorie === 'bureau' ? parseFloat(config.montant_bureau) : parseFloat(config.montant_membre);
     }
 
     function maj() {
@@ -225,7 +189,7 @@
 
         const montantDu = montantDuActuel();
         if (montantDu === null) {
-            montantDuAffiche.value = 'Non configuré pour ' + anneeInput.value;
+            montantDuAffiche.value = 'Non configuré';
             resteAffiche.value = '—';
             return;
         }
@@ -239,12 +203,9 @@
     }
 
     matriculeSelect.addEventListener('change', maj);
-    anneeInput.addEventListener('input', maj);
-    anneeInput.addEventListener('input', majDates);
     montantPayeInput.addEventListener('input', maj);
 
     maj();
-    majDates();
 
     // ===== Onglets Annuelle / Volontaire =====
     const tabBtns = document.querySelectorAll('[data-cot-tab]');
