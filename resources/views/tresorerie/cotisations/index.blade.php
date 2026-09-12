@@ -37,7 +37,7 @@
             </form>
 
             <div style="overflow-x:auto;">
-                <table class="table">
+                <table class="table table--nowrap">
                     <thead>
                         <tr>
                             <th>Membre</th>
@@ -57,7 +57,7 @@
                         @forelse($cotisations as $c)
                         <tr>
                             <td>
-                                <div style="font-weight:800;">{{ $c->membre->prenom ?? '?' }} {{ $c->membre->nom ?? '' }}</div>
+                                <div style="font-weight:800; white-space:nowrap;">{{ $c->membre->prenom ?? '?' }} {{ $c->membre->nom ?? '' }}</div>
                                 <div style="font-size:11px; color:var(--muted); font-family:monospace;">{{ $c->matricule }}</div>
                             </td>
                             <td>{{ \App\Support\AcademicYear::label($c->annee) }}</td>
@@ -113,7 +113,7 @@
             </form>
 
             <div style="overflow-x:auto;">
-                <table class="table">
+                <table class="table table--nowrap">
                     <thead>
                         <tr>
                             <th>Membre</th>
@@ -130,7 +130,7 @@
                         @forelse($cotisationsVolontaires as $c)
                         <tr>
                             <td>
-                                <div style="font-weight:800;">{{ $c->membre->prenom ?? '?' }} {{ $c->membre->nom ?? '' }}</div>
+                                <div style="font-weight:800; white-space:nowrap;">{{ $c->membre->prenom ?? '?' }} {{ $c->membre->nom ?? '' }}</div>
                                 <div style="font-size:11px; color:var(--muted); font-family:monospace;">{{ $c->matricule }}</div>
                             </td>
                             <td>
