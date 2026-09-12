@@ -21,6 +21,11 @@
                 ⚠️ Aucun montant de cotisation n'a encore été configuré. Demandez au chef trésorier de le faire avant d'enregistrer un paiement.
             </div>
         @endif
+        @if($dates->isEmpty())
+            <div class="alert alert--warning">
+                ⚠️ Aucune date de collecte n'a encore été configurée. Demandez au chef trésorier d'en ajouter (« Montants cotisation ») avant d'enregistrer un paiement.
+            </div>
+        @endif
 
         <form method="POST" action="{{ route('tresorerie.cotisations.store') }}" id="cotisation-form">
             @csrf
@@ -73,7 +78,10 @@
 
                 <div class="field">
                     <label>Date du paiement *</label>
-                    <input class="input" type="date" name="date_paiement" value="{{ old('date_paiement', now()->toDateString()) }}" max="{{ now()->toDateString() }}" required>
+                    <select class="input" name="date_paiement" id="date_paiement" required>
+                        <option value="">— Choisir une date de collecte —</option>
+                    </select>
+                    <span class="field__hint" id="date-paiement-hint" hidden>Aucune date de collecte configurée pour cette année.</span>
                 </div>
             </div>
 
@@ -87,13 +95,36 @@
 <script>
 (() => {
     const configs = @json($configs->keyBy('annee'));
+    const datesParAnnee = @json($dates->map(fn ($liste) => $liste->pluck('date_collecte')->map->toDateString()));
     const matriculeSelect = document.getElementById('matricule');
     const anneeInput = document.getElementById('annee');
+    const datePaiementSelect = document.getElementById('date_paiement');
+    const datePaiementHint = document.getElementById('date-paiement-hint');
     const paysAffiche = document.getElementById('pays-affiche');
     const categorieAffiche = document.getElementById('categorie-affiche');
     const montantDuAffiche = document.getElementById('montant-du-affiche');
     const montantPayeInput = document.getElementById('montant_paye');
     const resteAffiche = document.getElementById('reste-affiche');
+
+    function majDates() {
+        const valeurActuelle = datePaiementSelect.value;
+        const dates = datesParAnnee[anneeInput.value] || [];
+
+        datePaiementSelect.innerHTML = '<option value="">— Choisir une date de collecte —</option>';
+        dates.forEach((d) => {
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = new Date(d + 'T00:00:00').toLocaleDateString('fr-FR');
+            if (d === valeurActuelle) opt.selected = true;
+            datePaiementSelect.appendChild(opt);
+        });
+
+        datePaiementSelect.disabled = dates.length === 0;
+        datePaiementHint.hidden = dates.length !== 0;
+        // Le select ayant été reconstruit, l'amélioration « liste moderne »
+        // (select-search.js) doit se resynchroniser sur ses nouvelles options.
+        datePaiementSelect.dispatchEvent(new Event('ssel:refresh'));
+    }
 
     function montantDuActuel() {
         const option = matriculeSelect.selectedOptions[0];
@@ -137,9 +168,11 @@
 
     matriculeSelect.addEventListener('change', maj);
     anneeInput.addEventListener('input', maj);
+    anneeInput.addEventListener('input', majDates);
     montantPayeInput.addEventListener('input', maj);
 
     maj();
+    majDates();
 })();
 </script>
 </x-member-layout>

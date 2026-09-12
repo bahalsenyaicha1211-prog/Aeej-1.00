@@ -236,6 +236,13 @@ Route::prefix('tresorerie')
             ->middleware('chef_tresorier')
             ->name('config.update');
 
+        Route::post('config-montants/dates', [CotisationConfigController::class, 'storeDate'])
+            ->middleware('chef_tresorier')
+            ->name('config.dates.store');
+        Route::delete('config-montants/dates/{date}', [CotisationConfigController::class, 'destroyDate'])
+            ->middleware('chef_tresorier')
+            ->name('config.dates.destroy');
+
         Route::get('caisse', [CaisseController::class, 'index'])
             ->middleware('caisse_access')
             ->name('caisse.index');

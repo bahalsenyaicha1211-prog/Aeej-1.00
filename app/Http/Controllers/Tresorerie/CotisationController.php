@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Tresorerie;
 use App\Http\Controllers\Controller;
 use App\Models\Cotisation;
 use App\Models\CotisationConfig;
+use App\Models\CotisationDate;
 use App\Models\Membre;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CotisationController extends Controller
 {
@@ -48,9 +50,10 @@ class CotisationController extends Controller
     {
         $membres = Membre::with('pays')->orderBy('prenom')->orderBy('nom')->get();
         $configs = CotisationConfig::orderByDesc('annee')->get(['annee', 'montant_membre', 'montant_bureau']);
+        $dates = CotisationDate::orderBy('annee')->orderBy('date_collecte')->get()->groupBy('annee');
         $membresBureau = \App\Models\BureauMembre::where('is_actif', true)->pluck('matricule')->all();
 
-        return view('tresorerie.cotisations.create', compact('membres', 'configs', 'membresBureau'));
+        return view('tresorerie.cotisations.create', compact('membres', 'configs', 'dates', 'membresBureau'));
     }
 
     public function store(Request $request)
@@ -59,7 +62,9 @@ class CotisationController extends Controller
             'matricule' => ['required', 'exists:membres,matricule'],
             'annee' => ['required', 'integer', 'min:2010', 'max:' . (date('Y') + 1)],
             'montant_paye' => ['required', 'numeric', 'min:0'],
-            'date_paiement' => ['required', 'date'],
+            'date_paiement' => ['required', 'date', Rule::in($this->datesValides((int) $request->input('annee')))],
+        ], [
+            'date_paiement.in' => "Cette date ne fait pas partie des dates de collecte configurées pour cette année.",
         ]);
 
         if (Cotisation::where('matricule', $data['matricule'])->where('annee', $data['annee'])->exists()) {
@@ -105,17 +110,27 @@ class CotisationController extends Controller
         $this->autoriserGestion($request, $cotisation);
 
         $cotisation->load('membre.pays');
+        $dates = CotisationDate::where('annee', $cotisation->annee)->orderBy('date_collecte')->get();
 
-        return view('tresorerie.cotisations.edit', compact('cotisation'));
+        return view('tresorerie.cotisations.edit', compact('cotisation', 'dates'));
     }
 
     public function update(Request $request, Cotisation $cotisation)
     {
         $this->autoriserGestion($request, $cotisation);
 
+        // L'ancienne date reste acceptée même si elle a depuis été retirée de la
+        // liste des dates de collecte, pour ne pas bloquer la modification d'une
+        // cotisation existante ni faire disparaître silencieusement sa date.
+        $datesAcceptees = $this->datesValides($cotisation->annee)
+            ->push($cotisation->date_paiement->toDateString())
+            ->unique();
+
         $data = $request->validate([
             'montant_paye' => ['required', 'numeric', 'min:0'],
-            'date_paiement' => ['required', 'date'],
+            'date_paiement' => ['required', 'date', Rule::in($datesAcceptees)],
+        ], [
+            'date_paiement.in' => "Cette date ne fait pas partie des dates de collecte configurées pour cette année.",
         ]);
 
         if ($data['montant_paye'] > $cotisation->montant_du) {
@@ -149,5 +164,18 @@ class CotisationController extends Controller
         if (!$user->isChefTresorier() && $cotisation->created_by !== $user->id) {
             abort(403, "Vous ne pouvez modifier que vos propres enregistrements.");
         }
+    }
+
+    /**
+     * Dates de collecte configurées pour une année, au format Y-m-d.
+     */
+    private function datesValides(int $annee)
+    {
+        // pluck() renvoie une Collection de base (pas Eloquent) : ->unique()
+        // ailleurs ne tente pas d'appeler getKey() sur de simples chaînes.
+        return CotisationDate::where('annee', $annee)
+            ->orderBy('date_collecte')
+            ->pluck('date_collecte')
+            ->map(fn ($d) => $d->toDateString());
     }
 }
