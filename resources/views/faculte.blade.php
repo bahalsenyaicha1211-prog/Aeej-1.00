@@ -158,29 +158,52 @@
 .facEtabs{
   display:grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 10px;
+  gap: 12px;
 }
 .facEtab{
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.05);
-  border-radius: 16px;
-  padding: 14px 16px;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.5;
-  display:flex; align-items:flex-start; gap:10px;
+  border-radius: 18px;
+  overflow:hidden;
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
 }
-.facEtab--current{
-  border-color: rgba(16,185,129,.45);
-  background: rgba(16,185,129,.12);
-  color: rgba(219,255,241,.98);
+.facEtab:hover{
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,.22);
+  box-shadow: var(--shadow);
 }
-.facEtab i{
-  flex-shrink:0; margin-top:2px;
+.facEtab--current{ border-color: rgba(16,185,129,.45); }
+.facEtab__media{
+  position:relative;
+  height: 108px;
+  background: rgba(0,0,0,.22);
+  overflow:hidden;
+}
+.facEtab__media img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  opacity:0; position:absolute; inset:0;
+  transition: opacity .7s ease;
+}
+.facEtab__media img.is-active{ opacity:1; }
+.facEtab__media--empty{
+  display:flex; align-items:center; justify-content:center;
+  color: rgba(229,231,235,.28);
+}
+.facEtab__media--empty svg{ width:26px; height:26px; }
+.facEtab__dot{
+  position:absolute; top:8px; right:8px; z-index:2;
   width:8px; height:8px; border-radius:999px;
-  background: rgba(229,231,235,.35);
+  background: var(--green);
+  box-shadow: 0 0 0 3px rgba(5,8,18,.55);
 }
-.facEtab--current i{ background: var(--green); }
+.facEtab__body{
+  padding: 11px 13px;
+  font-size: 12.5px;
+  font-weight: 750;
+  line-height: 1.4;
+  color: rgba(229,231,235,.88);
+}
+.facEtab--current .facEtab__body{ color: rgba(219,255,241,.98); font-weight: 850; }
 
 /* ---- Séparateur "notre faculté" ---- */
 .facDivider{
@@ -205,7 +228,6 @@
 }
 .facHero2__left{padding: 28px;}
 .facHero2__right{position:relative; min-height: 300px; background: rgba(0,0,0,.15);}
-.facHero2__right img{width:100%; height:100%; object-fit:cover; display:block;}
 .facHero2 h2{ margin: 12px 0 10px; font-size: clamp(20px, 2.6vw, 30px); line-height:1.15; font-weight: 950; }
 .facHero2 p{ margin:0; color: rgba(229,231,235,.84); line-height:1.7; font-size:14px; }
 
@@ -434,19 +456,23 @@
         <p>Une faculté, deux écoles et une dizaine d’instituts supérieurs répartis entre Jendouba, Béja, Le Kef et Siliana.</p>
       </div>
       <div class="facEtabs">
-        <div class="facEtab facEtab--current"><i></i>Faculté des Sciences Juridiques, Économiques et de Gestion — Jendouba</div>
-        <div class="facEtab"><i></i>Institut Supérieur des Sciences Humaines — Jendouba</div>
-        <div class="facEtab"><i></i>Institut Supérieur des Langues Appliquées et de l’Informatique — Béja</div>
-        <div class="facEtab"><i></i>Institut Supérieur de Biotechnologie — Béja</div>
-        <div class="facEtab"><i></i>École Supérieure d’Ingénieurs de Medjez el-Bab</div>
-        <div class="facEtab"><i></i>Institut Supérieur des Études Appliquées en Humanités — Le Kef</div>
-        <div class="facEtab"><i></i>Institut Supérieur de l’Informatique — Le Kef</div>
-        <div class="facEtab"><i></i>Institut Supérieur de Musique et de Théâtre — Le Kef</div>
-        <div class="facEtab"><i></i>Institut Supérieur des Sciences Infirmières — Le Kef</div>
-        <div class="facEtab"><i></i>Institut Supérieur du Sport et de l’Éducation Physique — Le Kef</div>
-        <div class="facEtab"><i></i>École Supérieure d’Agriculture — Le Kef</div>
-        <div class="facEtab"><i></i>Institut Sylvo-Pastoral — Tabarka</div>
-        <div class="facEtab"><i></i>Institut Supérieur des Arts et Métiers — Siliana</div>
+        @foreach($etablissements as $e)
+          <article class="facEtab reveal @if(!empty($e['current'])) facEtab--current @endif">
+            @if(count($e['images']) > 0)
+              <div class="facEtab__media" @if(count($e['images']) > 1) data-fac-show="3200" @endif>
+                @foreach($e['images'] as $img)
+                  <img class="fac-slide @if($loop->first) is-active @endif" src="{{ $img }}" alt="{{ $e['nom'] }}" loading="lazy">
+                @endforeach
+                @if(!empty($e['current']))<span class="facEtab__dot" title="Notre faculté"></span>@endif
+              </div>
+            @else
+              <div class="facEtab__media facEtab__media--empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            @endif
+            <div class="facEtab__body">{{ $e['nom'] }}</div>
+          </article>
+        @endforeach
       </div>
     </section>
 
@@ -475,7 +501,14 @@
       </div>
 
       <div class="facHero2__right">
-        <img src="{{ asset('images/faculte/fac1.jpg') }}" alt="Faculté de Jendouba">
+        @if(count($faculteImages ?? []) > 0)
+          <div class="facHero__media" data-fac-show="4200">
+            @foreach($faculteImages as $src)
+              <img class="fac-slide @if($loop->first) is-active @endif" src="{{ $src }}" alt="Faculté de Jendouba" @if(!$loop->first) loading="lazy" @endif>
+            @endforeach
+          </div>
+          @if(count($faculteImages) > 1)<span class="fac-dots"></span>@endif
+        @endif
       </div>
     </section>
 

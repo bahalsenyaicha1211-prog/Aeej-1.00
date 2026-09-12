@@ -3,11 +3,11 @@
 @section('title', 'Galerie - AEEJ')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/galerie.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('css/galerie.css') }}">
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/galerie.js') }}" defer></script>
+    <script src="{{ asset_v('js/galerie.js') }}" defer></script>
 @endsection
 
 @section('content')

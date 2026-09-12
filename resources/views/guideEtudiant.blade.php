@@ -3,11 +3,11 @@
 @section('title', 'Guide Étudiant - AEEJ')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/guide.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('css/guide.css') }}">
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/guideEtudiant.js') }}" defer></script>
+    <script src="{{ asset_v('js/guideEtudiant.js') }}" defer></script>
 @endsection
 
 @section('content')

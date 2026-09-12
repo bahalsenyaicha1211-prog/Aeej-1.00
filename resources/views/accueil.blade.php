@@ -3,11 +3,11 @@
 @section('title', 'Accueil - AEEJ')
 
 @section('styles')
-  <link rel="stylesheet" href="{{ asset('css/acceuil.css') }}?v={{ filemtime(public_path('css/acceuil.css')) }}">
+  <link rel="stylesheet" href="{{ asset_v('css/acceuil.css') }}?v={{ filemtime(public_path('css/acceuil.css')) }}">
 @endsection
 
 @section('scripts')
-  <script src="{{ asset('js/acceuil.js') }}?v={{ filemtime(public_path('js/acceuil.js')) }}" defer></script>
+  <script src="{{ asset_v('js/acceuil.js') }}?v={{ filemtime(public_path('js/acceuil.js')) }}" defer></script>
 @endsection
 
 @section('content')

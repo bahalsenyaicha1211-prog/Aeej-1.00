@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- CSS GLOBAL -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('css/style.css') }}">
 
     <!-- CSS SPÉCIFIQUE PAGE -->
     @yield('styles')
@@ -111,7 +111,7 @@
 </footer>
 
 <!-- JS GLOBAL -->
-<script src="{{ asset('js/style.js') }}" defer></script>
+<script src="{{ asset_v('js/style.js') }}" defer></script>
 
 <!-- JS SPÉCIFIQUE PAGE -->
 @yield('scripts')

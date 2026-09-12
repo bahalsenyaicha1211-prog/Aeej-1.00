@@ -3,11 +3,11 @@
 @section('title', 'Bureau Exécutif - AEEJ')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/bureau.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('css/bureau.css') }}">
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/bureau.js') }}" defer></script>
+    <script src="{{ asset_v('js/bureau.js') }}" defer></script>
 @endsection
 
 @section('content')
