@@ -375,27 +375,27 @@ body {
   }
 
   .galerie {
-    height: 380px;
+    height: 420px;
   }
 
   .cartes li {
-    width: 160px;
-    height: 240px;
+    width: 190px;
+    height: 270px;
   }
-  
+
   .bouton-nav {
     width: 40px;
     height: 40px;
   }
-  
+
   .bouton-nav svg {
     width: 20px;
     height: 20px;
   }
-  
+
   .carte-info {
     padding: 12px;
-    font-size: 0.85em;
+    font-size: 0.88em;
   }
 
   .pied-de-page-contenu {
@@ -413,35 +413,35 @@ body {
   }
 
   .galerie {
-    height: 360px;
+    height: 400px;
   }
 
   .cartes li {
-    width: 130px;
-    height: 200px;
+    width: 172px;
+    height: 248px;
   }
-  
+
   .cartes li h3 {
-    font-size: 0.9em;
-    padding: 8px 0;
+    font-size: 1em;
+    padding: 9px 0;
   }
-  
+
   .bouton-nav {
     width: 35px;
     height: 35px;
   }
-  
+
   .bouton-nav svg {
     width: 18px;
     height: 18px;
   }
-  
+
   .boutons {
     padding: 0 10px;
   }
-  
+
   .carte-info {
-    padding: 10px;
-    font-size: 0.8em;
+    padding: 11px;
+    font-size: 0.86em;
   }
 }
