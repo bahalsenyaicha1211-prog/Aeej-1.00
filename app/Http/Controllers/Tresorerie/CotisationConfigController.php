@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tresorerie;
 use App\Http\Controllers\Controller;
 use App\Models\CotisationConfig;
 use App\Models\CotisationDate;
+use App\Models\CotisationType;
 use Illuminate\Http\Request;
 
 class CotisationConfigController extends Controller
@@ -13,8 +14,9 @@ class CotisationConfigController extends Controller
     {
         $configs = CotisationConfig::orderByDesc('annee')->get();
         $dates = CotisationDate::orderByDesc('annee')->orderBy('date_collecte')->get()->groupBy('annee');
+        $types = CotisationType::withCount('paiements')->orderByDesc('annee')->orderBy('nom')->get()->groupBy('annee');
 
-        return view('tresorerie.config.edit', compact('configs', 'dates'));
+        return view('tresorerie.config.edit', compact('configs', 'dates', 'types'));
     }
 
     public function update(Request $request)
@@ -56,5 +58,51 @@ class CotisationConfigController extends Controller
         $date->delete();
 
         return redirect()->route('tresorerie.config.edit')->with('success', "Date de collecte retirée pour {$annee}.");
+    }
+
+    public function storeType(Request $request)
+    {
+        $data = $request->validate([
+            'annee' => ['required', 'integer', 'min:2010', 'max:' . (date('Y') + 1)],
+            'nom' => ['required', 'string', 'max:100'],
+            'montant' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $exists = CotisationType::where('annee', $data['annee'])->where('nom', $data['nom'])->exists();
+        if ($exists) {
+            return back()->withInput()->withErrors([
+                'nom' => "Une cotisation volontaire « {$data['nom']} » existe déjà pour {$data['annee']}.",
+            ]);
+        }
+
+        CotisationType::create($data + ['created_by' => $request->user()->id, 'actif' => true]);
+
+        return redirect()->route('tresorerie.config.edit')->with('success', "Cotisation volontaire « {$data['nom']} » ajoutée pour {$data['annee']}.");
+    }
+
+    public function toggleType(CotisationType $type)
+    {
+        $type->update(['actif' => !$type->actif]);
+
+        return redirect()->route('tresorerie.config.edit')->with(
+            'success',
+            $type->actif
+                ? "« {$type->nom} » est de nouveau proposée."
+                : "« {$type->nom} » est retirée des choix disponibles (les paiements déjà enregistrés sont conservés)."
+        );
+    }
+
+    public function destroyType(CotisationType $type)
+    {
+        if ($type->paiements()->exists()) {
+            return back()->withErrors([
+                'nom' => "Impossible de supprimer « {$type->nom} » : des paiements y sont déjà rattachés. Désactivez-la plutôt.",
+            ]);
+        }
+
+        $nom = $type->nom;
+        $type->delete();
+
+        return redirect()->route('tresorerie.config.edit')->with('success', "« {$nom} » supprimée.");
     }
 }

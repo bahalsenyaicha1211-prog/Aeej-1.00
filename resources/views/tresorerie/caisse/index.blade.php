@@ -10,6 +10,9 @@
         <div class="card">
             <div class="kpi__label">Total cotisations encaissées</div>
             <div class="kpi__value" style="color:#2563eb;">{{ number_format($totalCotisations, 2, ',', ' ') }} TND</div>
+            <div style="color:var(--muted); font-size:12px; margin-top:4px;">
+                dont {{ number_format($totalCotisationsAnnuelles, 2, ',', ' ') }} annuelles + {{ number_format($totalCotisationsVolontaires, 2, ',', ' ') }} volontaires
+            </div>
         </div>
 
         <div class="card">

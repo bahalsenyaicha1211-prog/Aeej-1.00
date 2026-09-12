@@ -51,4 +51,9 @@ class Membre extends Model
     {
         return $this->hasMany(Cotisation::class, 'matricule', 'matricule');
     }
+
+    public function cotisationsVolontaires()
+    {
+        return $this->hasMany(CotisationVolontaire::class, 'matricule', 'matricule');
+    }
 }
