@@ -270,9 +270,32 @@ class FrontendController extends Controller
 
    public function galerie(Request $request)
 {
-    $q = GaleriePhoto::published()
-        ->orderByDesc('event_date')
-        ->orderByDesc('id');
+    $category = $request->filled('category') ? $request->string('category')->toString() : null;
+    $search   = $request->filled('q') ? trim($request->string('q')->toString()) : null;
+
+    $base = GaleriePhoto::published();
+    if ($category) {
+        $base->where('category', $category);
+    }
+
+    // Concordance activité -> galerie : on cherche le libellé de l'activité
+    // dans le titre ou la description des photos. Si ça ne trouve rien
+    // (libellé absent des métadonnées), on retombe sur le résultat sans
+    // recherche texte (catégorie seule, ou tout) pour ne jamais atterrir
+    // sur une page vide.
+    $matched = null;
+    if ($search) {
+        $matched = (clone $base)->where(function ($sub) use ($search) {
+            $sub->where('title', 'like', '%' . $search . '%')
+                ->orWhere('description', 'like', '%' . $search . '%');
+        });
+    }
+
+    $matchedCount = ($matched && $search) ? (clone $matched)->count() : 0;
+    $query = $matchedCount > 0 ? $matched : $base;
+    $searchApplied = $matchedCount > 0 ? $search : null;
+
+    $query->orderByDesc('event_date')->orderByDesc('id');
 
     $categories = GaleriePhoto::published()
         ->select('category')
@@ -280,12 +303,8 @@ class FrontendController extends Controller
         ->orderBy('category')
         ->pluck('category');
 
-    if ($request->filled('category')) {
-        $q->where('category', $request->string('category'));
-    }
+    $photos = $query->paginate(24)->withQueryString();
 
-    $photos = $q->paginate(24)->withQueryString();
-
-    return view('galerie', compact('photos', 'categories'));
+    return view('galerie', compact('photos', 'categories', 'search', 'searchApplied'));
 }
 }
