@@ -307,12 +307,15 @@
 
             $category = $activite->categorie ?: null;
 
-            // Redirection galerie:
-            // 1) Si tes catégories galerie = catégories d’activités, garde cette ligne.
-            // 2) Sinon, remplace par: $galleryUrl = route('galerie');
-            $galleryUrl = $category
-              ? route('galerie', ['category' => $category])
-              : route('galerie');
+            // Redirection galerie : on cherche les photos dont le titre/la
+            // description correspond au libellé de l'activité (ex. "Journée
+            // culturelle"), pour atterrir précisément sur ses photos plutôt
+            // que sur toute la catégorie (plusieurs activités peuvent
+            // partager la même catégorie, ex. "Fête").
+            $galleryUrl = route('galerie', array_filter([
+              'q' => $activite->libelle ?: null,
+              'category' => $category,
+            ]));
 
             $searchText = trim(
               ($activite->libelle ?? '') . ' ' .
@@ -351,9 +354,6 @@
               <div class="actActions">
                 <button class="actChip actChip--green" type="button" data-open-gallery>
                   Voir les photos
-                </button>
-                <button class="actChip" type="button" data-copy-title>
-                  Copier le libellé
                 </button>
               </div>
             </div>
@@ -434,34 +434,10 @@
     });
   }
 
-  // ===== Small UX: copy libellé =====
-  function initCopyTitle(){
-    document.addEventListener('click', async (e) => {
-      const btn = e.target.closest('[data-copy-title]');
-      if (!btn) return;
-
-      const card = btn.closest('[data-act-card]');
-      if (!card) return;
-
-      const title = card.querySelector('.actTitle')?.textContent?.trim();
-      if (!title) return;
-
-      try{
-        await navigator.clipboard.writeText(title);
-        btn.textContent = "Copié !";
-        setTimeout(() => btn.textContent = "Copier le libellé", 900);
-      }catch(err){
-        // fallback simple
-        alert("Copie impossible sur ce navigateur. Libellé: " + title);
-      }
-    });
-  }
-
   document.addEventListener('DOMContentLoaded', () => {
     initReveal();
     initSearch();
     initGalleryButtons();
-    initCopyTitle();
   });
 })();
 </script>

@@ -30,6 +30,17 @@
                     </a>
                 @endforeach
             </div>
+
+            @if(!empty($search))
+                <div class="gal-searchnote">
+                    @if(!empty($searchApplied))
+                        Photos correspondant à « {{ $searchApplied }} »
+                    @else
+                        Aucune photo ne correspond exactement à « {{ $search }} » — voici {{ request('category') ? 'celles de cette catégorie' : 'la galerie complète' }}.
+                    @endif
+                    <a href="{{ route('galerie', request('category') ? ['category' => request('category')] : []) }}">Voir tout</a>
+                </div>
+            @endif
         </div>
     </section>
 

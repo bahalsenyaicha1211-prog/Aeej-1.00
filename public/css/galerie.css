@@ -53,6 +53,27 @@ body{margin:0; font-family:var(--font)}
   gap:10px;
   flex-wrap:wrap;
 }
+
+.gal-searchnote{
+  margin-top: 14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(34,197,94,0.30);
+  background: rgba(34,197,94,0.10);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+}
+.gal-searchnote a{
+  color: inherit;
+  text-decoration: underline;
+  font-weight: 900;
+  margin-left: auto;
+}
 .chip{
   display:inline-flex;
   align-items:center;
