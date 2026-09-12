@@ -1,19 +1,16 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.member-card');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
-
-    cards.forEach(card => {
-        card.style.opacity = 0;
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'all 0.6s ease-out';
-        observer.observe(card);
+/**
+ * Page Contact : apparition au défilement pour le héro, les cartes de
+ * l'équipe, la barre latérale et le formulaire.
+ */
+(() => {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-in');
+        obs.unobserve(e.target);
+      }
     });
-});
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach((el) => obs.observe(el));
+})();

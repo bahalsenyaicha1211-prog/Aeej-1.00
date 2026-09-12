@@ -26,6 +26,7 @@ use App\Http\Controllers\Membre\CotisationMembreController;
 use App\Http\Controllers\Admin\GalerieController;
 use App\Http\Controllers\Admin\HeroImageController;
 use App\Http\Controllers\Admin\PartenaireController;
+use App\Http\Controllers\Admin\ContactPersonController;
 use App\Http\Controllers\Admin\PartnerCategoryController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ContactMessageController;
@@ -197,6 +198,14 @@ Route::patch('partenaires-categories/{categorie}', [PartnerCategoryController::c
     ->name('partenaires-categories.update');
 Route::delete('partenaires-categories/{categorie}', [PartnerCategoryController::class, 'destroy'])
     ->name('partenaires-categories.destroy');
+
+        // Personnes à contacter (page publique « Contact »)
+        Route::resource('contacts', ContactPersonController::class)
+    ->parameters(['contacts' => 'contact'])
+    ->except(['show']);
+
+Route::patch('contacts/{contact}/toggle', [ContactPersonController::class, 'toggle'])
+    ->name('contacts.toggle');
 
         Route::resource('messages', ContactMessageController::class)
     ->only(['index', 'show', 'destroy']);

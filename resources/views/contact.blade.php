@@ -4,67 +4,56 @@
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset_v('css/contact.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+@endsection
+
+@section('scripts')
+    <script src="{{ asset_v('js/contact.js') }}" defer></script>
 @endsection
 
 @section('content')
 <main class="contact-page">
-    
+
+    <section class="ctcHero reveal">
+        <span class="ctcKicker">AEEJ • Contact</span>
+        <h1>Parlons-en</h1>
+        <p>Une question, une idée de partenariat, besoin d'aide ? L'équipe du bureau est joignable directement, ou écrivez-nous via le formulaire ci-dessous.</p>
+    </section>
+
     <div class="contact-container">
         <section class="team-grid">
-            <!--President-->
-            <article class="member-card admin-gold">
-                <div class="member-photo">
-                    <img src="{{ asset('images/team/president.jpg') }}" alt="Président AEEJ">
-                </div>
-                <div class="member-info">
-                    <h3>MOHADED DIANE</h3>
-                    <span class="role">Président</span>
-                    <div class="member-contact">
-                        <a href="tel:+21656464039"><i class="fas fa-phone"></i> +216 56 464 039</a><br>
-                        <a href="mailto:dianemohamed0701@gmail.com"><i class="fas fa-envelope"></i>dianemohamed0701@gmail.com</a>
+            @forelse($equipe as $personne)
+                <article class="member-card reveal {{ $personne->is_highlighted ? 'is-featured' : '' }}">
+                    @if($personne->is_highlighted)
+                        <span class="featured-badge">★ {{ $personne->poste }}</span>
+                    @endif
+                    <div class="member-photo">
+                        <img loading="lazy" src="{{ $personne->photo_url }}" alt="{{ $personne->poste }} AEEJ">
                     </div>
-                </div>
-            </article>
-            <!--Sécrétaire générale-->
-            <article class="member-card">
-                <div class="member-photo">
-                    <img src="{{ asset('images/team/secretaire.jpg') }}" alt="Secrétaire Général">
-                </div>
-                <div class="member-info">
-                    <h3>AHMED AKRAM</h3>
-                    <span class="role">Secrétaire Général</span>
-                    <div class="member-contact">
-                        <a href="tel:+21656660514"><i class="fas fa-phone"></i> +216 56 660 514</a><br>
-                        <a href="mailto:Ahmed390akram@gmail.com"><i class="fas fa-envelope"></i> Ahmed390akram@gmail.com</a>
+                    <div class="member-info">
+                        <h3>{{ $personne->nom }}</h3>
+                        <span class="role">{{ $personne->poste }}</span>
+                        <div class="member-contact">
+                            @if($personne->telephone)
+                                <a href="tel:{{ preg_replace('/\s+/', '', $personne->telephone) }}"><x-icon name="phone"/> {{ $personne->telephone }}</a>
+                            @endif
+                            @if($personne->email)
+                                <a href="mailto:{{ $personne->email }}"><x-icon name="mail"/> {{ $personne->email }}</a>
+                            @endif
+                        </div>
                     </div>
-                </div>
-            </article>
+                </article>
+            @empty
+                <div class="team-empty">L'équipe de contact sera bientôt affichée ici.</div>
+            @endforelse
+        </section>
 
-            <!--Chargé de la communication-->
-            <article class="member-card">
-                <div class="member-photo">
-                    <img src="{{ asset('images/team/chargercom.jpg') }}" alt="Chargé de la Communication">
-                </div>
-                <div class="member-info">
-                    <h3>ALSENY BAH</h3>
-                    <span class="role">Chargée de la Communication</span>
-                    <div class="member-contact">
-                        <a href="tel:+21653877709"><i class="fas fa-phone"></i> +216 53 877 709</a>
-                        <a href="mailto:bahalseny.aicha1211@gmail.com"><i class="fas fa-envelope"></i> bahalseny.aicha1211@gmail.com</a>
-                    </div>
-                </div>
-            </article>
-
-            </section>
-
-        <aside class="contact-sidebar">
+        <aside class="contact-sidebar reveal">
             <div class="sticky-info">
-                <h3>Contact Direct</h3>
+                <h3>Contact direct</h3>
                 <p>Pour toute question officielle ou partenariat :</p>
-                
+
                 <div class="info-item">
-                    <i class="fas fa-envelope-open-text"></i>
+                    <x-icon name="mail"/>
                     <div>
                         <strong>Email de l'association</strong>
                         <a href="mailto:aeejendouba@gmail.com">aeejendouba@gmail.com</a>
@@ -72,22 +61,22 @@
                 </div>
 
                 <div class="info-item">
-                    <i class="fas fa-location-dot"></i>
+                    <x-icon name="map-pin"/>
                     <div>
-                        <strong>Siège Social</strong>
+                        <strong>Siège social</strong>
                         <span>Jendouba, Tunisie</span>
                     </div>
                 </div>
 
                 <div class="social-links">
-                    <a href="https://www.facebook.com/aee.jendouba?mibextid=rS40aB7S9Ucbxw6v" class="fb"><i class="fab fa-facebook"></i></a>
-                    <a href="https://www.instagram.com/aee.jendouba?igsh=ZjFhbGc4YmoyYm1m" class="insta"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@aeejendouba.offici?_r=1&_t=ZN-93JsrHHCPSR" class="tiktok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.facebook.com/aee.jendouba?mibextid=rS40aB7S9Ucbxw6v" class="fb" aria-label="Facebook"><x-icon name="facebook"/></a>
+                    <a href="https://www.instagram.com/aee.jendouba?igsh=ZjFhbGc4YmoyYm1m" class="insta" aria-label="Instagram"><x-icon name="instagram"/></a>
+                    <a href="https://www.tiktok.com/@aeejendouba.offici?_r=1&_t=ZN-93JsrHHCPSR" class="tiktok" aria-label="TikTok"><x-icon name="tiktok"/></a>
                 </div>
             </div>
         </aside>
 
-        <section class="contact-form-section">
+        <section class="contact-form-section reveal">
             <h3>Envoyez-nous un message</h3>
             <p>Une question, une suggestion ? Écrivez-nous, nous vous répondrons rapidement.</p>
 
@@ -134,7 +123,7 @@
                     <textarea id="cf-message" name="message" rows="5" required>{{ old('message') }}</textarea>
                 </div>
 
-                <button type="submit" class="cf-submit">Envoyer</button>
+                <button type="submit" class="cf-submit">Envoyer le message</button>
             </form>
         </section>
     </div>

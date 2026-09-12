@@ -61,6 +61,9 @@
             <a class="nav__item {{ $isMessages ? 'is-active' : '' }}"
    href="{{ route('admin.messages.index') }}"><span class="nav__icon"><x-icon name="mail"/></span>Messages</a>
 
+            <a class="nav__item {{ request()->routeIs('admin.contacts*') ? 'is-active' : '' }}"
+   href="{{ route('admin.contacts.index') }}"><span class="nav__icon"><x-icon name="phone"/></span>Contacts</a>
+
             <div class="nav__sep"></div>
 
             <a class="nav__item {{ $isMembres ? 'is-active' : '' }}" href="{{ route('admin.membres.index') }}"><span class="nav__icon"><x-icon name="users"/></span>Membres</a>
@@ -157,6 +160,9 @@
 
     <a class="nav__item {{ $isMessages ? 'is-active' : '' }}"
        href="{{ route('admin.messages.index') }}"><span class="nav__icon"><x-icon name="mail"/></span>Messages</a>
+
+    <a class="nav__item {{ request()->routeIs('admin.contacts*') ? 'is-active' : '' }}"
+       href="{{ route('admin.contacts.index') }}"><span class="nav__icon"><x-icon name="phone"/></span>Contacts</a>
 
     <div class="nav__sep"></div>
 
