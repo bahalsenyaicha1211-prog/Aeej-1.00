@@ -1,6 +1,12 @@
 <x-member-layout>
     <x-slot name="header">Montants de cotisation</x-slot>
 
+    @if(session('success'))
+        <div class="alert alert--success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert--danger">{{ session('error') }}</div>
+    @endif
     @if($errors->any())
         <div class="alert alert--danger">
             @foreach($errors->all() as $error)
@@ -65,6 +71,59 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:20px;">
+        <div class="card">
+            <div class="section__head">
+                <div class="section__title">Ajouter une date de collecte</div>
+            </div>
+            <p style="color:var(--muted); font-size:13px; margin-top:-6px; margin-bottom:16px;">
+                Les paiements de cotisation ne pourront être datés que sur l'une de ces dates.
+            </p>
+
+            <form method="POST" action="{{ route('tresorerie.config.dates.store') }}">
+                @csrf
+                <div class="field">
+                    <label>Année *</label>
+                    <input class="input" type="number" name="annee" value="{{ old('annee', now()->year) }}" min="2010" max="{{ now()->year + 1 }}" required>
+                </div>
+                <div class="field" style="margin-top:16px;">
+                    <label>Date de collecte *</label>
+                    <input class="input" type="date" name="date_collecte" value="{{ old('date_collecte') }}" required>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <button class="btn btn--primary" type="submit">Ajouter la date</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="section__head">
+                <div class="section__title">Dates configurées</div>
+            </div>
+
+            @forelse($dates as $annee => $datesAnnee)
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:800; margin-bottom:8px;">{{ $annee }}</div>
+                    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                        @foreach($datesAnnee as $d)
+                            <form method="POST" action="{{ route('tresorerie.config.dates.destroy', $d) }}"
+                                  onsubmit="return confirm('Retirer la date du {{ $d->date_collecte->format('d/m/Y') }} ?');"
+                                  style="display:inline-flex; align-items:center; gap:6px; padding:6px 6px 6px 12px; border-radius:999px; border:1px solid var(--border); background:#f9fafb; font-size:13px; font-weight:700;">
+                                @csrf @method('DELETE')
+                                <span>{{ $d->date_collecte->format('d/m/Y') }}</span>
+                                <button type="submit" aria-label="Retirer cette date"
+                                        style="width:20px; height:20px; border-radius:999px; border:0; background:#fee2e2; color:#b91c1c; font-weight:900; line-height:1; cursor:pointer;">×</button>
+                            </form>
+                        @endforeach
+                    </div>
+                </div>
+            @empty
+                <p style="color:var(--muted); font-size:13px;">Aucune date de collecte configurée pour le moment.</p>
+            @endforelse
         </div>
     </div>
 </x-member-layout>
