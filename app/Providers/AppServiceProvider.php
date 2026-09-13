@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
         // en cas d'indisponibilité de l'API, Laravel n'échoue pas la
         // validation (dégradation silencieuse, pas de blocage utilisateur).
         Password::defaults(function () {
-            return Password::min(10)
+            return Password::min(8)
                 ->mixedCase()
                 ->numbers()
                 ->uncompromised();
