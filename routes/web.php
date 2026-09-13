@@ -67,7 +67,9 @@ Route::get('/galerie', [FrontendController::class, 'galerie'])->name('galerie');
 Route::get('/partenaires', [FrontendController::class, 'partenaires'])->name('partenaires');
 
 Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
-Route::post('/contact', [FrontendController::class, 'contactStore'])->name('contact.store');
+Route::post('/contact', [FrontendController::class, 'contactStore'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
 Route::get('/jendouba', [FrontendController::class, 'jendouba'])->name('jendouba');
 Route::get('/faculte', [FrontendController::class, 'faculte'])->name('faculte');
@@ -79,7 +81,9 @@ Route::get('/faculte', [FrontendController::class, 'faculte'])->name('faculte');
 */
 Route::middleware('guest')->group(function () {
     Route::get('/inscription', [FrontendController::class, 'inscription'])->name('inscription');
-    Route::post('/inscription', [FrontendController::class, 'inscriptionStore'])->name('inscription.store');
+    Route::post('/inscription', [FrontendController::class, 'inscriptionStore'])
+        ->middleware('throttle:5,1')
+        ->name('inscription.store');
 });
 
 
@@ -223,7 +227,7 @@ Route::patch('contacts/{contact}/toggle', [ContactPersonController::class, 'togg
 |--------------------------------------------------------------------------
 */
 Route::prefix('tresorerie')
-    ->middleware(['auth', 'approved', 'tresorerie_area'])
+    ->middleware(['auth', 'verified', 'approved', 'tresorerie_area'])
     ->name('tresorerie.')
     ->group(function () {
 

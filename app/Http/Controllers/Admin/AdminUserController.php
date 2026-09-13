@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class AdminUserController extends Controller implements HasMiddleware
 {
@@ -52,7 +53,7 @@ class AdminUserController extends Controller implements HasMiddleware
         $data = $request->validate([
             'name' => ['required','string','max:255'],
             'email' => ['required','email','max:255','unique:users,email'],
-            'password' => ['required','string','min:8','confirmed'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
         User::create([
@@ -82,7 +83,7 @@ class AdminUserController extends Controller implements HasMiddleware
         $data = $request->validate([
             'name' => ['required','string','max:255'],
             'email' => ['required','email','max:255','unique:users,email,' . $admin->id],
-            'password' => ['nullable','string','min:8','confirmed'],
+            'password' => ['nullable', Password::defaults(), 'confirmed'],
         ]);
 
         $admin->name = $data['name'];

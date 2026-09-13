@@ -99,8 +99,11 @@ public function updatePhoto(Request $request)
 }
     public function destroy(Request $request)
     {
-        $request->validate([
-            'password' => ['required'],
+        // 'current_password' vérifie réellement le mot de passe du compte
+        // connecté (via Auth::guard()->validate) — un simple 'required'
+        // laissait passer n'importe quelle valeur non vide.
+        $request->validateWithBag('userDeletion', [
+            'password' => ['required', 'current_password'],
         ]);
 
         $user = Auth::user();
