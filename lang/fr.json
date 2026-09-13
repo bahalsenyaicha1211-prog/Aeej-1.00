@@ -16,5 +16,11 @@
     "Dashboard": "Tableau de bord",
     "Reset Password": "Réinitialiser le mot de passe",
     "Email Password Reset Link": "Envoyer le lien de réinitialisation",
-    "Whoops! Something went wrong.": "Oups ! Quelque chose s'est mal passé."
+    "Whoops! Something went wrong.": "Oups ! Quelque chose s'est mal passé.",
+    "Showing": "Affichage de",
+    "to": "à",
+    "of": "sur",
+    "results": "résultats",
+    "Pagination Navigation": "Navigation de pagination",
+    "Go to page :page": "Aller à la page :page"
 }

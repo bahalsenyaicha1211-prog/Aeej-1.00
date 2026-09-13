@@ -42,6 +42,7 @@ class FrontendController extends Controller
             'activitesCount'    => Activite::count(),
             'paysCount'         => Pays::count(),
             'bureauCount'       => BureauMembre::count(),
+            'partenairesCount'  => Partner::published()->count(),
             'inscriptionsRecent' => Membre::whereBetween('created_at', [
                 now()->startOfMonth(), now()->endOfMonth(),
             ])->count(),

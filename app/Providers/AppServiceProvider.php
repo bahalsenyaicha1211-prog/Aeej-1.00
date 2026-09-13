@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Vider le cache des chiffres agrégés (accueil + dashboard admin) dès
         // qu'une donnée sous-jacente change, où que se produise l'écriture.
-        foreach ([Membre::class, Pays::class, Departement::class, Activite::class, BureauMembre::class, Annonce::class] as $model) {
+        foreach ([Membre::class, Pays::class, Departement::class, Activite::class, BureauMembre::class, Annonce::class, Partner::class] as $model) {
             $model::saved(fn () => StatsCache::flush());
             $model::deleted(fn () => StatsCache::flush());
         }

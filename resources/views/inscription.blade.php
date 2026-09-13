@@ -9,6 +9,7 @@
 
 @section('scripts')
     <script src="{{ asset_v('js/inscription.js') }}" defer></script>
+    <script src="{{ asset_v('js/select-search.js') }}" defer></script>
 @endsection
 
 @section('content')
