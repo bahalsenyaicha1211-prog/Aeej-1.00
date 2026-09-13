@@ -139,6 +139,21 @@
           </div>
         </div>
       </div>
+
+      {{-- 7: Partenaires --}}
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">
+          <i class="fa-solid fa-handshake"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number" data-target="{{ $partenairesCount ?? 0 }}">0</h3>
+          <p class="stat-label">Partenaires</p>
+          <div class="stat-trend">
+            <i class="fa-solid fa-people-arrows"></i>
+            <span>Coopération</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
