@@ -158,8 +158,8 @@
             <h2>📧 Vérifiez votre boîte mail</h2>
             <p>Un lien de configuration de mot de passe a été envoyé à :</p>
             <span class="email-display">{{ $email }}</span>
-            <p>Veuillez cliquer sur le bouton dans l'email pour finaliser la création de votre compte,<br>
-                créer un mot de passe d'au moin 4 caractères.</p>
+            <p>Veuillez cliquer sur le bouton dans l'email pour finaliser la création de votre compte et<br>
+                créer un mot de passe d'au moins 8 caractères, avec une majuscule, une minuscule et un chiffre.</p>
             
             <p class="nb-text">
                 📌 NB : Le message peut figurer dans vos <strong>spams</strong>.

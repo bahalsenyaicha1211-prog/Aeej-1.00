@@ -57,7 +57,7 @@
             <div class="admPanel__body">
                 <h3 style="color: #60a5fa; font-size: 14px; font-weight: 800; margin-bottom: 10px;">🛡️ Sécurité</h3>
                 <p style="color: #94a3b8; font-size: 12px; line-height: 1.6;">
-                    Le mot de passe doit contenir au moins 8 caractères. Par défaut, le nouvel utilisateur sera créé avec un rôle <strong>ADMIN standard</strong>. Seul un Super Admin pourra modifier son rôle ultérieurement.
+                    Le mot de passe doit contenir au moins 8 caractères, avec une majuscule, une minuscule et un chiffre. Par défaut, le nouvel utilisateur sera créé avec un rôle <strong>ADMIN standard</strong>. Seul un Super Admin pourra modifier son rôle ultérieurement.
                 </p>
             </div>
         </div>
