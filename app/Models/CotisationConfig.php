@@ -4,6 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Montant de la cotisation annuelle obligatoire pour une année donnée,
+ * selon la catégorie du membre (simple ou bureau). Définie par le chef
+ * trésorier (« Montants cotisation »). Un seul montant actif à la fois
+ * pour les nouveaux paiements : App\Support\AcademicYear::anneeActive().
+ */
 class CotisationConfig extends Model
 {
     protected $fillable = [

@@ -6,6 +6,10 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Alias "commissaire" (voir bootstrap/app.php). Réservé au commissaire
+ * aux comptes : gestion des dépenses et du rapport financier PDF.
+ */
 class CommissaireMiddleware
 {
     public function handle(Request $request, Closure $next): Response

@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Un partenaire affiché sur la page publique « Nos partenaires »
+ * (logo, description, lien vers son site). Classé par catégorie
+ * (voir PartnerCategory) ; is_published = visible publiquement ou non.
+ */
 class Partner extends Model
 {
     protected $fillable = [

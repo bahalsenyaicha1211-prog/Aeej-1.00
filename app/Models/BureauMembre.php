@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Un poste du bureau exécutif (Président, Trésorier, etc.), occupé par
+ * un membre (matricule). Affiché sur la page publique « Bureau ».
+ * scopeTresoriers() sert à repérer qui peut recevoir un rôle trésorerie
+ * (voir Admin\TresorerieCompteController) : seul un membre dont le
+ * poste contient "trésor" peut être promu trésorier/chef trésorier.
+ */
 class BureauMembre extends Model
 {
     use HasFactory;

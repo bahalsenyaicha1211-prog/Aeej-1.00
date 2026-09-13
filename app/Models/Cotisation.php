@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Paiement de la cotisation ANNUELLE OBLIGATOIRE d'un membre pour une
+ * année académique donnée (colonne "annee" = année de début, ex. 2026
+ * pour "2026-2027" — voir App\Support\AcademicYear::label()). Un seul
+ * enregistrement par (matricule, annee) : unique en base. À ne pas
+ * confondre avec CotisationVolontaire (activités optionnelles, camping
+ * etc.), qui vit dans une table séparée et peut se cumuler librement.
+ */
 class Cotisation extends Model
 {
     protected $fillable = [

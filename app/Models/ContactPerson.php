@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Une personne à contacter affichée sur la page publique « Contact »
+ * (président, secrétaire général...), gérée depuis l'admin. À ne pas
+ * confondre avec BureauMembre (poste au bureau) : celle-ci ne sert que
+ * pour la carte de contact public (photo, téléphone, email affichés).
+ * is_highlighted = mise en avant visuelle (bordure/badge doré) ;
+ * position = ordre d'affichage des cartes (croissant).
+ */
 class ContactPerson extends Model
 {
     protected $fillable = [

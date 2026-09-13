@@ -5,6 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Une photo de la page publique « Galerie », classée par catégorie et
+ * datée d'un événement. Le titre/la description servent aussi à
+ * retrouver les photos d'une activité précise depuis la page
+ * « Activités » (voir FrontendController::galerie(), recherche "q").
+ */
 class GaleriePhoto extends Model
 {
     use HasFactory;

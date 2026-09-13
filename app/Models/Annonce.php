@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Annonce publiée par un admin, visible dans l'espace membre. Une
+ * annonce épinglée (is_pinned) remonte en tête de liste ; une annonce
+ * non publiée (is_published = false) reste un brouillon invisible des
+ * membres. Déclenche une notification (voir NewAnnoncePublished) à sa
+ * publication.
+ */
 class Annonce extends Model
 {
     use HasFactory;
