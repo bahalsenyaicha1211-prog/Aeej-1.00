@@ -7,10 +7,21 @@ use App\Models\BureauMembre;
 use App\Models\Membre;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 
-class TresorerieCompteController extends Controller
+class TresorerieCompteController extends Controller implements HasMiddleware
 {
+    /**
+     * Défense en profondeur, comme AdminUserController : attribuer un rôle
+     * trésorerie équivaut à un privilège financier, ça ne doit jamais
+     * dépendre uniquement de la définition des routes.
+     */
+    public static function middleware(): array
+    {
+        return ['super_admin'];
+    }
+
     public function index(Request $request)
     {
         $q = trim((string) $request->query('q', ''));

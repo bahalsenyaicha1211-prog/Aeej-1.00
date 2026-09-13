@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +37,20 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
+
+        // Politique de mot de passe : le défaut de Laravel n'impose que 8
+        // caractères. S'applique à l'inscription, la réinitialisation et le
+        // changement de mot de passe (tous utilisent Password::defaults()).
+        // uncompromised() vérifie le mot de passe contre l'API "Have I Been
+        // Pwned" (k-anonymat, aucun mot de passe en clair n'est transmis) ;
+        // en cas d'indisponibilité de l'API, Laravel n'échoue pas la
+        // validation (dégradation silencieuse, pas de blocage utilisateur).
+        Password::defaults(function () {
+            return Password::min(10)
+                ->mixedCase()
+                ->numbers()
+                ->uncompromised();
+        });
 
         // Vider le cache des chiffres agrégés (accueil + dashboard admin) dès
         // qu'une donnée sous-jacente change, où que se produise l'écriture.

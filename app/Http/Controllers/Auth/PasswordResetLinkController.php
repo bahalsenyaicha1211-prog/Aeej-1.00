@@ -36,9 +36,18 @@ class PasswordResetLinkController extends Controller
             $request->only('email')
         );
 
-        return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        // Ne jamais révéler si l'adresse existe ou non (énumération de
+        // comptes) : seul le cas "trop de tentatives" reste un message
+        // distinct, car il ne concerne que le demandeur lui-même et pas
+        // l'existence du compte visé.
+        if ($status === Password::RESET_THROTTLED) {
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => __($status)]);
+        }
+
+        return back()->with(
+            'status',
+            "Si un compte existe pour cette adresse, un lien de réinitialisation vient de lui être envoyé."
+        );
     }
 }

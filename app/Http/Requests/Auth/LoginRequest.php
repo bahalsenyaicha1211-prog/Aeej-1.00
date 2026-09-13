@@ -43,6 +43,7 @@ class LoginRequest extends FormRequest
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
+            RateLimiter::hit($this->emailThrottleKey(), 60);
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -50,22 +51,35 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+        RateLimiter::clear($this->emailThrottleKey());
     }
 
     /**
      * Ensure the login request is not rate limited.
      *
+     * Deux verrous distincts : l'un par couple email+IP (5 essais, le
+     * comportement d'origine), l'autre par email seul, quelle que soit
+     * l'IP (10 essais). Le premier est contournable si l'IP perçue peut
+     * être falsifiée via les en-têtes X-Forwarded-* (l'application fait
+     * confiance à tous les proxys — nécessaire derrière l'hébergeur) ;
+     * le second empêche malgré tout de forcer un compte précis en
+     * changeant d'IP à chaque tentative.
+     *
      * @throws \Illuminate\Validation\ValidationException
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        $limited = RateLimiter::tooManyAttempts($this->throttleKey(), 5)
+            ? $this->throttleKey()
+            : (RateLimiter::tooManyAttempts($this->emailThrottleKey(), 10) ? $this->emailThrottleKey() : null);
+
+        if ($limited === null) {
             return;
         }
 
         event(new Lockout($this));
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+        $seconds = RateLimiter::availableIn($limited);
 
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [
@@ -81,5 +95,13 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+    }
+
+    /**
+     * Verrou secondaire, indépendant de l'IP perçue.
+     */
+    public function emailThrottleKey(): string
+    {
+        return 'email-only:'.Str::transliterate(Str::lower($this->string('email')));
     }
 }
