@@ -5,6 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Une photo du diaporama de la page d'accueil (bandeau du haut).
+ * position = ordre d'affichage ; is_active = visible ou non sans
+ * supprimer la ligne (garde l'historique/permet de la réactiver).
+ */
 class HeroImage extends Model
 {
     use HasFactory;

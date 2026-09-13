@@ -12,6 +12,25 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
 
 
+/**
+ * Compte de connexion (auth Laravel). À ne pas confondre avec Membre :
+ * un User sert à se connecter (email/mot de passe), un Membre est la
+ * fiche associative (matricule, pays, département...) — reliés par le
+ * même matricule (relation membre()). Un admin créé directement par un
+ * super-admin peut ne PAS avoir de matricule/Membre associé.
+ *
+ * Rôles (colonnes booléennes, cumulables sauf mention contraire) :
+ *   - is_admin              : accès au back-office /admin
+ *   - is_super_admin        : + gestion des comptes admins et des rôles
+ *                             trésorerie (le plus haut niveau de droits)
+ *   - is_tresorier          : enregistre les paiements de cotisation
+ *   - is_chef_tresorier     : + configure les montants, un seul à la fois
+ *                             (voir Admin\TresorerieCompteController)
+ *   - is_commissaire_comptes: gère les dépenses et consulte la caisse
+ * approved_at : renseigné par un admin après validation de l'inscription
+ * (voir isApproved()) — tant qu'il est null, le membre est redirigé vers
+ * l'écran d'attente et ne peut pas utiliser l'espace membre.
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;

@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Une dépense de l'association (ex. « Journée culturelle 2026 »),
+ * saisie par le commissaire aux comptes. Le montant peut être détaillé
+ * en plusieurs lignes (voir DepenseLigne, relation lignes()) ; figure
+ * dans le rapport financier PDF (DepenseController::rapportPdf) et
+ * dans le calcul du solde de la Caisse (Cotisation - Depense).
+ */
 class Depense extends Model
 {
     protected $fillable = [

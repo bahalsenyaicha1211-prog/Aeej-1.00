@@ -6,13 +6,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Alias "approved" (voir bootstrap/app.php). Bloque l'accès aux espaces
+ * internes tant qu'un administrateur n'a pas validé l'inscription du
+ * membre (colonne users.approved_at). L'utilisateur reste connecté et
+ * peut consulter la page « compte en attente » ou se déconnecter.
+ */
 class EnsureAccountApproved
 {
-    /**
-     * Bloque l'accès aux espaces internes tant qu'un administrateur n'a pas
-     * validé l'inscription du membre. L'utilisateur reste connecté et peut
-     * consulter la page « compte en attente » ou se déconnecter.
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
