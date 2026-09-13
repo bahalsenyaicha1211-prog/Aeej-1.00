@@ -19,7 +19,7 @@
         <div class="auth-visual">
             <div class="brand">
                 <div class="brand-logo">
-                    <img src="{{ asset('images/drapeau/AEEJ.png') }}" alt="Logo AEEJ">
+                    <img src="{{ asset_v('images/drapeau/AEEJ.png') }}" alt="Logo AEEJ">
                 </div>
                 <div class="brand-text">
                     <h1>Inscription</h1>

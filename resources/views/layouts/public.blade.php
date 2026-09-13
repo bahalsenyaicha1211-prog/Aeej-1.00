@@ -25,7 +25,7 @@
         <div class="logo">
             <div class="logo-icon">
             <a href="{{ route('accueil') }}">
-                <img src="{{ asset('images/drapeau/AEEJ.png') }}" alt="Logo AEEJ">
+                <img src="{{ asset_v('images/drapeau/AEEJ.png') }}" alt="Logo AEEJ">
             </a>
         </div>
             

@@ -233,7 +233,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-box">
-                <img src="{{ asset('images/drapeau/AEEJ.png') }}" alt="Logo AEEJ">
+                <img src="{{ asset_v('images/drapeau/AEEJ.png') }}" alt="Logo AEEJ">
             </div>
             <div class="badge-secure">Connexion sécurisée</div>
             <h1>AEEJ<span>.</span></h1>
