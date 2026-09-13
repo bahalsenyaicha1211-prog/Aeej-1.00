@@ -100,7 +100,8 @@
         <h2>Suivez-nous sur</h2>
         <div class="Resaux-sociaux">
             <a href="https://www.facebook.com/aee.jendouba?mibextid=rS40aB7S9Ucbxw6v" class="social-icon facebook" title="Visitez notre Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://chat.whatsapp.com/JNSlBypG7XY1nNfWzhNUhA" class="social-icon whatsapp" title="Rejoignez notre groupe WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            {{-- Pas encore de compte LinkedIn : lien inactif, remplacer href="#" par l'URL réelle une fois le compte créé (retirer aussi l'attribut data-coming-soon à ce moment-là). --}}
+            <a href="#" class="social-icon linkedin" title="Notre LinkedIn arrive bientôt" data-coming-soon="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
             <a href="https://www.tiktok.com/@aeejendouba.offici?_r=1&_t=ZN-93JsrHHCPSR" class="social-icon tiktok" title="Visitez notre TikTok"><i class="fab fa-tiktok"></i></a>
             <a href="https://www.instagram.com/aee.jendouba?igsh=ZjFhbGc4YmoyYm1m" class="social-icon instagram" title="Visitez notre Instagram"><i class="fab fa-instagram"></i></a>
             
