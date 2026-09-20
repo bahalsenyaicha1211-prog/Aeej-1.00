@@ -306,7 +306,7 @@
                             <span class="pf-list__v">{{ $membre?->pays?->nom ?? '—' }}</span>
                         </div>
                         <div class="pf-list__row">
-                            <span class="pf-list__k">Année d'adhésion</span>
+                            <span class="pf-list__k">Promotion</span>
                             <span class="pf-list__v">{{ $membre?->annee_adhesion ?? '—' }}</span>
                         </div>
                         <div class="pf-list__row">

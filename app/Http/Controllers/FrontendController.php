@@ -13,6 +13,7 @@ use App\Models\Partner;
 use App\Models\PartnerCategory;
 use App\Models\ContactMessage;
 use App\Rules\MatriculePaysMatch;
+use App\Support\Matricule;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -243,11 +244,20 @@ class FrontendController extends Controller
     public function inscriptionStore(Request $request)
     {
         $validated = $request->validate([
-            'matricule'      => ['required', 
-                                'string', 'max:50', 
-                                'unique:membres,matricule', 
-                                'unique:users,matricule', 
-                                new MatriculePaysMatch($request->idpays)],
+            // Format imposé : 2 lettres (pays) + 2 chiffres (année d'adhésion,
+            // cf. App\Support\Matricule) + 4 chiffres (séquence). Ex. GN240009.
+            'matricule'      => ['required',
+                                'string',
+                                'regex:/^[A-Za-z]{2}\d{6}$/',
+                                'unique:membres,matricule',
+                                'unique:users,matricule',
+                                new MatriculePaysMatch($request->idpays),
+                                function ($attribute, $value, $fail) {
+                                    $annee = Matricule::anneeAdhesion($value);
+                                    if ($annee < 2010 || $annee > (int) date('Y') + 1) {
+                                        $fail("L'année encodée dans le matricule (positions 3-4) est invalide.");
+                                    }
+                                }],
             'idpays'         => ['required', 'exists:pays,idpays'], // pour la règle MatriculePaysMatch
 
             'nom'            => ['required', 'string', 'max:255'],
@@ -255,9 +265,7 @@ class FrontendController extends Controller
             'sexe'           => ['required', 'in:M,F'],
 
             'iddep'          => ['required', 'exists:departements,iddep'],
-       
 
-            'annee_adhesion' => ['required', 'integer', 'min:2010', 'max:' . (date('Y') + 1)],
             'telephone'      => ['nullable', 'string', 'max:20'],
             'email'          => ['required', 'email', 'max:255', 'unique:membres,email', 'unique:users,email'],
             'adresse'        => ['nullable', 'string', 'max:500'],
@@ -266,14 +274,16 @@ class FrontendController extends Controller
         DB::transaction(function () use ($validated) {
 
             // 1) créer le membre
+            $matricule = strtoupper($validated['matricule']);
+
             $membre = Membre::create([
-                'matricule'      => strtoupper($validated['matricule']),
+                'matricule'      => $matricule,
                 'nom'            => $validated['nom'],
                 'prenom'         => $validated['prenom'],
                 'sexe'           => $validated['sexe'],
                 'iddep'          => $validated['iddep'],
                 'idpays'         => $validated['idpays'],
-                'annee_adhesion' => $validated['annee_adhesion'],
+                'annee_adhesion' => Matricule::anneeAdhesion($matricule),
                 'telephone'      => $validated['telephone'] ?? null,
                 'email'          => $validated['email'],
                 'adresse'        => $validated['adresse'] ?? null,

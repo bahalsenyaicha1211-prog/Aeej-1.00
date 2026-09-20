@@ -41,7 +41,7 @@
                     <div class="admRow"><span style="color:#64748b;">Sexe</span> <span class="text-white font-bold">{{ $membre->sexe }}</span></div>
                     <div class="admRow"><span style="color:#64748b;">Département</span> <span class="text-white font-bold">{{ $membre->departement?->nom ?? '—' }}</span></div>
                     <div class="admRow"><span style="color:#64748b;">Pays de résidence</span> <span class="text-white font-bold">{{ $membre->pays?->nom ?? '—' }}</span></div>
-                    <div class="admRow"><span style="color:#64748b;">Année d'adhésion</span> <span style="color:#a78bfa; font-weight:800;">{{ $membre->annee_adhesion }}</span></div>
+                    <div class="admRow"><span style="color:#64748b;">Promotion</span> <span style="color:#a78bfa; font-weight:800;">{{ $membre->annee_adhesion }}</span></div>
                 </div>
             </div>
         </div>

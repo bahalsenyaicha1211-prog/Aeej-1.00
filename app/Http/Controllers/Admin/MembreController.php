@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Membre;
 use App\Models\Departement;
 use App\Models\Pays;
+use App\Support\Matricule;
 use Illuminate\Http\Request;
 
 class MembreController extends Controller
@@ -68,7 +69,6 @@ class MembreController extends Controller
             'sexe' => ['required','in:M,F'],
             'iddep' => ['required','exists:departements,iddep'],
             'idpays' => ['required','exists:pays,idpays'],
-            'annee_adhesion' => ['required','integer','min:2010','max:' . (date('Y') + 1)],
             'telephone' => ['nullable','string','max:20'],
             'email' => [
                 'required','email','max:255',
@@ -77,6 +77,15 @@ class MembreController extends Controller
             ],
             'adresse' => ['nullable','string','max:500'],
         ]);
+
+        // Le matricule (immuable ici) encode l'année d'adhésion sur ses
+        // positions 3-4 : on la recalcule à chaque sauvegarde pour ne
+        // jamais laisser les deux se désynchroniser. Les matricules hérités
+        // qui ne suivent pas encore le format strict gardent leur valeur
+        // actuelle plutôt que de se faire écraser par une valeur aberrante.
+        if (preg_match('/^[A-Za-z]{2}\d{6}$/', $membre->matricule)) {
+            $data['annee_adhesion'] = Matricule::anneeAdhesion($membre->matricule);
+        }
 
         DB::transaction(function () use ($membre, $user, $data) {
             $membre->update($data);

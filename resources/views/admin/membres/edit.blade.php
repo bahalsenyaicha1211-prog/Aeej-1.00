@@ -43,8 +43,9 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label class="admKpi__label text-white">Année d'adhésion</label>
-                        <input class="input" type="number" name="annee_adhesion" value="{{ old('annee_adhesion', $membre->annee_adhesion) }}">
+                        <label class="admKpi__label text-white">Promotion</label>
+                        <input class="input" value="{{ $membre->annee_adhesion }}" disabled style="opacity:.6;">
+                        <small style="color:#64748b; font-size:11px;">Déterminée par le matricule ({{ $membre->matricule }}), non modifiable ici.</small>
                     </div>
                 </div>
 

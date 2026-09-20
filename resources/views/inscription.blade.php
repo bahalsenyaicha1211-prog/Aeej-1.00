@@ -83,9 +83,12 @@
                             placeholder="Votre identifiant universitaire"
                             required
                             autocomplete="off"
+                            maxlength="8"
                             style="text-transform: uppercase;"
+                            oninput="this.value = this.value.toUpperCase(); document.getElementById('annee_adhesion_preview').textContent = /^..\d{2}/.test(this.value) ? (2000 + parseInt(this.value.substring(2, 4), 10)) : '—';"
                         >
                     </div>
+                    <small class="msg">Format : 2 lettres du pays + 2 chiffres (promotion) + 4 chiffres. Ex. GN240009.</small>
                     @error('matricule') <small class="msg error">{{ $message }}</small> @enderror
                 </div>
 
@@ -137,22 +140,14 @@
                     @error('sexe') <small class="msg error">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- Année d’adhésion -->
+                <!-- Promotion : calculée automatiquement à partir du matricule (voir ci-dessus), jamais saisie -->
                 <div class="field">
-                <label for="annee_adhesion">Année d’adhésion <span>*</span></label>
-                <div class="input">
+                <label>Promotion</label>
+                <div class="input" style="opacity:.75;">
                     <i class="fa-solid fa-calendar-days"></i>
-                    <input
-                    id="annee_adhesion"
-                    name="annee_adhesion"
-                    type="number"
-                    min="2010"
-                    max="{{ date('Y') + 1 }}"
-                    value="{{ old('annee_adhesion', date('Y')) }}"
-                    required
-                    >
+                    <span id="annee_adhesion_preview">{{ old('matricule') && preg_match('/^..\d{2}/', old('matricule')) ? 2000 + (int) substr(old('matricule'), 2, 2) : '—' }}</span>
                 </div>
-                @error('annee_adhesion') <small class="msg error">{{ $message }}</small> @enderror
+                <small class="msg">Déterminée automatiquement par les chiffres 3-4 de votre matricule.</small>
                 </div>
 
 

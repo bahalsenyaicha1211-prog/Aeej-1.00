@@ -7,7 +7,7 @@
                         <th style="color: #64748b; font-size: 11px; text-transform: uppercase;">Identité</th>
                         <th style="color: #64748b; font-size: 11px; text-transform: uppercase;">Département</th>
                         <th style="color: #64748b; font-size: 11px; text-transform: uppercase;">Pays</th>
-                        <th style="color: #64748b; font-size: 11px; text-transform: uppercase; text-align: center;">Adhésion</th>
+                        <th style="color: #64748b; font-size: 11px; text-transform: uppercase; text-align: center;">Promotion</th>
                         <th style="color: #64748b; font-size: 11px; text-transform: uppercase; text-align: right;">Actions</th>
                     </tr>
                 </thead>

@@ -181,7 +181,7 @@
                 <div class="admRows">
                     @foreach($parAnnee as $row)
                         <div class="admRow">
-                            <span class="admRow__label text-white">Année {{ $row->label }}</span>
+                            <span class="admRow__label text-white">Promotion {{ $row->label }}</span>
                             <span class="admRow__value text-white" style="background:#8b5cf6">{{ $row->total }}</span>
                         </div>
                     @endforeach
