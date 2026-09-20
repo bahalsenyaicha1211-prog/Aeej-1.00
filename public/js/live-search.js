@@ -44,7 +44,10 @@
   }
 
   function navigate(target, url) {
-    target.dataset.liveSearchController && target._lsAbort?.abort();
+    // Annule toute requête précédente encore en vol pour ce conteneur :
+    // sans ça, une réponse plus ancienne peut arriver après une plus
+    // récente et écraser l'affichage au moment où l'utilisateur clique.
+    target._lsAbort?.abort();
     const controller = new AbortController();
     target._lsAbort = controller;
 
@@ -66,7 +69,12 @@
           console.error('live-search:', err);
         }
       })
-      .finally(() => target.classList.remove('is-loading'));
+      .finally(() => {
+        // N'enlève l'indicateur de chargement que si cette requête est
+        // toujours la dernière en date (sinon une requête plus récente
+        // est en cours et gère elle-même la fin du chargement).
+        if (target._lsAbort === controller) target.classList.remove('is-loading');
+      });
   }
 
   function init(form) {
