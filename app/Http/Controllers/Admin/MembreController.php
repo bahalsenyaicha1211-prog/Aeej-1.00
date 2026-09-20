@@ -58,6 +58,8 @@ class MembreController extends Controller
 
     public function update(Request $request, Membre $membre)
     {
+        $user = $membre->user;
+
         $data = $request->validate([
             'nom' => ['required','string','max:255'],
             'prenom' => ['required','string','max:255'],
@@ -66,11 +68,32 @@ class MembreController extends Controller
             'idpays' => ['required','exists:pays,idpays'],
             'annee_adhesion' => ['required','integer','min:2020','max:' . (date('Y') + 1)],
             'telephone' => ['nullable','string','max:20'],
-            'email' => ['required','email','max:255','unique:membres,email,' . $membre->matricule . ',matricule'],
+            'email' => [
+                'required','email','max:255',
+                'unique:membres,email,' . $membre->matricule . ',matricule',
+                'unique:users,email,' . ($user->id ?? 'NULL') . ',id',
+            ],
             'adresse' => ['nullable','string','max:500'],
         ]);
 
-        $membre->update($data);
+        DB::transaction(function () use ($membre, $user, $data) {
+            $membre->update($data);
+
+            // Le compte de connexion (users.name / users.email) est une copie
+            // figée au moment de l'inscription (cf. FrontendController::inscriptionStore) :
+            // sans cette resynchro, corriger la fiche membre ici n'a aucun effet
+            // visible pour l'utilisateur (connexion, emails, "Compte lié").
+            if ($user) {
+                $user->name = trim($data['prenom'] . ' ' . $data['nom']);
+
+                if ($user->email !== $data['email']) {
+                    $user->email = $data['email'];
+                    $user->email_verified_at = null;
+                }
+
+                $user->save();
+            }
+        });
 
         return redirect()->route('admin.membres.show', $membre)
             ->with('success', 'Membre mis à jour.');
