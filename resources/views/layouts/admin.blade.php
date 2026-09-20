@@ -26,6 +26,7 @@
     <script src="{{ asset_v('js/admin.js') }}" defer></script>
     <script src="{{ asset_v('js/password-toggle.js') }}" defer></script>
     <script src="{{ asset_v('js/select-search.js') }}" defer></script>
+    <script src="{{ asset_v('js/live-search.js') }}" defer></script>
 </head>
 <body class="page">
 

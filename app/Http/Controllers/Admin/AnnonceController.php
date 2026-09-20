@@ -24,6 +24,10 @@ class AnnonceController extends Controller
             ->paginate(15)
             ->withQueryString();
 
+        if ($request->ajax()) {
+            return view('admin.annonces._results', compact('annonces', 'q'));
+        }
+
         return view('admin.annonces.index', compact('annonces', 'q'));
     }
 

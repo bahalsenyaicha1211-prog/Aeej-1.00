@@ -13,12 +13,16 @@ class ActiviteController extends Controller
         $q = trim((string) $request->query('q', ''));
 
         $activites = Activite::when($q !== '', function ($query) use ($q) {
-                $query->where('libelle', 'like', "%{$q}%")
-                      ->orWhere('categorie', 'like', "%{$q}%");
+                $query->where('libelle', 'like', "{$q}%")
+                      ->orWhere('categorie', 'like', "{$q}%");
             })
             ->orderBy('date','desc')
             ->paginate(12)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.activites._results', compact('activites', 'q'));
+        }
 
         return view('admin.activites.index', compact('activites', 'q'));
     }

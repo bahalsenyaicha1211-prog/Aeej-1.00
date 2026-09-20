@@ -16,10 +16,14 @@ class DepenseController extends Controller
         $q = trim((string) $request->query('q', ''));
 
         $depenses = Depense::with('commissaire')
-            ->when($q !== '', fn ($query) => $query->where('nom_evenement', 'like', "%{$q}%"))
+            ->when($q !== '', fn ($query) => $query->where('nom_evenement', 'like', "{$q}%"))
             ->orderByDesc('date_depense')
             ->paginate(15)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('tresorerie.depenses._results', compact('depenses', 'q'));
+        }
 
         return view('tresorerie.depenses.index', compact('depenses', 'q'));
     }

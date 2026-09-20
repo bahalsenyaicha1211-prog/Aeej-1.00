@@ -574,3 +574,11 @@ img{ max-width:100%; display:block; }
         gap: 4px;
     }
 }
+
+/* Filtre instantané (public/js/live-search.js) : léger fondu pendant le
+   rechargement AJAX du fragment résultats, sans faire disparaître le contenu. */
+.is-loading{
+  opacity:.5;
+  transition:opacity .15s ease;
+  pointer-events:none;
+}

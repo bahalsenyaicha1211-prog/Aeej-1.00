@@ -31,12 +31,16 @@ class GalerieController extends Controller
 
         if ($search !== '') {
             $query->where(function ($sub) use ($search) {
-                $sub->where('title', 'like', "%{$search}%")
+                $sub->where('title', 'like', "{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
         $photos = $query->paginate(18)->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.galerie._results', ['photos' => $photos, 'q' => $search]);
+        }
 
         $categories = GaleriePhoto::query()
             ->select('category')

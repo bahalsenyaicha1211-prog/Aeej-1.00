@@ -19,12 +19,16 @@ class PartenaireController extends Controller
 
         $partenaires = Partner::query()
             ->with('categorie')
-            ->when($q !== '', fn ($query) => $query->where('nom', 'like', "%{$q}%"))
+            ->when($q !== '', fn ($query) => $query->where('nom', 'like', "{$q}%"))
             ->when($slug === 'non-classe', fn ($query) => $query->whereNull('partner_category_id'))
             ->when($slug !== '' && $slug !== 'non-classe', fn ($query) => $query->whereHas('categorie', fn ($c) => $c->where('slug', $slug)))
             ->orderBy('nom')
             ->paginate(24)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.partenaires._results', compact('partenaires', 'q', 'slug'));
+        }
 
         $categories = PartnerCategory::orderBy('nom')->withCount('partners')->get();
 

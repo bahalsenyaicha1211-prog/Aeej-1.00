@@ -12,10 +12,14 @@ class PaysController extends Controller
     {
         $q = trim((string) $request->query('q', ''));
 
-        $pays = Pays::when($q !== '', fn ($query) => $query->where('nom', 'like', "%{$q}%"))
+        $pays = Pays::when($q !== '', fn ($query) => $query->where('nom', 'like', "{$q}%"))
             ->orderBy('nom')
             ->paginate(20)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.pays._results', compact('pays', 'q'));
+        }
 
         return view('admin.pays.index', compact('pays', 'q'));
     }

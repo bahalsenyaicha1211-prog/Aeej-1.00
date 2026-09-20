@@ -35,20 +35,22 @@ class CotisationController extends Controller
 
             if ($q !== '') {
                 $query->where(function ($sub) use ($q) {
-                    $sub->where('matricule', 'like', "%{$q}%")
+                    $sub->where('matricule', 'like', "{$q}%")
                         ->orWhereHas('membre', function ($m) use ($q) {
-                            $m->where('nom', 'like', "%{$q}%")
-                              ->orWhere('prenom', 'like', "%{$q}%")
-                              ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"])
-                              ->orWhereRaw("CONCAT(nom, ' ', prenom) like ?", ["%{$q}%"]);
+                            $m->where('nom', 'like', "{$q}%")
+                              ->orWhere('prenom', 'like', "{$q}%");
                         })
-                        ->orWhereHas('type', fn ($t) => $t->where('nom', 'like', "%{$q}%"));
+                        ->orWhereHas('type', fn ($t) => $t->where('nom', 'like', "{$q}%"));
                 });
             }
 
             $cotisationsVolontaires = $query->paginate(20)->withQueryString();
 
-            return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'cotisationsVolontaires' => $cotisationsVolontaires]);
+            if ($request->ajax()) {
+                return view('tresorerie.cotisations._results', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisationsVolontaires' => $cotisationsVolontaires]);
+            }
+
+            return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisationsVolontaires' => $cotisationsVolontaires]);
         }
 
         $query = Cotisation::with(['membre', 'tresorier'])
@@ -65,19 +67,21 @@ class CotisationController extends Controller
 
         if ($q !== '') {
             $query->where(function ($sub) use ($q) {
-                $sub->where('matricule', 'like', "%{$q}%")
+                $sub->where('matricule', 'like', "{$q}%")
                     ->orWhereHas('membre', function ($m) use ($q) {
-                        $m->where('nom', 'like', "%{$q}%")
-                          ->orWhere('prenom', 'like', "%{$q}%")
-                          ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"])
-                          ->orWhereRaw("CONCAT(nom, ' ', prenom) like ?", ["%{$q}%"]);
+                        $m->where('nom', 'like', "{$q}%")
+                          ->orWhere('prenom', 'like', "{$q}%");
                     });
             });
         }
 
         $cotisations = $query->paginate(20)->withQueryString();
 
-        return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'cotisations' => $cotisations]);
+        if ($request->ajax()) {
+            return view('tresorerie.cotisations._results', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisations' => $cotisations]);
+        }
+
+        return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisations' => $cotisations]);
     }
 
     public function create(Request $request)

@@ -30,14 +30,18 @@ class AdminUserController extends Controller implements HasMiddleware
             ->where('is_admin', true)
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
-                    $sub->where('name', 'like', "%{$q}%")
-                        ->orWhere('email', 'like', "%{$q}%");
+                    $sub->where('name', 'like', "{$q}%")
+                        ->orWhere('email', 'like', "{$q}%");
                 });
             })
             ->orderByDesc('is_super_admin')
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.admins._results', compact('admins', 'q'));
+        }
 
         return view('admin.admins.index', compact('admins', 'q'));
     }

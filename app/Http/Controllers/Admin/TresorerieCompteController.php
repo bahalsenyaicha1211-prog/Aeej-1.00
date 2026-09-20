@@ -35,14 +35,18 @@ class TresorerieCompteController extends Controller implements HasMiddleware
             })
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
-                    $sub->where('name', 'like', "%{$q}%")
-                        ->orWhere('email', 'like', "%{$q}%");
+                    $sub->where('name', 'like', "{$q}%")
+                        ->orWhere('email', 'like', "{$q}%");
                 });
             })
             ->orderByDesc('is_chef_tresorier')
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.tresorerie-comptes._results', compact('comptes', 'q'));
+        }
 
         return view('admin.tresorerie-comptes.index', compact('comptes', 'q'));
     }

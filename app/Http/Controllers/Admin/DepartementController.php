@@ -12,10 +12,14 @@ class DepartementController extends Controller
     {
         $q = trim((string) $request->query('q', ''));
 
-        $departements = Departement::when($q !== '', fn ($query) => $query->where('nom', 'like', "%{$q}%"))
+        $departements = Departement::when($q !== '', fn ($query) => $query->where('nom', 'like', "{$q}%"))
             ->orderBy('nom')
             ->paginate(15)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.departements._results', compact('departements', 'q'));
+        }
 
         return view('admin.departements.index', compact('departements', 'q'));
     }

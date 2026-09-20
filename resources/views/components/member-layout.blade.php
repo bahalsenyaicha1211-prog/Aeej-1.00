@@ -26,7 +26,8 @@
     <script src="{{ asset_v('js/member.js') }}" defer></script>
     <script src="{{ asset_v('js/password-toggle.js') }}" defer></script>
     <script src="{{ asset_v('js/select-search.js') }}" defer></script>
-    
+    <script src="{{ asset_v('js/live-search.js') }}" defer></script>
+
     <style>
         /* Ajustement pour les icônes du menu */
         .nav__item { display: flex; align-items: center; gap: 12px; }

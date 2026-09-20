@@ -20,13 +20,11 @@ class BureauMembreController extends Controller
         $bureau = BureauMembre::with('membre')
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
-                    $sub->where('matricule', 'like', "%{$q}%")
-                        ->orWhere('poste', 'like', "%{$q}%")
+                    $sub->where('matricule', 'like', "{$q}%")
+                        ->orWhere('poste', 'like', "{$q}%")
                         ->orWhereHas('membre', function ($m) use ($q) {
-                            $m->where('nom', 'like', "%{$q}%")
-                              ->orWhere('prenom', 'like', "%{$q}%")
-                              ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"])
-                              ->orWhereRaw("CONCAT(nom, ' ', prenom) like ?", ["%{$q}%"]);
+                            $m->where('nom', 'like', "{$q}%")
+                              ->orWhere('prenom', 'like', "{$q}%");
                         });
                 });
             })
@@ -34,6 +32,10 @@ class BureauMembreController extends Controller
             ->orderBy('ordre')
             ->paginate(15)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.bureau._results', compact('bureau', 'q'));
+        }
 
         return view('admin.bureau.index', compact('bureau', 'q'));
     }

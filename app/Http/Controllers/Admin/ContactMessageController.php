@@ -14,15 +14,18 @@ class ContactMessageController extends Controller
 
         $messages = ContactMessage::when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
-                    $sub->where('nom', 'like', "%{$q}%")
-                        ->orWhere('prenom', 'like', "%{$q}%")
-                        ->orWhere('email', 'like', "%{$q}%")
-                        ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"]);
+                    $sub->where('nom', 'like', "{$q}%")
+                        ->orWhere('prenom', 'like', "{$q}%")
+                        ->orWhere('email', 'like', "{$q}%");
                 });
             })
             ->orderByDesc('created_at')
             ->paginate(15)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.messages._results', compact('messages', 'q'));
+        }
 
         return view('admin.messages.index', compact('messages', 'q'));
     }

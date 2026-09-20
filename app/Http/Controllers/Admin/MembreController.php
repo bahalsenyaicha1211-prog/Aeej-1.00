@@ -23,16 +23,18 @@ class MembreController extends Controller
         $membres = Membre::with(['departement','pays','user'])
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
-                    $sub->where('matricule', 'like', "%{$q}%")
-                        ->orWhere('nom', 'like', "%{$q}%")
-                        ->orWhere('prenom', 'like', "%{$q}%")
-                        ->orWhereRaw("CONCAT(prenom, ' ', nom) like ?", ["%{$q}%"])
-                        ->orWhereRaw("CONCAT(nom, ' ', prenom) like ?", ["%{$q}%"]);
+                    $sub->where('matricule', 'like', "{$q}%")
+                        ->orWhere('nom', 'like', "{$q}%")
+                        ->orWhere('prenom', 'like', "{$q}%");
                 });
             })
             ->orderBy('created_at','desc')
             ->paginate(15)
             ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('admin.membres._results', compact('membres', 'q'));
+        }
 
         $pendingCount = User::whereNotNull('matricule')
             ->whereNull('approved_at')

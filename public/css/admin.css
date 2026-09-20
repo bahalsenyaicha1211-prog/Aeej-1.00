@@ -868,3 +868,11 @@ input[type="checkbox"]{
   .admPag__info{ width:100%; text-align:center; }
   .admPag__list{ justify-content:center; }
 }
+
+/* Filtre instantané (public/js/live-search.js) : léger fondu pendant le
+   rechargement AJAX du fragment résultats, sans faire disparaître le contenu. */
+.is-loading{
+  opacity:.5;
+  transition:opacity .15s ease;
+  pointer-events:none;
+}
