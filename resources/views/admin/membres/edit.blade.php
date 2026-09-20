@@ -15,6 +15,14 @@
 
     <div class="admPanel admPanel--full">
         <div class="admPanel__body">
+            @if($errors->any())
+                <div style="margin-bottom:20px; padding:12px 16px; border-radius:12px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#fb7185; font-size:13px; font-weight:600;">
+                    @foreach($errors->all() as $error)
+                        <div>⚠️ {{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
+
             <form action="{{ route('admin.membres.update', $membre) }}" method="POST">
                 @csrf @method('PUT')
                 

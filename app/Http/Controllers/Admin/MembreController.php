@@ -68,7 +68,7 @@ class MembreController extends Controller
             'sexe' => ['required','in:M,F'],
             'iddep' => ['required','exists:departements,iddep'],
             'idpays' => ['required','exists:pays,idpays'],
-            'annee_adhesion' => ['required','integer','min:2020','max:' . (date('Y') + 1)],
+            'annee_adhesion' => ['required','integer','min:2010','max:' . (date('Y') + 1)],
             'telephone' => ['nullable','string','max:20'],
             'email' => [
                 'required','email','max:255',
