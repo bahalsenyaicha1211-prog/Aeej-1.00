@@ -88,7 +88,6 @@
                             oninput="this.value = this.value.toUpperCase(); document.getElementById('annee_adhesion_preview').textContent = /^..\d{2}/.test(this.value) ? (2000 + parseInt(this.value.substring(2, 4), 10)) : '—';"
                         >
                     </div>
-                    <small class="msg">Format : 2 lettres du pays + 2 chiffres (promotion) + 4 chiffres. Ex. GN240009.</small>
                     @error('matricule') <small class="msg error">{{ $message }}</small> @enderror
                 </div>
 
@@ -147,7 +146,6 @@
                     <i class="fa-solid fa-calendar-days"></i>
                     <span id="annee_adhesion_preview">{{ old('matricule') && preg_match('/^..\d{2}/', old('matricule')) ? 2000 + (int) substr(old('matricule'), 2, 2) : '—' }}</span>
                 </div>
-                <small class="msg">Déterminée automatiquement par les chiffres 3-4 de votre matricule.</small>
                 </div>
 
 
