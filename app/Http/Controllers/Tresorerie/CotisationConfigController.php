@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tresorerie;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cotisation;
 use App\Models\CotisationConfig;
 use App\Models\CotisationType;
 use App\Support\AcademicYear;
@@ -15,8 +16,9 @@ class CotisationConfigController extends Controller
         $configs = CotisationConfig::orderByDesc('annee')->get();
         $types = CotisationType::withCount('paiements')->orderByDesc('annee')->orderBy('nom')->get()->groupBy('annee');
         $anneeActive = AcademicYear::anneeActive();
+        $paiementsParAnnee = Cotisation::selectRaw('annee, COUNT(*) as total')->groupBy('annee')->pluck('total', 'annee');
 
-        return view('tresorerie.config.edit', compact('configs', 'types', 'anneeActive'));
+        return view('tresorerie.config.edit', compact('configs', 'types', 'anneeActive', 'paiementsParAnnee'));
     }
 
     public function update(Request $request)
@@ -33,6 +35,14 @@ class CotisationConfigController extends Controller
         );
 
         return redirect()->route('tresorerie.config.edit')->with('success', "Montants de cotisation mis à jour pour {$data['annee']}.");
+    }
+
+    public function destroy(CotisationConfig $config)
+    {
+        $label = AcademicYear::label($config->annee);
+        $config->delete();
+
+        return redirect()->route('tresorerie.config.edit')->with('success', "Montants de cotisation supprimés pour {$label}. Les paiements déjà enregistrés pour cette année ne sont pas affectés.");
     }
 
     public function storeType(Request $request)

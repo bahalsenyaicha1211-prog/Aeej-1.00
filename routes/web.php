@@ -296,6 +296,9 @@ Route::prefix('tresorerie')
         Route::post('config-montants', [CotisationConfigController::class, 'update'])
             ->middleware('chef_tresorier')
             ->name('config.update');
+        Route::delete('config-montants/{config}', [CotisationConfigController::class, 'destroy'])
+            ->middleware('chef_tresorier')
+            ->name('config.destroy');
         Route::post('config-montants/types', [CotisationConfigController::class, 'storeType'])
             ->middleware('chef_tresorier')
             ->name('config.types.store');
