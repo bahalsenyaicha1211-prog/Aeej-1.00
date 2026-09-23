@@ -88,24 +88,25 @@ class CotisationController extends Controller
     {
         $membres = Membre::with('pays')->orderBy('prenom')->orderBy('nom')->get();
         $anneeActive = AcademicYear::anneeActive();
-        $config = CotisationConfig::pourAnnee($anneeActive);
+        // Toute année déjà configurée (« Montants cotisation ») est éligible à un
+        // nouveau paiement, pas seulement l'année académique en cours — utile pour
+        // rattraper une année passée avant de présenter un bilan.
+        $configs = CotisationConfig::orderByDesc('annee')->get()->keyBy('annee');
         $membresBureau = \App\Models\BureauMembre::where('is_actif', true)->pluck('matricule')->all();
         $typesVolontaires = CotisationType::actifs()->orderByDesc('annee')->orderBy('nom')->get();
 
-        return view('tresorerie.cotisations.create', compact('membres', 'anneeActive', 'config', 'membresBureau', 'typesVolontaires'));
+        return view('tresorerie.cotisations.create', compact('membres', 'anneeActive', 'configs', 'membresBureau', 'typesVolontaires'));
     }
 
     public function store(Request $request)
     {
-        // L'année n'est jamais un choix libre : seule l'année académique en
-        // cours (ex. 2026-2027) est éligible à un nouveau paiement annuel.
-        $annee = AcademicYear::anneeActive();
-
         $data = $request->validate([
+            'annee' => ['required', 'integer', 'min:2010', 'max:' . (date('Y') + 1)],
             'matricule' => ['required', 'exists:membres,matricule'],
             'montant_paye' => ['required', 'numeric', 'min:0'],
             'date_paiement' => ['required', 'date'],
         ]);
+        $annee = $data['annee'];
 
         if (Cotisation::where('matricule', $data['matricule'])->where('annee', $annee)->exists()) {
             return back()->withInput()->withErrors([
@@ -115,9 +116,12 @@ class CotisationController extends Controller
 
         $config = CotisationConfig::pourAnnee($annee);
         if (!$config) {
-            return back()->withInput()->withErrors([
-                'matricule' => "Aucun montant de cotisation n'est configuré pour l'année " . AcademicYear::label($annee) . ". Demandez au chef trésorier de le définir.",
-            ]);
+            $message = "Aucun montant de cotisation n'est configuré pour l'année " . AcademicYear::label($annee) . ". ";
+            $message .= $request->user()->isChefTresorier()
+                ? "Configurez-le d'abord depuis « Montants cotisation »."
+                : "Demandez au chef trésorier de le définir.";
+
+            return back()->withInput()->withErrors(['matricule' => $message]);
         }
 
         $membre = Membre::findOrFail($data['matricule']);

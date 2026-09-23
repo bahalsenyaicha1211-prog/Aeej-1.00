@@ -23,13 +23,14 @@
 
         <div data-cot-panel="annuelle">
 
-        <p style="margin:-6px 0 16px; font-size:13px; color:var(--muted);">
-            Année académique en cours : <strong style="color:var(--text);">{{ \App\Support\AcademicYear::label($anneeActive) }}</strong>
-        </p>
-
-        @if(!$config)
+        @if($configs->isEmpty())
             <div class="alert alert--warning">
-                ⚠️ Aucun montant de cotisation n'a encore été configuré pour {{ \App\Support\AcademicYear::label($anneeActive) }}. Demandez au chef trésorier de le faire (« Montants cotisation ») avant d'enregistrer un paiement.
+                ⚠️ Aucun montant de cotisation n'a encore été configuré.
+                @if($user->isChefTresorier())
+                    Configurez-en un depuis <a href="{{ route('tresorerie.config.edit') }}">« Montants cotisation »</a> avant d'enregistrer un paiement.
+                @else
+                    Demandez au chef trésorier de le faire (« Montants cotisation ») avant d'enregistrer un paiement.
+                @endif
             </div>
         @endif
 
@@ -37,6 +38,19 @@
             @csrf
 
             <div class="grid grid-2">
+                <div class="field">
+                    <label>Année académique *</label>
+                    <select class="input" name="annee" id="annee-select" required @if($configs->isEmpty()) disabled @endif>
+                        @forelse($configs as $annee => $cfg)
+                            <option value="{{ $annee }}" {{ old('annee', $anneeActive) == $annee ? 'selected' : '' }}>
+                                {{ \App\Support\AcademicYear::label($annee) }}{{ (int) $annee === $anneeActive ? ' (en cours)' : '' }}
+                            </option>
+                        @empty
+                            <option value="">— Aucune année configurée —</option>
+                        @endforelse
+                    </select>
+                </div>
+
                 <div class="field">
                     <label>Membre *</label>
                     <select class="input" name="matricule" id="matricule" required>
@@ -157,7 +171,8 @@
 
 <script>
 (() => {
-    const config = @json($config);
+    const configs = @json($configs);
+    const anneeSelect = document.getElementById('annee-select');
     const matriculeSelect = document.getElementById('matricule');
     const paysAffiche = document.getElementById('pays-affiche');
     const categorieAffiche = document.getElementById('categorie-affiche');
@@ -167,6 +182,7 @@
 
     function montantDuActuel() {
         const option = matriculeSelect.selectedOptions[0];
+        const config = anneeSelect ? configs[anneeSelect.value] : null;
         if (!option || !option.value || !config) return null;
 
         const categorie = option.dataset.categorie;
@@ -204,6 +220,7 @@
 
     matriculeSelect.addEventListener('change', maj);
     montantPayeInput.addEventListener('input', maj);
+    if (anneeSelect) anneeSelect.addEventListener('change', maj);
 
     maj();
 
