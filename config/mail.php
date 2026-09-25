@@ -46,7 +46,7 @@ return [
             'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
             'username' => env('MAIL_USERNAME', 'a13555001@smtp-brevo.com' ),
             'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
+            'timeout' => 20,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'https://aeej-sd58.onrender.com'), PHP_URL_HOST)),
         ],
 

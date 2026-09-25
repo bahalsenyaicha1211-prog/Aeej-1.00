@@ -4,12 +4,20 @@ namespace App\Notifications;
 
 use App\Models\Annonce;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class NewAnnoncePublished extends Notification
+class NewAnnoncePublished extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    public int $tries = 3;
+
+    public function backoff(): array
+    {
+        return [60, 300];
+    }
 
     public function __construct(public Annonce $annonce) {}
 

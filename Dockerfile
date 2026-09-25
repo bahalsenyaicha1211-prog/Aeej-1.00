@@ -41,5 +41,5 @@ RUN php artisan view:cache
 CMD php artisan config:cache && \
     php artisan route:cache && \
     php artisan migrate --force && \
-    (php artisan queue:work --tries=3 --timeout=90 --sleep=5 --max-time=3600 &) && \
+    (while true; do php artisan queue:work --tries=3 --timeout=90 --sleep=5 --max-time=3600; sleep 3; done &) && \
     apache2-foreground
