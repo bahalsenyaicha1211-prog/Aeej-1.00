@@ -8,6 +8,7 @@ use App\Models\CotisationConfig;
 use App\Models\CotisationType;
 use App\Models\CotisationVolontaire;
 use App\Models\Membre;
+use App\Notifications\PaiementEnregistre;
 use App\Support\AcademicYear;
 use Illuminate\Http\Request;
 
@@ -145,6 +146,14 @@ class CotisationController extends Controller
         ]);
         $cotisation->recalculerReste();
         $cotisation->save();
+
+        $membre->user?->notify(new PaiementEnregistre(
+            'Cotisation annuelle ' . AcademicYear::label($annee),
+            (float) $cotisation->montant_paye,
+            (float) $cotisation->reste,
+            \Carbon\Carbon::parse($cotisation->date_paiement)->format('d/m/Y'),
+            $request->user()->name,
+        ));
 
         return redirect()->route('tresorerie.cotisations.index')->with('success', 'Paiement de cotisation enregistré.');
     }

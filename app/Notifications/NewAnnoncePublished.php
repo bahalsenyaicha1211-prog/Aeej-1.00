@@ -12,11 +12,11 @@ class NewAnnoncePublished extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public int $tries = 3;
+    public int $tries = 5;
 
     public function backoff(): array
     {
-        return [60, 300];
+        return [300, 1800, 7200, 21600];
     }
 
     public function __construct(public Annonce $annonce) {}

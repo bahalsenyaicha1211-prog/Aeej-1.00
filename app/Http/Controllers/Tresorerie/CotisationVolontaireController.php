@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CotisationVolontaire;
 use App\Models\CotisationType;
 use App\Models\Membre;
+use App\Notifications\PaiementEnregistre;
 use Illuminate\Http\Request;
 
 class CotisationVolontaireController extends Controller
@@ -21,13 +22,21 @@ class CotisationVolontaireController extends Controller
 
         $type = CotisationType::findOrFail($data['cotisation_type_id']);
 
-        CotisationVolontaire::create([
+        $paiement = CotisationVolontaire::create([
             'matricule' => $data['matricule'],
             'cotisation_type_id' => $type->id,
             'montant_paye' => $data['montant_paye'],
             'date_paiement' => $data['date_paiement'],
             'created_by' => $request->user()->id,
         ]);
+
+        Membre::find($data['matricule'])?->user?->notify(new PaiementEnregistre(
+            $type->nom . ' (' . $type->annee . ')',
+            (float) $data['montant_paye'],
+            null,
+            \Carbon\Carbon::parse($data['date_paiement'])->format('d/m/Y'),
+            $request->user()->name,
+        ));
 
         return redirect()->route('tresorerie.cotisations.index', ['tab' => 'volontaire'])
             ->with('success', "Paiement « {$type->nom} » enregistré pour {$type->annee}.");

@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Membre;
 use App\Models\Departement;
 use App\Models\Pays;
+use App\Notifications\InscriptionValidee;
 use App\Support\Matricule;
 use Illuminate\Http\Request;
 
@@ -123,6 +124,7 @@ class MembreController extends Controller
 
         if ($user->approved_at === null) {
             $user->forceFill(['approved_at' => now()])->save();
+            $user->notify(new InscriptionValidee());
         }
 
         return back()->with('success', "Inscription de {$membre->prenom} {$membre->nom} validée.");
