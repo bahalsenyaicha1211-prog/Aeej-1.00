@@ -45,6 +45,9 @@
                     <div class="admRows" style="gap: 15px;">
                         <div class="admRow"><label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" name="is_published" value="1" {{ $annonce->is_published ? 'checked' : '' }}> <span class="text-white">Publiée</span></label></div>
                         <div class="admRow"><label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" name="is_pinned" value="1" {{ $annonce->is_pinned ? 'checked' : '' }}> <span class="text-white">📌 Épinglée</span></label></div>
+                        @unless($annonce->is_published)
+                        <div class="admRow"><label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" name="envoyer_mail" value="1" {{ (old() ? old('envoyer_mail') : true) ? 'checked' : '' }}> <span class="text-white">Envoyer aussi par e-mail à la publication</span></label></div>
+                        @endunless
                     </div>
 
                     <button type="submit" class="btn" style="width: 100%; background: #3b82f6; color: #fff; border-radius: 12px; padding: 15px; font-weight: 800; border: none; margin-top: 25px;">

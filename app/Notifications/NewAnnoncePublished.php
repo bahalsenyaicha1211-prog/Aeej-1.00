@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Annonce;
+use App\Notifications\Concerns\RespecteQuotaMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -10,20 +11,18 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class NewAnnoncePublished extends Notification implements ShouldQueue
 {
-    use Queueable;
-
-    public int $tries = 5;
+    use Queueable, RespecteQuotaMail;
 
     public function backoff(): array
     {
         return [300, 1800, 7200, 21600];
     }
 
-    public function __construct(public Annonce $annonce) {}
+    public function __construct(public Annonce $annonce, public bool $avecMail = true) {}
 
     public function via($notifiable): array
     {
-        return ['database', 'mail'];
+        return $this->avecMail ? ['database', 'mail'] : ['database'];
     }
 
     public function toDatabase($notifiable): array

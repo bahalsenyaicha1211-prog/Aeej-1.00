@@ -48,6 +48,7 @@ class AnnonceController extends Controller
             'is_pinned'    => ['nullable'],
         ]);
 
+        $envoyerMail = $request->boolean('envoyer_mail');
         $data['is_published'] = $request->boolean('is_published');
         $data['is_pinned']    = $request->boolean('is_pinned');
         $data['created_by']   = auth()->id();
@@ -64,8 +65,8 @@ class AnnonceController extends Controller
             User::query()
                 ->where('is_admin', false)
                 ->whereNotNull('email_verified_at')
-                ->chunkById(500, function ($users) use ($annonce) {
-                    Notification::send($users, new NewAnnoncePublished($annonce));
+                ->chunkById(500, function ($users) use ($annonce, $envoyerMail) {
+                    Notification::send($users, new NewAnnoncePublished($annonce, $envoyerMail));
                 });
         }
 
@@ -92,6 +93,7 @@ public function edit(Annonce $annonce)
         ]);
 
         $wasPublished = (bool) $annonce->is_published;
+        $envoyerMail = $request->boolean('envoyer_mail');
 
         $data['is_published'] = $request->boolean('is_published');
         $data['is_pinned']    = $request->boolean('is_pinned');
@@ -126,8 +128,8 @@ public function edit(Annonce $annonce)
             User::query()
                 ->where('is_admin', false)
                 ->whereNotNull('email_verified_at')
-                ->chunkById(500, function ($users) use ($annonce) {
-                    Notification::send($users, new NewAnnoncePublished($annonce));
+                ->chunkById(500, function ($users) use ($annonce, $envoyerMail) {
+                    Notification::send($users, new NewAnnoncePublished($annonce, $envoyerMail));
                 });
         }
 

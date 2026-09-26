@@ -13,7 +13,9 @@ use App\Models\Pays;
 use App\Models\User;
 use App\Support\StatsCache;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -68,6 +70,10 @@ class AppServiceProvider extends ServiceProvider
             $model::saved($flushPartners);
             $model::deleted($flushPartners);
         }
+
+        // Quota d'envoi Brevo (offre gratuite : 300 mails/jour) : on garde de la marge
+        // pour les mails non mis en file (inscription, mot de passe oublié).
+        RateLimiter::for('brevo-quotidien', fn () => Limit::perDay((int) config('mail.quota_journalier')));
 
         // Vos Gates existantes
         Gate::define('delete-admin', function (User $authUser, User $targetUser) {

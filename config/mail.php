@@ -111,6 +111,9 @@ return [
     |
     */
 
+    // Plafond de mails mis en file par tranche de 24 h (Brevo gratuit : 300/jour).
+    'quota_journalier' => (int) env('MAIL_QUOTA_JOURNALIER', 250),
+
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'bahalseny.aicha1211@gmail.com'),
         'name' => env('MAIL_FROM_NAME', 'AEEJ'),

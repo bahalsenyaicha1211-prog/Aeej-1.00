@@ -52,6 +52,12 @@
                                 <span class="text-white font-bold">Épingler en haut</span>
                             </label>
                         </div>
+                        <div class="admRow" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                            <label style="display:flex; gap:12px; align-items:center; cursor:pointer;">
+                                <input type="checkbox" name="envoyer_mail" value="1" {{ (old() ? old('envoyer_mail') : true) ? 'checked' : '' }} style="width:18px; height:18px; accent-color:#f59e0b;">
+                                <span class="text-white font-bold">Envoyer aussi par e-mail aux membres</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div style="margin-top: 30px;">

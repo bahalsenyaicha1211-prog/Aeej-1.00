@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\RespecteQuotaMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -9,9 +10,7 @@ use Illuminate\Notifications\Notification;
 
 class PaiementEnregistre extends Notification implements ShouldQueue
 {
-    use Queueable;
-
-    public int $tries = 5;
+    use Queueable, RespecteQuotaMail;
 
     public function backoff(): array
     {
