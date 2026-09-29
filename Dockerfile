@@ -38,8 +38,16 @@ RUN php artisan view:cache
 # 6. Au démarrage : cache config + routes (les variables d'env Render sont
 #    injectées au runtime), migrations, worker d'e-mails en tâche de fond,
 #    puis Apache.
+#    migrate --force n'est volontairement PAS bloquant : si la base est
+#    temporairement injoignable (ex. quota TiDB épuisé), le conteneur doit
+#    quand même démarrer Apache plutôt que de crasher en boucle (Render
+#    considère un CMD qui s'arrête comme un échec de l'instance, "Exited
+#    with status 1", et la redémarre sans fin tant que la base ne répond
+#    pas). Les migrations en attente repasseront au prochain déploiement,
+#    ou peuvent être rejouées manuellement une fois la base de nouveau
+#    accessible.
 CMD php artisan config:cache && \
     php artisan route:cache && \
-    php artisan migrate --force && \
+    (php artisan migrate --force || echo "⚠️ migrate --force a échoué (base injoignable ?) — démarrage quand même.") && \
     (while true; do php artisan queue:work --tries=3 --timeout=90 --sleep=5 --max-time=3600; sleep 3; done &) && \
     apache2-foreground
