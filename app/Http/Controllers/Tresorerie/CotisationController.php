@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tresorerie;
 
+use App\Http\Controllers\Concerns\ExportsListe;
 use App\Http\Controllers\Controller;
 use App\Models\Cotisation;
 use App\Models\CotisationConfig;
@@ -14,11 +15,14 @@ use Illuminate\Http\Request;
 
 class CotisationController extends Controller
 {
+    use ExportsListe;
+
     public function index(Request $request)
     {
         $user = $request->user();
         $q = trim((string) $request->query('q', ''));
         $tab = $request->query('tab') === 'volontaire' ? 'volontaire' : 'annuelle';
+        $impression = $this->choixImpression($user);
 
         if ($tab === 'volontaire') {
             $query = CotisationVolontaire::with(['membre', 'type', 'tresorier'])
@@ -48,10 +52,10 @@ class CotisationController extends Controller
             $cotisationsVolontaires = $query->paginate(20)->withQueryString();
 
             if ($request->ajax()) {
-                return view('tresorerie.cotisations._results', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisationsVolontaires' => $cotisationsVolontaires]);
+                return view('tresorerie.cotisations._results', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisationsVolontaires' => $cotisationsVolontaires, 'impression' => $impression]);
             }
 
-            return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisationsVolontaires' => $cotisationsVolontaires]);
+            return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisationsVolontaires' => $cotisationsVolontaires, 'impression' => $impression]);
         }
 
         $query = Cotisation::with(['membre', 'tresorier'])
@@ -79,10 +83,73 @@ class CotisationController extends Controller
         $cotisations = $query->paginate(20)->withQueryString();
 
         if ($request->ajax()) {
-            return view('tresorerie.cotisations._results', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisations' => $cotisations]);
+            return view('tresorerie.cotisations._results', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisations' => $cotisations, 'impression' => $impression]);
         }
 
-        return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisations' => $cotisations]);
+        return view('tresorerie.cotisations.index', ['tab' => $tab, 'q' => $q, 'user' => $user, 'cotisations' => $cotisations, 'impression' => $impression]);
+    }
+
+    // Listes des choix des boutons « Imprimer » (chef trésorier seulement).
+    private function choixImpression($user): ?array
+    {
+        if (!$user->isChefTresorier()) {
+            return null;
+        }
+
+        return [
+            'annees' => Cotisation::select('annee')->distinct()->orderByDesc('annee')->pluck('annee'),
+            'types' => CotisationType::orderByDesc('annee')->orderBy('nom')->get(['id', 'nom', 'annee']),
+        ];
+    }
+
+    // Listes imprimables : matricules seulement, sans nom ni prénom (anonymat).
+    public function imprimerAnnuelle(Request $request)
+    {
+        $annee = (int) $request->validate(['annee' => ['required', 'integer']])['annee'];
+
+        $cotisations = Cotisation::where('annee', $annee)->orderBy('matricule')->get();
+
+        $lignes = $cotisations->map(fn (Cotisation $c) => [
+            $c->matricule,
+            $c->categorie === 'bureau' ? 'Bureau' : 'Membre',
+            self::montant($c->montant_du),
+            self::montant($c->montant_paye),
+            self::montant($c->reste),
+            $c->date_paiement->format('d/m/Y'),
+        ])->all();
+
+        return $this->imprimerListe(
+            'Cotisation annuelle ' . AcademicYear::label($annee),
+            ['Matricule', 'Catégorie', 'Dû (TND)', 'Payé (TND)', 'Reste (TND)', 'Date'],
+            $lignes,
+            count($lignes) . ' paiement(s) — total payé : ' . self::montant($cotisations->sum('montant_paye')) . ' TND',
+        );
+    }
+
+    public function imprimerVolontaire(Request $request)
+    {
+        $data = $request->validate(['type' => ['required', 'exists:cotisation_types,id']]);
+        $type = CotisationType::findOrFail($data['type']);
+
+        $paiements = CotisationVolontaire::where('cotisation_type_id', $type->id)->orderBy('matricule')->get();
+
+        $lignes = $paiements->map(fn (CotisationVolontaire $p) => [
+            $p->matricule,
+            self::montant($p->montant_paye),
+            $p->date_paiement->format('d/m/Y'),
+        ])->all();
+
+        return $this->imprimerListe(
+            $type->nom . ' — ' . AcademicYear::label($type->annee),
+            ['Matricule', 'Payé (TND)', 'Date'],
+            $lignes,
+            count($lignes) . ' paiement(s) — total payé : ' . self::montant($paiements->sum('montant_paye')) . ' TND',
+        );
+    }
+
+    private static function montant($valeur): string
+    {
+        return number_format((float) $valeur, 2, ',', ' ');
     }
 
     public function create(Request $request)

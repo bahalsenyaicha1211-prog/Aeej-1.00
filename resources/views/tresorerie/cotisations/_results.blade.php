@@ -15,6 +15,19 @@
             @endif
         </form>
 
+        @if(!empty($impression) && $impression['annees']->isNotEmpty())
+            <form method="GET" action="{{ route('tresorerie.cotisations.imprimer') }}" target="_blank" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
+                <select class="input" name="annee" required style="max-width:200px;">
+                    @foreach($impression['annees'] as $a)
+                        <option value="{{ $a }}">{{ \App\Support\AcademicYear::label($a) }}</option>
+                    @endforeach
+                </select>
+                <button class="btn btn--ghost" type="submit" style="display:inline-flex; align-items:center; gap:8px;">
+                    <x-icon name="printer" style="width:16px;height:16px" /> Imprimer la liste des payeurs
+                </button>
+            </form>
+        @endif
+
         <div style="overflow-x:auto;">
             <table class="table table--nowrap">
                 <thead>
@@ -90,6 +103,19 @@
                 <a class="btn btn--ghost" data-live-search-link="#cotisations-results" href="{{ route('tresorerie.cotisations.index', ['tab' => 'volontaire']) }}">Réinitialiser</a>
             @endif
         </form>
+
+        @if(!empty($impression) && $impression['types']->isNotEmpty())
+            <form method="GET" action="{{ route('tresorerie.cotisations-volontaires.imprimer') }}" target="_blank" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
+                <select class="input" name="type" required style="max-width:260px;">
+                    @foreach($impression['types'] as $t)
+                        <option value="{{ $t->id }}">{{ $t->nom }} ({{ \App\Support\AcademicYear::label($t->annee) }})</option>
+                    @endforeach
+                </select>
+                <button class="btn btn--ghost" type="submit" style="display:inline-flex; align-items:center; gap:8px;">
+                    <x-icon name="printer" style="width:16px;height:16px" /> Imprimer la liste des payeurs
+                </button>
+            </form>
+        @endif
 
         <div style="overflow-x:auto;">
             <table class="table table--nowrap">

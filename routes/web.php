@@ -182,11 +182,14 @@ Route::prefix('admin')
             ->except(['show']);
 
         // -- Membres : l'inscription se fait sur la vitrine publique, pas de create/store ici --
+        // Export avant la resource, sinon « imprimer » serait pris pour un {membre} par la route show.
+        Route::get('membres/imprimer', [MembreController::class, 'imprimer'])->name('membres.imprimer');
         Route::resource('membres', MembreController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
         Route::patch('membres/{membre}/approuver', [MembreController::class, 'approve'])->name('membres.approve');
 
         // -- Contenu du site --
         Route::resource('activites', ActiviteController::class)->except(['show']);
+        Route::get('bureau/imprimer', [BureauMembreController::class, 'imprimer'])->name('bureau.imprimer');
         Route::resource('bureau', BureauMembreController::class)->except(['show']);
         Route::resource('annonces', AnnonceController::class)->except(['show']);
 
@@ -264,6 +267,14 @@ Route::prefix('tresorerie')
         // directement depuis l'espace membre (/dashboard). On garde ce nom de
         // route pour ne pas casser d'éventuels liens déjà enregistrés.
         Route::get('/', fn () => redirect()->route('dashboard'))->name('dashboard');
+
+        // -- Listes imprimables (matricules seulement), chef trésorier --
+        Route::get('cotisations/imprimer', [CotisationController::class, 'imprimerAnnuelle'])
+            ->middleware('chef_tresorier')
+            ->name('cotisations.imprimer');
+        Route::get('cotisations-volontaires/imprimer', [CotisationController::class, 'imprimerVolontaire'])
+            ->middleware('chef_tresorier')
+            ->name('cotisations-volontaires.imprimer');
 
         // -- Cotisation annuelle obligatoire --
         Route::resource('cotisations', CotisationController::class)

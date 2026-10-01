@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\ExportsListe;
 use App\Http\Controllers\Concerns\HandlesImageUpload;
 use App\Http\Controllers\Controller;
 use App\Models\BureauMembre;
@@ -12,6 +13,36 @@ use Illuminate\Support\Facades\Storage;
 class BureauMembreController extends Controller
 {
     use HandlesImageUpload;
+    use ExportsListe;
+
+    private const EXPORT_COLONNES = [
+        'Ordre', 'Poste', 'Matricule', 'Nom', 'Prénom', 'Téléphone', 'Email', 'Statut',
+    ];
+
+    public function imprimer()
+    {
+        return $this->imprimerListe('Membres du bureau', self::EXPORT_COLONNES, $this->lignesExport());
+    }
+
+    // Même ordre que la page admin : postes actifs d'abord, puis par ordre d'affichage.
+    private function lignesExport(): array
+    {
+        return BureauMembre::with('membre')
+            ->orderByDesc('is_actif')
+            ->orderBy('ordre')
+            ->get()
+            ->map(fn (BureauMembre $b) => [
+                $b->ordre,
+                $b->poste,
+                $b->matricule,
+                $b->membre?->nom ?? '',
+                $b->membre?->prenom ?? '',
+                $b->membre?->telephone ?? '',
+                $b->membre?->email ?? '',
+                $b->is_actif ? 'Actif' : 'Inactif',
+            ])
+            ->all();
+    }
 
     public function index(Request $request)
     {

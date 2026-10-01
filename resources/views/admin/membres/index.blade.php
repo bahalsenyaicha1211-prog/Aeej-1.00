@@ -10,6 +10,9 @@
             <h1 class="admDash__title text-white">Membres</h1>
             <p class="admDash__sub">Consultez et gérez la base de données de tous les inscrits.</p>
         </div>
+        <a class="admQuick__btn" href="{{ route('admin.membres.imprimer') }}" target="_blank" rel="noopener" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+            <x-icon name="printer" style="width:18px;height:18px" /> Imprimer la liste
+        </a>
     </div>
 
     <form method="GET" data-live-search="#membres-results" action="{{ route('admin.membres.index') }}" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center;">

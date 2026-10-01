@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\BureauMembre;
 
 
+use App\Http\Controllers\Concerns\ExportsListe;
 use App\Http\Controllers\Controller;
 use App\Models\Membre;
 use App\Models\Departement;
@@ -18,6 +19,43 @@ use Illuminate\Http\Request;
 
 class MembreController extends Controller
 {
+    use ExportsListe;
+
+    private const EXPORT_COLONNES = [
+        'Matricule', 'Nom', 'Prénom', 'Sexe', 'Département', 'Pays',
+        'Promotion', 'Téléphone', 'Email', 'Statut',
+    ];
+
+    public function imprimer()
+    {
+        return $this->imprimerListe('Liste des membres', self::EXPORT_COLONNES, $this->lignesExport());
+    }
+
+    // Tous les inscrits, triés par nom, une ligne par membre.
+    private function lignesExport(): array
+    {
+        return Membre::with(['departement', 'pays', 'user'])
+            ->orderBy('nom')->orderBy('prenom')
+            ->get()
+            ->map(fn (Membre $m) => [
+                $m->matricule,
+                $m->nom,
+                $m->prenom,
+                $m->sexe,
+                $m->departement?->nom ?? '',
+                $m->pays?->nom ?? '',
+                $m->annee_adhesion,
+                $m->telephone,
+                $m->email,
+                match (true) {
+                    $m->user === null => 'Sans compte',
+                    $m->user->approved_at === null => 'En attente',
+                    default => 'Validé',
+                },
+            ])
+            ->all();
+    }
+
     public function index(Request $request)
     {
         $q = trim((string) $request->query('q', ''));

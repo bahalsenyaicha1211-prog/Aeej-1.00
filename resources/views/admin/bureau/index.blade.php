@@ -10,9 +10,14 @@
             <h1 class="admDash__title text-white">Gestion du Bureau</h1>
             <p class="admDash__sub">Organisez la hiérarchie et l'affichage des membres du bureau public.</p>
         </div>
-        <a class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 10px 20px; font-weight: 800;" href="{{ route('admin.bureau.create') }}">
-            + Ajouter un membre
-        </a>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <a class="admQuick__btn" href="{{ route('admin.bureau.imprimer') }}" target="_blank" rel="noopener" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                <x-icon name="printer" style="width:18px;height:18px" /> Imprimer la liste
+            </a>
+            <a class="btn" style="background: #22c55e; color: #fff; border-radius: 12px; padding: 10px 20px; font-weight: 800;" href="{{ route('admin.bureau.create') }}">
+                + Ajouter un membre
+            </a>
+        </div>
     </div>
 
     <form method="GET" data-live-search="#bureau-results" action="{{ route('admin.bureau.index') }}" style="margin-bottom: 16px; display:flex; gap:10px; align-items:center;">
