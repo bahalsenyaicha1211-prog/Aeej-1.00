@@ -46,8 +46,12 @@ RUN php artisan view:cache
 #    pas). Les migrations en attente repasseront au prochain déploiement,
 #    ou peuvent être rejouées manuellement une fois la base de nouveau
 #    accessible.
+#    --sleep=60 : quand la file est vide, le worker n'interroge la table jobs
+#    qu'une fois par minute. Avec --sleep=5 il consommait en continu ~30 RU/s
+#    sur TiDB (≈ 2,6 M RU/jour), ce qui épuisait le quota gratuit mensuel
+#    (50 M RU) en moins de 3 semaines, même sans aucun visiteur.
 CMD php artisan config:cache && \
     php artisan route:cache && \
     (php artisan migrate --force || echo "⚠️ migrate --force a échoué (base injoignable ?) — démarrage quand même.") && \
-    (while true; do php artisan queue:work --tries=3 --timeout=90 --sleep=5 --max-time=3600; sleep 3; done &) && \
+    (while true; do php artisan queue:work --tries=3 --timeout=90 --sleep=60 --max-time=3600; sleep 3; done &) && \
     apache2-foreground
