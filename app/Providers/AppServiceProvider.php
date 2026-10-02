@@ -11,6 +11,7 @@ use App\Models\Partner;
 use App\Models\PartnerCategory;
 use App\Models\Pays;
 use App\Models\User;
+use App\Support\QueueALaDemande;
 use App\Support\StatsCache;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -39,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
+
+        // Envoi des mails en file sans worker permanent (voir la classe).
+        QueueALaDemande::activer();
 
         // Politique de mot de passe : le défaut de Laravel n'impose que 8
         // caractères. S'applique à l'inscription, la réinitialisation et le

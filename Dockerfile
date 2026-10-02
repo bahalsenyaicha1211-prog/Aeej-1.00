@@ -46,16 +46,14 @@ RUN php artisan view:cache
 #    pas). Les migrations en attente repasseront au prochain déploiement,
 #    ou peuvent être rejouées manuellement une fois la base de nouveau
 #    accessible.
-#    Worker d'e-mails : une passe par minute avec --stop-when-empty (il vide
-#    la file puis s'arrête, ce qui ferme sa connexion TiDB) plutôt qu'un
-#    processus permanent. Le conteneur consommait ~27 RU/s en continu sur
-#    TiDB alors que les requêtes SQL n'en expliquaient qu'une infime partie,
-#    ce qui épuisait le quota gratuit mensuel (50 M RU) en ~3 semaines.
-#    QUEUE_WORKER=off (variable Render) désactive complètement le worker.
+#    Pas de worker d'e-mails permanent : un worker qui interroge la file
+#    (même une fois par minute) empêche TiDB Starter de se mettre en veille
+#    et consomme ~30 RU/s en continu, ce qui épuisait le quota gratuit
+#    mensuel. Le worker est lancé à la demande, juste après la mise en file
+#    d'un mail (voir App\Support\QueueALaDemande). Une seule passe au
+#    démarrage pour écouler ce qui serait resté en file.
 CMD php artisan config:cache && \
     php artisan route:cache && \
     (php artisan migrate --force || echo "⚠️ migrate --force a échoué (base injoignable ?) — démarrage quand même.") && \
-    (if [ "${QUEUE_WORKER:-on}" != "off" ]; then \
-        while true; do php artisan queue:work --stop-when-empty --tries=3 --timeout=90; sleep 60; done; \
-     else echo "QUEUE_WORKER=off : worker d'e-mails désactivé."; fi &) && \
+    (php artisan queue:work --stop-when-empty --tries=3 --timeout=90 &) && \
     apache2-foreground
